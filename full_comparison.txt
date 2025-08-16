@@ -1,0 +1,62 @@
+🧪 ORDER TRANSFORMATION COMPARISON TEST
+📋 Task 3: Compare generated result with sample order
+
+📄 Files loaded successfully
+📁 Result: /Users/chongraktanaka/oms-mapping/release/orderid403521240-C7LDVZNUTGAHMA.json
+📁 Sample: /Users/chongraktanaka/oms-mapping/sample_order.json
+
+🔍 Starting detailed comparison...
+
+================================================================================
+📊 COMPARISON REPORT
+================================================================================
+❌ RESULT: FAIL ⚠️
+❌ 79 issues found out of 498 comparisons
+
+📈 STATISTICS:
+   • Pass Rate: 84.1% (419/498)
+   • Missing Fields: 0
+   • Different Values: 21
+
+🔄 DIFFERENT VALUES (21):
+   1. OriginalPayload.Order.Payment[0].UpdatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:22.891"
+      Actual:   "2025-08-05T12:13:22.781"
+   2. OriginalPayload.Order.Payment[0].PaymentMethod[0].CreatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:22.865"
+      Actual:   "2025-08-05T12:13:22.781"
+   3. OriginalPayload.Order.Payment[0].PaymentMethod[0].UpdatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:33.687"
+      Actual:   "2025-08-05T12:13:22.781"
+   4. OriginalPayload.Order.Payment[0].PaymentMethod[0].BillingAddress.CreatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:22.866"
+      Actual:   "2025-08-05T12:13:22.781"
+   5. OriginalPayload.Order.Payment[0].PaymentMethod[0].BillingAddress.UpdatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:22.938"
+      Actual:   "2025-08-05T12:13:22.781"
+   6. OriginalPayload.Order.Payment[0].PaymentMethod[0].PaymentTransaction[0].CreatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:22.866"
+      Actual:   "2025-08-05T12:13:22.781"
+   7. OriginalPayload.Order.Payment[0].PaymentMethod[0].PaymentTransaction[0].UpdatedTimestamp (Value mismatch)
+      Expected: "2025-08-05T12:13:22.866"
+      Actual:   "2025-08-05T12:13:22.781"
+   8. OriginalPayload.ConfirmedDate (Value mismatch)
+      Expected: "2025-08-05T12:13:33.636"
+      Actual:   "2025-08-05T12:13:22.781"
+   9. OriginalPayload.CreateReleaseTimeStamp (Value mismatch)
+      Expected: "2025-08-05T12:13:34.287"
+      Actual:   "2025-08-05T12:13:22.781"
+   10. OriginalPayload.CreateOrderTimeStamp (Value mismatch)
+      Expected: "2025-08-05T12:13:21.991"
+      Actual:   "2025-08-05T12:13:22.781"
+   ... and 11 more different values
+
+💡 SUGGESTIONS TO FIX:
+   2. Check calculation formulas in transformation service
+      • Verify CSV mapping rules are followed correctly
+      • Check Quantity * UnitPrice vs PackUnitPrice usage
+   3. Fix data type mismatches in DTO classes
+      • Check string/number/boolean type assignments
+   4. Standardize timestamp and date formats
+      • Ensure consistent ISO format usage
+================================================================================

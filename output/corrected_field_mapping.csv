@@ -1,0 +1,522 @@
+PMP Field,Release field,Data type (Length),Calculation,Mandatory,Sample value
+,OriginalPayload.ServiceLevelCode,String (10),Default: 'STD',No,STD
+CustomerEmail,OriginalPayload.Email,String (100),Direct mapping from CustomerEmail,No,undefined
+,OriginalPayload.MaxFulfillmentStatusId,String (10),Default: '3000',No,3000
+OrderHold[0].StatusId,OriginalPayload.IsOnHold,Boolean,IF(OrderHold[0].StatusId != '2000') THEN true ELSE false,Yes,false
+,OriginalPayload.IsConfirmed,Boolean,Default: true,Yes,true
+OrderLine[],OriginalPayload.OrderSubtotal,Number,SUM(OrderLine[].Quantity * OrderLine[].UnitPrice),Yes,157
+,OriginalPayload.ModeId,String (50),Default: null,No,null
+,OriginalPayload.SellingLocationId,String (50),Default: null,No,null
+CurrencyCode,OriginalPayload.CurrencyCode,String (3),Direct mapping from CurrencyCode,Yes,THB
+CustomerPhone,OriginalPayload.CustomerPhone,String (20),Direct mapping from CustomerPhone,No,0101010122
+CustomerFirstName,OriginalPayload.CustomerFirstName,String (100),Direct mapping from CustomerFirstName,Yes,Grab Customer
+OrderLine[] + OrderChargeDetail[],OriginalPayload.ReleaseTotal,Number,SUM(OrderLine[].Quantity * OrderLine[].UnitPrice) + SUM(OrderChargeDetail[].ChargeTotal),Yes,157
+OrderExtension1.Extended.CancelAllowed,OriginalPayload.ExtendedFields.CancelAllowed,Boolean,Direct mapping from OrderExtension1.Extended.CancelAllowed,No,true
+OrderChargeDetail[],OriginalPayload.TotalCharges,Number,SUM(OrderChargeDetail[].ChargeTotal WHERE ChargeTypeId != 'Discount'),Yes,0
+,OriginalPayload.ExternalShipFromLocationId,String (50),Default: null,No,null
+,OriginalPayload.TaxExemptId,String (50),Default: null,No,null
+OrderLine[].ShipToAddress,OriginalPayload.AddressId,String (50),Generate MD5 hash of ShipToAddress concatenated fields,Yes,6d89479d94844b20b56f12009c2ad7
+,OriginalPayload.Order.Payment[].Actions,Object,Default: empty object {},No,{}
+,OriginalPayload.Order.Payment[].PK,String (50),Generate unique ID using timestamp + random,Yes,7543960027815601342
+,OriginalPayload.Order.Payment[].CreatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].CreatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.781
+,OriginalPayload.Order.Payment[].UpdatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].UpdatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.891
+,OriginalPayload.Order.Payment[].Messages,String,Default: null,No,null
+OrgId,OriginalPayload.Order.Payment[].OrgId,String (10),Direct mapping from OrgId,Yes,CFR
+,OriginalPayload.Order.Payment[].PurgeDate,Date,Default: null,No,null
+OrderId,OriginalPayload.Order.Payment[].OrderId,String (50),Direct mapping from OrderId,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.Order.Payment[].PaymentGroupId,String (50),Default: null,No,null
+CustomerId,OriginalPayload.Order.Payment[].CustomerId,String (50),Direct mapping from CustomerId (can be null),No,null
+,OriginalPayload.Order.Payment[].IsCancelled,Boolean,Default: false,Yes,false
+AlternateOrderId,OriginalPayload.Order.Payment[].AlternateOrderId,String (50),Direct mapping from AlternateOrderId,No,null
+,OriginalPayload.Order.Payment[].IsAnonymized,Boolean,Default: false,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].Actions,Object,Default: empty object {},No,{}
+,OriginalPayload.Order.Payment[].PaymentMethod[].PK,String (50),Generate unique ID using timestamp + random,Yes,7543960028655638704
+,OriginalPayload.Order.Payment[].PaymentMethod[].CreatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].PaymentMethod[].CreatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.865
+,OriginalPayload.Order.Payment[].PaymentMethod[].UpdatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].PaymentMethod[].UpdatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:33.687
+,OriginalPayload.Order.Payment[].PaymentMethod[].Messages,String,Default: null,No,null
+OrgId,OriginalPayload.Order.Payment[].PaymentMethod[].OrgId,String (10),Direct mapping from OrgId,Yes,CFR
+Payment[].PaymentMethod[].PaymentMethodId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentMethodId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentMethodId,Yes,fcf8e04e-f409-408d-b103-233af73af95e
+Payment[].PaymentMethod[].CurrencyCode,OriginalPayload.Order.Payment[].PaymentMethod[].CurrencyCode,String (3),Direct mapping from Payment[].PaymentMethod[].CurrencyCode,Yes,THB
+,OriginalPayload.Order.Payment[].PaymentMethod[].AlternateCurrencyCode,String (3),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].ConversionRate,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].AlternateCurrencyAmount,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].AccountNumber,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].AccountDisplayNumber,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].NameOnCard,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].SwipeData,String (500),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CardExpiryMonth,String (2),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CardExpiryYear,String (4),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].GiftCardPin,String (20),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CustomerSignature,String (500),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CustomerPaySignature,String (500),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].ChangeAmount,Number,Default: null,No,null
+Payment[].PaymentMethod[].Amount,OriginalPayload.Order.Payment[].PaymentMethod[].Amount,Number,Direct mapping from Payment[].PaymentMethod[].Amount,Yes,157
+,OriginalPayload.Order.Payment[].PaymentMethod[].CurrentAuthAmount,Number,Default: 0,Yes,0
+Payment[].PaymentMethod[].CurrentSettledAmount,OriginalPayload.Order.Payment[].PaymentMethod[].CurrentSettledAmount,Number,Direct mapping from Payment[].PaymentMethod[].CurrentSettledAmount,Yes,157
+,OriginalPayload.Order.Payment[].PaymentMethod[].CurrentRefundAmount,Number,Default: 0,Yes,0
+,OriginalPayload.Order.Payment[].PaymentMethod[].ChargeSequence,Number,Default: null,No,null
+Payment[].PaymentMethod[].IsSuspended,OriginalPayload.Order.Payment[].PaymentMethod[].IsSuspended,Boolean,Direct mapping from Payment[].PaymentMethod[].IsSuspended,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].EntryTypeId,String (50),Default: null,No,null
+Payment[].PaymentMethod[].GatewayId,OriginalPayload.Order.Payment[].PaymentMethod[].GatewayId,String (50),Direct mapping from Payment[].PaymentMethod[].GatewayId,No,Simulator
+,OriginalPayload.Order.Payment[].PaymentMethod[].RoutingNumber,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].RoutingDisplayNumber,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CheckNumber,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].DriversLicenseNumber,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].DriversLicenseState,String (2),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].DriversLicenseCountry,String (2),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].BusinessName,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].BusinessTaxId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CheckQuantity,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].OriginalAmount,Number,Default: null,No,null
+Payment[].PaymentMethod[].IsModifiable,OriginalPayload.Order.Payment[].PaymentMethod[].IsModifiable,Boolean,Direct mapping from Payment[].PaymentMethod[].IsModifiable,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].CurrentFailedAmount,Number,Default: 0,No,0
+,OriginalPayload.Order.Payment[].PaymentMethod[].ParentOrderId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].ParentPaymentGroupId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].ParentPaymentMethodId,String (50),Default: null,No,null
+Payment[].PaymentMethod[].IsVoided,OriginalPayload.Order.Payment[].PaymentMethod[].IsVoided,Boolean,Direct mapping from Payment[].PaymentMethod[].IsVoided,No,false
+Payment[].PaymentMethod[].IsCopied,OriginalPayload.Order.Payment[].PaymentMethod[].IsCopied,Boolean,Direct mapping from Payment[].PaymentMethod[].IsCopied,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].GatewayAccountId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].LocationId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].TransactionReferenceId,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].CapturedInEdgeMode,Boolean,Default: false,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].MerchandiseAmount,Number,Default: 0,No,0
+,OriginalPayload.Order.Payment[].PaymentMethod[].CapturedSource,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].ShopperReference,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].SuggestedAmount,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PurgeDate,Date,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Actions,Object,Default: empty object {},No,{}
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.PK,String (50),Generate unique ID using timestamp + random,Yes,7543960028665647216
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.CreatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.CreatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.866
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.UpdatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.UpdatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.938
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Messages,String,Default: null,No,null
+OrgId,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.OrgId,String (10),Direct mapping from OrgId,Yes,CFR
+Payment[].PaymentMethod[].BillingAddress.Address.FirstName,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.FirstName,String (100),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.FirstName,Yes,Grab Customer
+Payment[].PaymentMethod[].BillingAddress.Address.LastName,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.LastName,String (100),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.LastName,Yes,-
+Payment[].PaymentMethod[].BillingAddress.Address.Address1,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.Address1,String (200),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.Address1,Yes,Grab Address1
+Payment[].PaymentMethod[].BillingAddress.Address.Address2,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.Address2,String (200),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.Address2,No,Grab Address2
+Payment[].PaymentMethod[].BillingAddress.Address.Address3,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.Address3,String (200),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.Address3,No,null
+Payment[].PaymentMethod[].BillingAddress.Address.City,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.City,String (100),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.City,Yes,-
+Payment[].PaymentMethod[].BillingAddress.Address.State,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.State,String (50),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.State,Yes,-
+Payment[].PaymentMethod[].BillingAddress.Address.PostalCode,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.PostalCode,String (20),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.PostalCode,Yes,99999
+Payment[].PaymentMethod[].BillingAddress.Address.County,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.County,String (100),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.County,No,-
+Payment[].PaymentMethod[].BillingAddress.Address.Country,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.Country,String (2),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.Country,Yes,TH
+Payment[].PaymentMethod[].BillingAddress.Address.Phone,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.Phone,String (20),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.Phone,No,0101010122
+Payment[].PaymentMethod[].BillingAddress.Address.Email,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Address.Email,String (100),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Address.Email,No,undefined
+,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.PurgeDate,Date,Default: null,No,null
+Payment[].PaymentMethod[].BillingAddress.Extended.AddressRef,OriginalPayload.Order.Payment[].PaymentMethod[].BillingAddress.Extended.AddressRef,String (100),Direct mapping from Payment[].PaymentMethod[].BillingAddress.Extended.AddressRef,No,|||4016|TH
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentMethodAttribute,Array,Default: empty array [],No,[]
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentMethodEncrAttribute,Array,Default: empty array [],No,[]
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].Actions,Object,Default: empty object {},No,{}
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PK,String (50),Generate unique ID using timestamp + random,Yes,7543960028665655444
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].CreatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].CreatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.866
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].UpdatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].UpdatedTimestamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:22.866
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].Messages,String,Default: null,No,null
+OrgId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].OrgId,String (10),Direct mapping from OrgId,Yes,CFR
+Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransactionId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransactionId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransactionId,Yes,fcf8e04e-f409-408d-b103-233af73af95e
+Payment[].PaymentMethod[].PaymentTransaction[].RequestedAmount,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].RequestedAmount,Number,Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].RequestedAmount,Yes,157
+Payment[].PaymentMethod[].PaymentTransaction[].RequestId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].RequestId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].RequestId,Yes,403521240-C7LDVZNUTGAHMA
+Payment[].PaymentMethod[].PaymentTransaction[].RequestToken,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].RequestToken,String (100),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].RequestToken,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].RequestedDate,DateTime,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].FollowOnId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].FollowOnToken,String (100),Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].TransactionDate,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].TransactionDate,DateTime,Convert from 'YYYY-MM-DDTHH:mm:ssZ' to 'YYYY-MM-DDTHH:mm:ss',Yes,2025-08-05T12:13:12
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].TransactionExpiryDate,DateTime,Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].ProcessedAmount,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ProcessedAmount,Number,Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].ProcessedAmount,Yes,157
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].FollowOnProcessedAmount,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].RemainingAttempts,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].FollowOnCount,Number,Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].ReconciliationId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ReconciliationId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].ReconciliationId,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ExternalResponseId,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ReasonId,String (50),Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].IsValidForRefund,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].IsValidForRefund,Boolean,Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].IsValidForRefund,Yes,true
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ReAuthOnSettlementFailure,Boolean,Default: false,No,false
+Payment[].PaymentMethod[].PaymentTransaction[].IsActive,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].IsActive,Boolean,Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].IsActive,Yes,true
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].RemainingBalance,Number,Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].IsCopied,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].IsCopied,Boolean,Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].IsCopied,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ScheduledTimestamp,DateTime,Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].OrderId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].OrderId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].OrderId,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentGroupId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].StoreAndForwardNumber,String (50),Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].IsActivation,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].IsActivation,Boolean,Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].IsActivation,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].OnHold,Boolean,Default: false,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].NetworkTransactionId,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].UniqueTransactionId,String (100),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].IsChargeback,Boolean,Default: false,No,false
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].NotificationTimestamp,DateTime,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].AlternateOrderId,String (50),Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PurgeDate,Date,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].FollowOnParentTransaction,Array,Default: empty array [],No,[]
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransAttribute,Array,Default: empty array [],No,[]
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransEncrAttribute,Array,Default: empty array [],No,[]
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransactionDetail,Array,Default: empty array [],No,[]
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransactionEMVTags,Object,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentTransactionGroup,Array,Default: empty array [],No,[]
+Payment[].PaymentMethod[].PaymentTransaction[].TransactionType.PaymentTransactionTypeId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].TransactionType.PaymentTransactionTypeId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].TransactionType.PaymentTransactionTypeId,Yes,Settlement
+Payment[].PaymentMethod[].PaymentTransaction[].Status.PaymentTransactionStatusId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].Status.PaymentTransactionStatusId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].Status.PaymentTransactionStatusId,Yes,Closed
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].AuthorizationType,Object,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].ProcessingMode,Object,Default: null,No,null
+Payment[].PaymentMethod[].PaymentTransaction[].PaymentResponseStatus.PaymentResponseStatusId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].PaymentResponseStatus.PaymentResponseStatusId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].PaymentResponseStatus.PaymentResponseStatusId,Yes,Success
+Payment[].PaymentMethod[].PaymentTransaction[].TransmissionStatus.PaymentTransmissionStatusId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].TransmissionStatus.PaymentTransmissionStatusId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentTransaction[].TransmissionStatus.PaymentTransmissionStatusId,Yes,Closed
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].InteractionMode,Object,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].NotificationStatus,Object,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentTransaction[].Extended,Object,Default: empty object {},No,{}
+,OriginalPayload.Order.Payment[].PaymentMethod[].ParentOrderPaymentMethod,Array,Default: empty array [],No,[]
+Payment[].PaymentMethod[].PaymentType.PaymentTypeId,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentType.PaymentTypeId,String (50),Direct mapping from Payment[].PaymentMethod[].PaymentType.PaymentTypeId,Yes,Cash On Delivery
+,OriginalPayload.Order.Payment[].PaymentMethod[].CardType,Object,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].AccountType,Object,Default: null,No,null
+,OriginalPayload.Order.Payment[].PaymentMethod[].PaymentCategory,Object,Default: null,No,null
+Payment[].PaymentMethod[].BillingAddress.Address,OriginalPayload.Order.Payment[].PaymentMethod[].Extended.BillingNameString,String (200),CONCAT(BillingAddress.Address.FirstName + ' ' + BillingAddress.Address.LastName),No,Grab Customer -
+Payment[].PaymentMethod[].BillingAddress.Address,OriginalPayload.Order.Payment[].PaymentMethod[].Extended.BillingAddressString,String (500),"CONCAT(BillingAddress.Address.Address1 + ',' + BillingAddress.Address.Address2 + ',')",No,"Grab Address1,Grab Address2,"
+,OriginalPayload.Order.Payment[].PaymentMethod[].Extended.InstallmentPlan,String (50),Default: null,No,null
+Payment[].PaymentMethod[].BillingAddress.Address,OriginalPayload.Order.Payment[].PaymentMethod[].Extended.BillingAddressString2,String (500),"CONCAT(City + ',' + State + ',' + County + ',' + Country + ',' + PostalCode)",No,"-,-,-,TH,99999"
+,OriginalPayload.Order.Payment[].PaymentMethod[].Extended.InstallmentRate,Number,Default: null,No,null
+,OriginalPayload.Order.Payment[].Status.StatusId,String (10),Default: '5000.000',Yes,5000.000
+,OriginalPayload.Order.Payment[].Extended,Object,Default: empty object {},No,{}
+OrderChargeDetail[0].Extended.JdaDiscCode,OriginalPayload.Order.OrderChargeDetail[0].Extended.JdaDiscCode,String (50),Direct mapping from OrderChargeDetail[0].Extended.JdaDiscCode OR null,No,null
+OrderChargeDetail[0].Extended.ChargeDesc,OriginalPayload.Order.OrderChargeDetail[0].Extended.ChargeDesc,String (200),Direct mapping from OrderChargeDetail[0].Extended.ChargeDesc OR null,No,null
+OrderChargeDetail[0].Extended.CRCTaxAmount,OriginalPayload.Order.OrderChargeDetail[0].Extended.CRCTaxAmount,Number,Direct mapping from OrderChargeDetail[0].Extended.CRCTaxAmount OR null,No,null
+OrderChargeDetail[0].Extended.TaxRate,OriginalPayload.Order.OrderChargeDetail[0].Extended.TaxRate,Number,Direct mapping from OrderChargeDetail[0].Extended.TaxRate OR null,No,null
+OrderChargeDetail[0].Extended.MKPPromotionId,OriginalPayload.Order.OrderChargeDetail[0].Extended.MKPPromotionId,String (50),Direct mapping from OrderChargeDetail[0].Extended.MKPPromotionId OR null,No,null
+OrderChargeDetail[1].Extended.JdaDiscCode,OriginalPayload.Order.OrderChargeDetail[1].Extended.JdaDiscCode,String (50),Direct mapping from OrderChargeDetail[1].Extended.JdaDiscCode OR null,No,null
+OrderChargeDetail[1].Extended.ChargeDesc,OriginalPayload.Order.OrderChargeDetail[1].Extended.ChargeDesc,String (200),Direct mapping from OrderChargeDetail[1].Extended.ChargeDesc OR null,No,null
+OrderChargeDetail[1].Extended.CRCTaxAmount,OriginalPayload.Order.OrderChargeDetail[1].Extended.CRCTaxAmount,Number,Direct mapping from OrderChargeDetail[1].Extended.CRCTaxAmount OR null,No,null
+OrderChargeDetail[1].Extended.TaxRate,OriginalPayload.Order.OrderChargeDetail[1].Extended.TaxRate,Number,Direct mapping from OrderChargeDetail[1].Extended.TaxRate OR null,No,null
+OrderChargeDetail[1].Extended.MKPPromotionId,OriginalPayload.Order.OrderChargeDetail[1].Extended.MKPPromotionId,String (50),Direct mapping from OrderChargeDetail[1].Extended.MKPPromotionId OR null,No,null
+OrderChargeDetail[2].Extended.JdaDiscCode,OriginalPayload.Order.OrderChargeDetail[2].Extended.JdaDiscCode,String (50),Direct mapping from OrderChargeDetail[2].Extended.JdaDiscCode OR null,No,null
+OrderChargeDetail[2].Extended.ChargeDesc,OriginalPayload.Order.OrderChargeDetail[2].Extended.ChargeDesc,String (200),Direct mapping from OrderChargeDetail[2].Extended.ChargeDesc OR null,No,null
+OrderChargeDetail[2].Extended.CRCTaxAmount,OriginalPayload.Order.OrderChargeDetail[2].Extended.CRCTaxAmount,Number,Direct mapping from OrderChargeDetail[2].Extended.CRCTaxAmount OR null,No,null
+OrderChargeDetail[2].Extended.TaxRate,OriginalPayload.Order.OrderChargeDetail[2].Extended.TaxRate,Number,Direct mapping from OrderChargeDetail[2].Extended.TaxRate OR null,No,null
+OrderChargeDetail[2].Extended.MKPPromotionId,OriginalPayload.Order.OrderChargeDetail[2].Extended.MKPPromotionId,String (50),Direct mapping from OrderChargeDetail[2].Extended.MKPPromotionId OR null,No,null
+OrderExtension1.Extended.IsPSConfirmed,OriginalPayload.Order.OrderExtension1.Extended.IsPSConfirmed,Boolean,Direct mapping from OrderExtension1.Extended.IsPSConfirmed,Yes,true
+OrderExtension1.Extended.CancelAllowed,OriginalPayload.Order.OrderExtension1.Extended.CancelAllowed,Boolean,Direct mapping from OrderExtension1.Extended.CancelAllowed,No,true
+OrderExtension1.Extended.FullTaxInvoice,OriginalPayload.Order.OrderExtension1.Extended.FullTaxInvoice,Boolean,Direct mapping from OrderExtension1.Extended.FullTaxInvoice,No,false
+,OriginalPayload.Order.OrderExtension1.Extended.SourceOrderShippingTotal,Number,Default: null,No,null
+,OriginalPayload.Order.OrderExtension1.Extended.AutoSettlement,Boolean,Default: null,No,null
+OrderExtension1.Extended.TaxId,OriginalPayload.Order.OrderExtension1.Extended.TaxId,String (50),Direct mapping from OrderExtension1.Extended.TaxId OR empty string,No,""
+,OriginalPayload.Order.OrderExtension1.Extended.SourceOrderTotal,Number,Default: null,No,null
+,OriginalPayload.Order.OrderExtension1.Extended.T1ConversionRate,Number,Default: null,No,null
+,OriginalPayload.Order.OrderExtension1.Extended.Extended1,String,Default: null,No,null
+OrderExtension1.Extended.AllowSubstitution,OriginalPayload.Order.OrderExtension1.Extended.AllowSubstitution,Boolean,Direct mapping from OrderExtension1.Extended.AllowSubstitution,No,true
+,OriginalPayload.Order.OrderExtension1.Extended.T1RedemptionPoint,Number,Default: null,No,null
+OrderExtension1.Extended.CompanyName,OriginalPayload.Order.OrderExtension1.Extended.CompanyName,String (200),Direct mapping from OrderExtension1.Extended.CompanyName OR empty string,No,""
+,OriginalPayload.Order.OrderExtension1.Extended.CustRef,String (100),Default: null,No,null
+,OriginalPayload.Order.OrderExtension1.Extended.SourceOrderTotalDiscount,Number,Default: null,No,null
+OrderExtension1.Extended.BranchNo,OriginalPayload.Order.OrderExtension1.Extended.BranchNo,String (50),Direct mapping from OrderExtension1.Extended.BranchNo OR empty string,No,""
+OrderExtension1.Extended.ConfirmPaymentId,OriginalPayload.Order.OrderExtension1.Extended.ConfirmPaymentId,String (50),Direct mapping from OrderExtension1.Extended.ConfirmPaymentId,Yes,Cash On Delivery
+,OriginalPayload.Order.OrderExtension1.Extended.T1Number,String (50),Default: null,No,null
+,OriginalPayload.Order.OrderExtension1.Extended.T1PhoneNo,String (20),Default: null,No,null
+,OriginalPayload.Order.OrderExtension1.Extended.SourceOrderSubTotal,Number,Default: null,No,null
+OrderExtension1.Extended.ExternalMPSellerId,OriginalPayload.Order.OrderExtension1.Extended.ExternalMPSellerId,String (50),Direct mapping from OrderExtension1.Extended.ExternalMPSellerId,No,null
+DocType.DocTypeId,OriginalPayload.DocTypeId,String (50),Direct mapping from DocType.DocTypeId,Yes,CustomerOrder
+,OriginalPayload.CreatedBy,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+OrderLine[],OriginalPayload.OrderTotalDiscounts,Number,SUM(OrderLine[].Quantity * (OrderLine[].OriginalUnitPrice - OrderLine[].UnitPrice)) * -1,Yes,-0.08
+,OriginalPayload.Priority,Number,Default: null,No,null
+,OriginalPayload.IsCancelled,Boolean,Default: false,Yes,false
+,OriginalPayload.IsPublished,Boolean,Default: null,No,null
+OrderNote[],OriginalPayload.HasNotes,Boolean,IF(COUNT(OrderNote[]) > 0 AND ANY(OrderNote[].NoteText != '')) THEN true ELSE false,No,true
+OrderId,OriginalPayload.ReleaseId,String (50),CONCAT(OrderId + '1'),Yes,403521240-C7LDVZNUTGAHMA1
+CustomerId,OriginalPayload.CustomerId,String (50),Direct mapping from CustomerId,No,null
+OrderLine[0].ShipToAddress.Address.City,OriginalPayload.City,String (100),Extract from first OrderLine[].ShipToAddress.Address.City,Yes,-
+OrderId,OriginalPayload.OrderId,String (50),Direct mapping from OrderId,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.AVSReasonId,String (50),Default: null,No,null
+CustomerTypeId,OriginalPayload.CustomerType,String (50),Direct mapping from CustomerTypeId OR empty string,No,""
+,OriginalPayload.IsTaxExempt,Boolean,Default: false,No,false
+,OriginalPayload.AddressName,String (100),Default: null,No,null
+OrderChargeDetail[0],OriginalPayload.ChargeDetail[0].IsProrated,Boolean,Default: true,No,true
+OrderChargeDetail[0].IsInformational,OriginalPayload.ChargeDetail[0].IsInformational,Boolean,Direct mapping from OrderChargeDetail[0].IsInformational,Yes,true
+OrderTaxDetail[0].TaxCode,OriginalPayload.ChargeDetail[0].TaxCode,String (50),Direct mapping from OrderTaxDetail[0].TaxCode OR 'Shipping',No,Shipping
+OrderChargeDetail[0].ChargeTotal,OriginalPayload.ChargeDetail[0].ChargeTotal,Number,Direct mapping from OrderChargeDetail[0].ChargeTotal,Yes,16
+,OriginalPayload.ChargeDetail[0].ChargeSubTypeId,String (50),Default: null,No,null
+OrderChargeDetail[0].ChargeDisplayName,OriginalPayload.ChargeDetail[0].ChargeDisplayName,String (100),Direct mapping from OrderChargeDetail[0].ChargeDisplayName,Yes,Free
+,OriginalPayload.ChargeDetail[0].Extended,Object,Default: null,No,null
+OrderChargeDetail[0].ChargeDetailId,OriginalPayload.ChargeDetail[0].ChargeDetailId,String (50),Direct mapping from OrderChargeDetail[0].ChargeDetailId,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.ChargeDetail[0].RelatedChargeType,String (50),Default: null,No,null
+OrderChargeDetail[0].ChargeType.ChargeTypeId,OriginalPayload.ChargeDetail[0].ChargeTypeId,String (50),Direct mapping from OrderChargeDetail[0].ChargeType.ChargeTypeId,Yes,Shipping
+,OriginalPayload.ChargeDetail[0].RelatedChargeDetailId,String (50),Default: null,No,null
+OrderChargeDetail[1],OriginalPayload.ChargeDetail[1].IsProrated,Boolean,Default: true,No,true
+OrderChargeDetail[1].IsInformational,OriginalPayload.ChargeDetail[1].IsInformational,Boolean,Direct mapping from OrderChargeDetail[1].IsInformational,Yes,true
+,OriginalPayload.ChargeDetail[1].TaxCode,String (50),Default: 'Shipping',No,Shipping
+OrderChargeDetail[1].ChargeTotal,OriginalPayload.ChargeDetail[1].ChargeTotal,Number,Direct mapping from OrderChargeDetail[1].ChargeTotal,Yes,0
+,OriginalPayload.ChargeDetail[1].ChargeSubTypeId,String (50),Default: null,No,null
+OrderChargeDetail[1].ChargeDisplayName,OriginalPayload.ChargeDetail[1].ChargeDisplayName,String (100),Direct mapping from OrderChargeDetail[1].ChargeDisplayName,Yes,Shipping Fee Discount
+,OriginalPayload.ChargeDetail[1].Extended,Object,Default: null,No,null
+OrderChargeDetail[1].ChargeDetailId,OriginalPayload.ChargeDetail[1].ChargeDetailId,String (50),Direct mapping from OrderChargeDetail[1].ChargeDetailId,Yes,403521240-C7LDVZNUTGAHMA-ShippingFeeDiscount
+,OriginalPayload.ChargeDetail[1].RelatedChargeType,String (50),Default: null,No,null
+OrderChargeDetail[1].ChargeType.ChargeTypeId,OriginalPayload.ChargeDetail[1].ChargeTypeId,String (50),Direct mapping from OrderChargeDetail[1].ChargeType.ChargeTypeId,Yes,Shipping
+,OriginalPayload.ChargeDetail[1].RelatedChargeDetailId,String (50),Default: null,No,null
+OrderChargeDetail[2],OriginalPayload.ChargeDetail[2].IsProrated,Boolean,Default: true,No,true
+OrderChargeDetail[2].IsInformational,OriginalPayload.ChargeDetail[2].IsInformational,Boolean,Direct mapping from OrderChargeDetail[2].IsInformational,Yes,true
+,OriginalPayload.ChargeDetail[2].TaxCode,String (50),Default: 'Discount',No,Discount
+OrderChargeDetail[2].ChargeTotal,OriginalPayload.ChargeDetail[2].ChargeTotal,Number,Direct mapping from OrderChargeDetail[2].ChargeTotal,Yes,0
+,OriginalPayload.ChargeDetail[2].ChargeSubTypeId,String (50),Default: null,No,null
+OrderChargeDetail[2].ChargeDisplayName,OriginalPayload.ChargeDetail[2].ChargeDisplayName,String (100),Direct mapping from OrderChargeDetail[2].ChargeDisplayName,Yes,Discount Promotion
+,OriginalPayload.ChargeDetail[2].Extended,Object,Default: null,No,null
+OrderChargeDetail[2].ChargeDetailId,OriginalPayload.ChargeDetail[2].ChargeDetailId,String (50),Direct mapping from OrderChargeDetail[2].ChargeDetailId,Yes,403521240-C7LDVZNUTGAHMA-Discount
+,OriginalPayload.ChargeDetail[2].RelatedChargeType,String (50),Default: null,No,null
+OrderChargeDetail[2].ChargeType.ChargeTypeId,OriginalPayload.ChargeDetail[2].ChargeTypeId,String (50),Direct mapping from OrderChargeDetail[2].ChargeType.ChargeTypeId,Yes,Discount
+,OriginalPayload.ChargeDetail[2].RelatedChargeDetailId,String (50),Default: null,No,null
+OrderLine[0].ShipToAddress.Address.State,OriginalPayload.State,String (50),Extract from first OrderLine[].ShipToAddress.Address.State,Yes,-
+,OriginalPayload.DestinationAction,String (50),Default: 'Delivery',Yes,Delivery
+OrderNote[0].NoteId,OriginalPayload.Note[0].NoteId,String (50),Generate unique ID using timestamp + random,Yes,44400774762569095252
+,OriginalPayload.Note[0].Description,String (200),Default: '0004 - Festival Remark',No,0004 - Festival Remark
+OrderNote[0].NoteType.NoteTypeId,OriginalPayload.Note[0].NoteType.NoteTypeId,String (10),Direct mapping from OrderNote[0].NoteType.NoteTypeId,Yes,0004
+,OriginalPayload.Note[0].DisplaySequence,Number,Default: null,No,null
+OrderNote[0].NoteText,OriginalPayload.Note[0].NoteText,String (500),Direct mapping from OrderNote[0].NoteText,Yes,GM-202
+OrderNote[0].NoteType.NoteTypeId,OriginalPayload.Note[0].NoteTypeId,String (10),Direct mapping from OrderNote[0].NoteType.NoteTypeId,Yes,0004
+,OriginalPayload.Note[0].IsVisible,Boolean,Default: true,No,true
+OrderNote[0].NoteCategory.NoteCategoryId,OriginalPayload.Note[0].NoteCategoryId,String (50),Direct mapping from OrderNote[0].NoteCategory.NoteCategoryId,Yes,CustomerCommunication
+OrderNote[0].NoteCategory.NoteCategoryId,OriginalPayload.Note[0].NoteCategory.NoteCategoryId,String (50),Direct mapping from OrderNote[0].NoteCategory.NoteCategoryId,Yes,CustomerCommunication
+,OriginalPayload.Note[0].NoteCode,String (50),Default: null,No,null
+OrderLine[0].ShipToAddress.IsAddressVerified,OriginalPayload.IsAddressVerified,Boolean,Extract from first OrderLine[].ShipToAddress.IsAddressVerified,Yes,true
+OrderLine[0].ShipToAddress.Address.Country,OriginalPayload.Country,String (2),Extract from first OrderLine[].ShipToAddress.Address.Country,Yes,TH
+Payment[0].PaymentMethod[0].PaymentMethodId,OriginalPayload.PaymentMethod[0].PaymentMethodId,String (50),Direct mapping from Payment[0].PaymentMethod[0].PaymentMethodId,Yes,fcf8e04e-f409-408d-b103-233af73af95e
+,OriginalPayload.PaymentMethod[0].CurrentAuthAmount,Number,Default: 0,Yes,0
+,OriginalPayload.PaymentMethod[0].AlternateCurrencyAmount,Number,Default: null,No,null
+Payment[0].PaymentMethod[0].CurrencyCode,OriginalPayload.PaymentMethod[0].CurrencyCode,String (3),Direct mapping from Payment[0].PaymentMethod[0].CurrencyCode,Yes,THB
+Payment[0].PaymentMethod[0].BillingAddress.Address.Email,OriginalPayload.PaymentMethod[0].BillingAddress.Email,String (100),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.Email,No,undefined
+,OriginalPayload.PaymentMethod[0].BillingAddress.BillingAddressId,String (50),Generate unique ID using timestamp + random,Yes,7543960028665647216
+Payment[0].PaymentMethod[0].BillingAddress.Address.FirstName,OriginalPayload.PaymentMethod[0].BillingAddress.FirstName,String (100),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.FirstName,Yes,Grab Customer
+Payment[0].PaymentMethod[0].BillingAddress.Address.Address2,OriginalPayload.PaymentMethod[0].BillingAddress.Address2,String (200),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.Address2,No,Grab Address2
+Payment[0].PaymentMethod[0].BillingAddress.Address.Address3,OriginalPayload.PaymentMethod[0].BillingAddress.Address3,String (200),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.Address3,No,null
+Payment[0].PaymentMethod[0].BillingAddress.Address.PostalCode,OriginalPayload.PaymentMethod[0].BillingAddress.PostalCode,String (20),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.PostalCode,Yes,99999
+Payment[0].PaymentMethod[0].BillingAddress.Address.Address1,OriginalPayload.PaymentMethod[0].BillingAddress.Address1,String (200),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.Address1,Yes,Grab Address1
+Payment[0].PaymentMethod[0].BillingAddress.Address.City,OriginalPayload.PaymentMethod[0].BillingAddress.City,String (100),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.City,Yes,-
+Payment[0].PaymentMethod[0].BillingAddress.Address.County,OriginalPayload.PaymentMethod[0].BillingAddress.County,String (100),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.County,No,-
+Payment[0].PaymentMethod[0].BillingAddress.Address.State,OriginalPayload.PaymentMethod[0].BillingAddress.State,String (50),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.State,Yes,-
+Payment[0].PaymentMethod[0].BillingAddress.Address.Phone,OriginalPayload.PaymentMethod[0].BillingAddress.Phone,String (20),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.Phone,No,0101010122
+Payment[0].PaymentMethod[0].BillingAddress.Address.LastName,OriginalPayload.PaymentMethod[0].BillingAddress.LastName,String (100),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.LastName,Yes,-
+Payment[0].PaymentMethod[0].BillingAddress.Address.Country,OriginalPayload.PaymentMethod[0].BillingAddress.CountryCode,String (2),Direct mapping from Payment[0].PaymentMethod[0].BillingAddress.Address.Country,Yes,TH
+,OriginalPayload.PaymentMethod[0].CardTypeId,String (50),Default: null,No,null
+Payment[0].PaymentMethod[0].CurrentSettledAmount,OriginalPayload.PaymentMethod[0].CurrentSettleAmount,Number,Direct mapping from Payment[0].PaymentMethod[0].CurrentSettledAmount,Yes,157
+,OriginalPayload.PaymentMethod[0].AccountDisplayNumber,String (50),Default: null,No,null
+,OriginalPayload.PaymentMethod[0].RoutingDisplayNumber,String (50),Default: null,No,null
+Payment[0].PaymentMethod[0].PaymentType.PaymentTypeId,OriginalPayload.PaymentMethod[0].PaymentTypeId,String (50),Direct mapping from Payment[0].PaymentMethod[0].PaymentType.PaymentTypeId,Yes,Cash On Delivery
+,OriginalPayload.PaymentMethod[0].FrankedCheckQuantity,Number,Default: null,No,null
+,OriginalPayload.PaymentMethod[0].BusinessName,String (100),Default: null,No,null
+,OriginalPayload.PaymentMethod[0].EntryTypeId,String (50),Default: null,No,null
+Payment[0].PaymentMethod[0].Amount,OriginalPayload.PaymentMethod[0].Amount,Number,Direct mapping from Payment[0].PaymentMethod[0].Amount,Yes,157
+,OriginalPayload.PaymentMethod[0].CheckQuantity,Number,Default: null,No,null
+,OriginalPayload.PaymentMethod[0].AlternateCurrencyCode,String (3),Default: null,No,null
+Payment[0].PaymentMethod[0].GatewayId,OriginalPayload.PaymentMethod[0].GatewayId,String (50),Direct mapping from Payment[0].PaymentMethod[0].GatewayId OR null,No,null
+,OriginalPayload.PaymentMethod[0].CheckNumber,String (50),Default: null,No,null
+,OriginalPayload.PaymentMethod[0].OriginalAmount,Number,Default: null,No,null
+Payment[0].PaymentMethod[0].IsSuspended,OriginalPayload.PaymentMethod[0].IsSuspended,Boolean,Direct mapping from Payment[0].PaymentMethod[0].IsSuspended,No,false
+Payment[0].PaymentMethod[0].IsVoided,OriginalPayload.PaymentMethod[0].IsVoided,Boolean,Direct mapping from Payment[0].PaymentMethod[0].IsVoided,No,false
+,OriginalPayload.PaymentMethod[0].ChargeSequence,Number,Default: null,No,null
+,OriginalPayload.PaymentMethod[0].AccountTypeId,String (50),Default: null,No,null
+,OriginalPayload.PaymentMethod[0].ConversionRate,Number,Default: null,No,null
+,OriginalPayload.PaymentMethod[0].IsFranked,Boolean,Default: null,No,null
+,OriginalPayload.PaymentMethod[0].ChangeAmount,Number,Default: null,No,null
+,OriginalPayload.PaymentMethod[0].StatusId,String (50),Default: null,No,null
+,OriginalPayload.PaymentMethod[0].CurrentRefundAmount,Number,Default: 0,Yes,0
+,OriginalPayload.PaymentMethod[0].CurrentPreSettleAmount,Number,Default: null,No,null
+OrderTaxDetail[],OriginalPayload.OrderTotalTaxes,Number,SUM(OrderTaxDetail[].TaxAmount),Yes,0
+,OriginalPayload.HasAlerts,Boolean,Default: null,No,null
+CustomerLastName,OriginalPayload.LastName,String (100),Direct mapping from CustomerLastName,Yes,-
+,OriginalPayload.ReleaseExtendedFields,Object,Default: empty object {},No,{}
+,OriginalPayload.TaxDetail,Array,Default: empty array [],No,[]
+,OriginalPayload.IsReadyForTender,Boolean,Default: false,No,false
+,OriginalPayload.ConfirmedDate,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:33.636
+,OriginalPayload.OverageAllowed,Boolean,Default: false,No,false
+,OriginalPayload.DeliveryMethodSubType,String (50),Default: null,No,null
+,OriginalPayload.PickupExpiryDate,DateTime,Default: null,No,null
+,OriginalPayload.CreateReleaseTimeStamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:34.287
+,OriginalPayload.TaxExemptReasonId,String (50),Default: null,No,null
+OrderLine[0].OrderLinePromisingInfo.ShipFromLocationId,OriginalPayload.ShipFromLocationId,String (50),Extract from first OrderLine[].OrderLinePromisingInfo.ShipFromLocationId,Yes,CFR528
+,OriginalPayload.NoOfStoreSaleLines,Number,COUNT(OrderLine[] WHERE DeliveryMethod.DeliveryMethodId = 'StorePickup'),No,0
+OrderLine[0].ShipToAddress.Address.PostalCode,OriginalPayload.PostalCode,String (20),Extract from first OrderLine[].ShipToAddress.Address.PostalCode,Yes,99999
+OrgId,OriginalPayload.OrganizationId,String (10),Direct mapping from OrgId,Yes,CFR
+,OriginalPayload.InvoiceId,String (50),Default: null,No,null
+OrderLine[0].ShipToAddress.Address.County,OriginalPayload.County,String (100),Extract from first OrderLine[].ShipToAddress.Address.County,No,-
+,OriginalPayload.IsPostVoided,Boolean,Default: null,No,null
+AlternateOrderId,OriginalPayload.AlternateOrderId,String (50),Direct mapping from AlternateOrderId,Yes,403521240-C7LDVZNUTGAHMA
+CustomerEmail,OriginalPayload.CustomerEmail,String (100),Direct mapping from CustomerEmail,No,undefined
+OrderLine[0].ShipToAddress.Address.Phone,OriginalPayload.Phone,String (20),Extract from first OrderLine[].ShipToAddress.Address.Phone,No,0101010122
+OrderType.OrderTypeId,OriginalPayload.OrderTypeId,String (50),Direct mapping from OrderType.OrderTypeId,Yes,MKP-HD-STD
+,OriginalPayload.PaymentStatusId,String (10),Default: '5000.000',Yes,5000.000
+,OriginalPayload.CustomerCommPref,String (50),Default: null,No,null
+SellingChannel.SellingChannelId,OriginalPayload.SellingChannelId,String (50),Direct mapping from SellingChannel.SellingChannelId,Yes,Grab
+,OriginalPayload.MinFulfillmentStatusId,String (10),Default: '3000',No,3000
+,OriginalPayload.ReleaseType,String (50),Default: null,No,null
+,OriginalPayload.CreateOrderTimeStamp,DateTime,Current system timestamp in format YYYY-MM-DDTHH:mm:ss.sss,Yes,2025-08-05T12:13:21.991
+,OriginalPayload.ExternalOrganizationId,String (50),Default: null,No,null
+,OriginalPayload.EffectiveRank,String (50),Default: 'Not Applicable',No,Not Applicable
+,OriginalPayload.ShipToLocationId,String (50),Default: null,No,null
+OrderLine[0].DeliveryMethod.DeliveryMethodId,OriginalPayload.DeliveryMethod,String (50),Extract from first OrderLine[].DeliveryMethod.DeliveryMethodId,Yes,ShipToAddress
+OrderLine[],OriginalPayload.NoOfDeliveryLines,Number,COUNT(OrderLine[] WHERE DeliveryMethod.DeliveryMethodId = 'ShipToAddress'),Yes,3
+CustomerFirstName,OriginalPayload.FirstName,String (100),Direct mapping from CustomerFirstName,Yes,Grab Customer
+,OriginalPayload.ReleaseLine[0].CancelledQuantity,Number,Default: 0,No,0
+,OriginalPayload.ReleaseLine[0].ServiceLevelCode,String (10),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].LineTypeId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].OrderLineTotalCharges,Number,Default: 0,No,0
+,OriginalPayload.ReleaseLine[0].FulfilledQuantity,Number,Default: 0,No,0
+,OriginalPayload.ReleaseLine[0].IsReturnable,Boolean,Default: true,No,true
+OrderLine[0].IsTaxIncluded,OriginalPayload.ReleaseLine[0].IsTaxIncluded,Boolean,Direct mapping from OrderLine[0].IsTaxIncluded,Yes,true
+,OriginalPayload.ReleaseLine[0].IsHazmat,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].RefundPrice,Number,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].TaxOverrideValue,Number,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].MaxFulfillmentStatusId,String (10),Default: '3000',No,3000
+,OriginalPayload.ReleaseLine[0].IsOnHold,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].ItemWebURL,String (500),Default: null,No,null
+OrderLine[0].ItemId,OriginalPayload.ReleaseLine[0].ItemId,String (50),Direct mapping from OrderLine[0].ItemId,Yes,8853474090594
+OrderLine[0].ShippingMethodId,OriginalPayload.ReleaseLine[0].ShippingMethodId,String (50),Direct mapping from OrderLine[0].ShippingMethodId,Yes,Standard Delivery
+,OriginalPayload.ReleaseLine[0].SellingLocationId,String (50),Default: null,No,null
+OrderLine[0].IsGift,OriginalPayload.ReleaseLine[0].IsGift,Boolean,Direct mapping from OrderLine[0].IsGift,No,false
+,OriginalPayload.ReleaseLine[0].ParentOrderLineId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].TotalCharges,Number,Default: 0,No,0
+,OriginalPayload.ReleaseLine[0].ParentOrderId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ItemStyle,String (50),Default: empty string '',No,""
+,OriginalPayload.ReleaseLine[0].TaxExemptId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].Priority,Number,Default: null,No,null
+OrderLine[0].OrderLineExtension1.Extended.BundleRefId,OriginalPayload.ReleaseLine[0].SmallImageURI,String (500),Lookup from product catalog using BundleRefId or ItemId,No,https://assets.tops.co.th/YINDEE-YindeeDrinkingWater600mlPack12-8853474090600-1?$JPEG$
+OrderLine[0].DeliveryMethod.DeliveryMethodId,OriginalPayload.ReleaseLine[0].DeliveryMethodId,String (50),Direct mapping from OrderLine[0].DeliveryMethod.DeliveryMethodId,Yes,ShipToAddress
+,OriginalPayload.ReleaseLine[0].IsDiscountable,Boolean,Default: true,No,true
+,OriginalPayload.ReleaseLine[0].IsCancelled,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].TaxOverrideTypeId,String (50),Default: null,No,null
+OrderLine[0].ItemId,OriginalPayload.ReleaseLine[0].ItemBrand,String (100),Lookup from product catalog using ItemId,No,YINDEE/ ยินดี
+,OriginalPayload.ReleaseLine[0].IsPreOrder,Boolean,Default: false,No,false
+OrderLine[0],OriginalPayload.ReleaseLine[0].OrderLineTotalDiscounts,Number,(OrderLine[0].OriginalUnitPrice - OrderLine[0].UnitPrice) * OrderLine[0].Quantity,No,0
+,OriginalPayload.ReleaseLine[0].ParentOrderLineTypeId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].IsTaxExempt,Boolean,Default: null,No,null
+OrderLine[0].PromisedDeliveryDate,OriginalPayload.ReleaseLine[0].PromisedDeliveryDate,DateTime,Direct mapping from OrderLine[0].PromisedDeliveryDate OR null,No,null
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].IsProrated,Boolean,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].IsInformational,Boolean,Default: true,Yes,true
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].TaxCode,String (50),Default: 'Shipping',No,Shipping
+OrderChargeDetail[0].ChargeTotal / OrderLine.length,OriginalPayload.ReleaseLine[0].ChargeDetail[0].ChargeTotal,Number,OrderChargeDetail[0].ChargeTotal / COUNT(OrderLine[]),Yes,3.97
+OrderChargeDetail[0].ChargeDetailId,OriginalPayload.ReleaseLine[0].ChargeDetail[0].HeaderChargeDetailId,String (50),Reference to header charge: OrderChargeDetail[0].ChargeDetailId,Yes,403521240-C7LDVZNUTGAHMA
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].ChargeSubTypeId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].ChargeDisplayName,String (100),Default: 'Free',Yes,Free
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].Extended,Object,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].ChargeDetailId,String (50),Generate unique ID using timestamp + random,Yes,44401353719052856805
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].RelatedChargeType,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].ChargeTypeId,String (50),Default: 'Shipping',Yes,Shipping
+,OriginalPayload.ReleaseLine[0].ChargeDetail[0].RelatedChargeDetailId,String (50),Default: null,No,null
+OrderLine[0],OriginalPayload.ReleaseLine[0].OrderLineTotal,Number,(OrderLine[0].Quantity * OrderLine[0].UnitPrice) + prorated charges,Yes,39
+,OriginalPayload.ReleaseLine[0].ItemSeason,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].PickupDetail,Array,Default: empty array [],No,[]
+,OriginalPayload.ReleaseLine[0].ItemColorDescription,String (100),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ItemBarCode,String (50),Default: null,No,null
+OrderLine[0].ItemId,OriginalPayload.ReleaseLine[0].ItemDescription,String (200),Lookup from product catalog using ItemId,Yes,Yindee Drinking Water 600ml.
+,OriginalPayload.ReleaseLine[0].IsReturn,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].IsTaxOverridden,Boolean,Default: false,No,false
+OrderLine[0],OriginalPayload.ReleaseLine[0].ReleaseLineTotal,Number,Same as OrderLineTotal,Yes,39
+,OriginalPayload.ReleaseLine[0].CanShipToAddress,Boolean,Default: true,No,true
+OrderLine[0].OrderLineExtension1,OriginalPayload.ReleaseLine[0].OrderLine.OrderLineExtension1,Object,Direct mapping from OrderLine[0].OrderLineExtension1,Yes,(complex object)
+,OriginalPayload.ReleaseLine[0].OrderLine.FulfillmentDetail,Array,Default: empty array [],No,[]
+OrderLine[0].ShipToAddress,OriginalPayload.ReleaseLine[0].OrderLine.ShipToAddress,Object,Direct mapping from OrderLine[0].ShipToAddress,Yes,(complex object)
+OrderLine[0].Quantity,OriginalPayload.ReleaseLine[0].OrderLine.Allocation[0].SupplyDetailInfo[0].Quantity,Number,Direct mapping from OrderLine[0].Quantity,Yes,12
+,OriginalPayload.ReleaseLine[0].OrderLine.Allocation[0].SupplyDetailInfo[0].SupplyTypeId,String (50),Default: 'On Hand Available',Yes,On Hand Available
+OrderLine[0].OrderLineChargeDetail,OriginalPayload.ReleaseLine[0].OrderLine.OrderLineChargeDetail,Array,Map OrderLine[0].OrderLineChargeDetail array,Yes,(complex array)
+OrderLine[0].ReleaseGroupId,OriginalPayload.ReleaseLine[0].OrderLine.ReleaseGroupId,String (50),Direct mapping from OrderLine[0].ReleaseGroupId,Yes,3-CZDEEY5AAA2BNT
+OrderLine[0].ItemId,OriginalPayload.ReleaseLine[0].OrderLine.ItemShortDescription,String (200),Lookup from product catalog using ItemId,Yes,Yindee Drinking Water 600ml.
+,OriginalPayload.ReleaseLine[0].OrderLineVASInstructions,Array,Default: empty array [],No,[]
+,OriginalPayload.ReleaseLine[0].IsPriceOverrIdden,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].AllocationInfo.InventorySegmentId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].AllocationInfo.AllocationId,String (50),Generate unique ID using timestamp + random,Yes,179291316818885974056
+,OriginalPayload.ReleaseLine[0].AllocationInfo.PredictedShipDate,DateTime,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].AllocationInfo.SubstitutionTypeId,String (50),Default: null,No,null
+CapturedDate + 25 minutes,OriginalPayload.ReleaseLine[0].AllocationInfo.EarliestDeliveryDate,DateTime,Add 25 minutes to CapturedDate,Yes,2025-08-05T12:38:00
+,OriginalPayload.ReleaseLine[0].AllocationInfo.CountryOfOrigin,String (2),Default: null,No,null
+CapturedDate + 25 minutes,OriginalPayload.ReleaseLine[0].AllocationInfo.EarliestShipDate,DateTime,Add 25 minutes to CapturedDate,Yes,2025-08-05T12:38:00
+,OriginalPayload.ReleaseLine[0].AllocationInfo.SubstitutionRatio,Number,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].AllocationInfo.InventoryTypeId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].AllocationInfo.SupplyDetailInfo,Array,Default: empty array [],No,[]
+,OriginalPayload.ReleaseLine[0].AllocationInfo.SupplyTypeId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].AllocationInfo.ASNDetailId,String (50),Default: null,No,null
+CapturedDate + 25 minutes,OriginalPayload.ReleaseLine[0].AllocationInfo.HeuristicDeliveryDate,DateTime,Add 25 minutes to CapturedDate,Yes,2025-08-05T12:38:00
+,OriginalPayload.ReleaseLine[0].AllocationInfo.ExtendedFields,Object,Default: empty object {},No,{}
+,OriginalPayload.ReleaseLine[0].AllocationInfo.PredictedDeliveryDate,DateTime,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].AllocationInfo.CommittedDeliveryDate,DateTime,Default: null,No,null
+CapturedDate + 25 minutes,OriginalPayload.ReleaseLine[0].AllocationInfo.HeuristicShipDate,DateTime,Add 25 minutes to CapturedDate,Yes,2025-08-05T12:38:00
+,OriginalPayload.ReleaseLine[0].AllocationInfo.LatestReleaseDate,DateTime,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ProductClass,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].MinFulfillmentStatusId,String (10),Default: '3000',No,3000
+,OriginalPayload.ReleaseLine[0].ItemSize,String (50),Default: empty string '',No,""
+,OriginalPayload.ReleaseLine[0].AsnId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].PaymentGroupId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ShipToLocationId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].EffectiveRank,String (50),Default: 'Not Applicable',No,Not Applicable
+,OriginalPayload.ReleaseLine[0].ExtendedLineFields,Object,Default: empty object {},No,{}
+,OriginalPayload.ReleaseLine[0].LineShortCount,Number,Default: 0,No,0
+,OriginalPayload.ReleaseLine[0].Mode,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ReleaseLineExtendedFields,Object,Default: empty object {},No,{}
+OrderLine[0].Quantity,OriginalPayload.ReleaseLine[0].Quantity,Number,Direct mapping from OrderLine[0].Quantity,Yes,12
+,OriginalPayload.ReleaseLine[0].ShipViaId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].IsItemNotOnFile,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].IsGiftCard,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].IsPackAndHold,Boolean,Default: false,No,false
+,OriginalPayload.ReleaseLine[0].ProcessInfo,Object,Default: object with all null values,No,(all null values)
+,OriginalPayload.ReleaseLine[0].CancelReasonId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].ReleaseLineId,String (10),Generate sequential line ID starting from '1',Yes,1
+,OriginalPayload.ReleaseLine[0].ParentItemId,String (50),Default: null,No,null
+,OriginalPayload.ReleaseLine[0].IsReturnableAtStore,Boolean,Default: true,No,true
+,OriginalPayload.ReleaseLine[0].FulfillmentGroupId,String (50),Generate unique ID using timestamp + random,Yes,eefee1242da4a01b901aad5fb27ac4
+OrderLine[0].UOM,OriginalPayload.ReleaseLine[0].UOM,String (10),Direct mapping from OrderLine[0].UOM,Yes,SBTL
+OrderLine[0],OriginalPayload.ReleaseLine[0].OrderLineSubtotal,Number,OrderLine[0].Quantity * OrderLine[0].UnitPrice,Yes,39
+OrderLine[0].UnitPrice,OriginalPayload.ReleaseLine[0].UnitPrice,Number,Direct mapping from OrderLine[0].UnitPrice,Yes,3.25
+OrderLine[0].OrderLineId,OriginalPayload.ReleaseLine[0].OrderLineId,String (50),Direct mapping from OrderLine[0].OrderLineId,Yes,000-0-0
+,OriginalPayload.ReleaseLine[0].TotalTaxes,Number,Default: 0,Yes,0
+OrderLine[0].OrderLineTaxDetail[],OriginalPayload.ReleaseLine[0].OrderLineTotalTaxes,Number,SUM(OrderLine[0].OrderLineTaxDetail[].TaxAmount),Yes,0
+,OriginalPayload.ReleaseLine[0].RequestedDeliveryDate,DateTime,Default: null,No,null
+,OriginalPayload.ReleaseLine[0].CarrierCode,String (50),Default: null,No,null
+OrderLine[0].OriginalUnitPrice,OriginalPayload.ReleaseLine[0].OriginalUnitPrice,Number,Direct mapping from OrderLine[0].OriginalUnitPrice,Yes,3.25
+OrderLine[0],OriginalPayload.ReleaseLine[0].TotalDiscounts,Number,(OrderLine[0].OriginalUnitPrice - OrderLine[0].UnitPrice) * OrderLine[0].Quantity,Yes,0
+OrderLine[1],OriginalPayload.ReleaseLine[1],Object,Map OrderLine[1] to ReleaseLine[1] using same logic as ReleaseLine[0],Yes,(2nd line item)
+OrderLine[2],OriginalPayload.ReleaseLine[2],Object,Map OrderLine[2] to ReleaseLine[2] using same logic as ReleaseLine[0],Yes,(3rd line item)
+OrderLine[0].ShipToAddress.Address.Address2,OriginalPayload.Address2,String (200),Extract from first OrderLine[].ShipToAddress.Address.Address2,No,Grab Address2
+,OriginalPayload.ShipViaId,String (50),Default: 'InStore_STD',Yes,InStore_STD
+OrderLine[0].ShipToAddress.Address.Address3,OriginalPayload.Address3,String (200),Extract from first OrderLine[].ShipToAddress.Address.Address3,No,null
+OrderLine[0].ShipToAddress.Address.Address1,OriginalPayload.Address1,String (200),Extract from first OrderLine[].ShipToAddress.Address.Address1,Yes,Grab Address1
+,OriginalPayload.ProcessInfo,Object,Default: complex object structure with system values,No,(complex object)
+,OriginalPayload.CancelReasonId,String (50),Default: null,No,null
+,OriginalPayload.PostVoIdReasonId,String (50),Default: null,No,null
+OrderLocale,OriginalPayload.OrderLocale,String (5),Direct mapping from OrderLocale,Yes,th
+OrderChargeDetail[],OriginalPayload.OrderTotalCharges,Number,SUM(OrderChargeDetail[].ChargeTotal WHERE ChargeTypeId != 'Discount'),Yes,0
+OrderTaxDetail[] + OrderLineTaxDetail[],OriginalPayload.TotalTaxes,Number,SUM(all tax amounts from header and lines),Yes,0
+CustomerLastName,OriginalPayload.CustomerLastName,String (100),Direct mapping from CustomerLastName,Yes,-
+CapturedDate,OriginalPayload.CapturedDate,DateTime,Direct mapping from CapturedDate,Yes,2025-08-05T12:13:12
+,OriginalPayload.CarrierCode,String (50),Default: 'InStore',Yes,InStore
+,OriginalPayload.AddressType,String (50),Default: 'CustomerShipToAddress',Yes,CustomerShipToAddress
+OrderLine[] + OrderChargeDetail[] + OrderTaxDetail[],OriginalPayload.OrderTotal,Number,OrderSubtotal + TotalCharges + TotalTaxes,Yes,157
+OrderLine[] + OrderChargeDetail[],OriginalPayload.TotalDiscounts,Number,SUM(all discount amounts) * -1,Yes,-0.08
+,OriginalHeaders.SelectedLocation,String (50),Default: null,No,null
+,OriginalHeaders.User,String (50),Default: 'pubsubuser@pmp',Yes,pubsubuser@pmp
+,OriginalHeaders.Organization,String (10),Default: 'CFR',Yes,CFR
+,OriginalHeaders.IsRetransmitMsg,String (5),Default: 'true',No,true
+,OriginalHeaders.msg_submission_time,DateTime,Current system timestamp,Yes,2025-08-05T12:13:34.871
+,OriginalHeaders.SelectedBusinessUnit,String (50),Default: null,No,null
+,OriginalHeaders.Label,String (50),Default: null,No,null
+,OriginalHeaders.fromInboundServiceId,String (50),Default: 'PayloadMsgProcessor',Yes,PayloadMsgProcessor
+,OriginalHeaders.msg_submission_time_utc,DateTime,Current system timestamp in UTC,Yes,2025-08-05T12:13:34.871Z
+,OriginalHeaders.BROKER_ADDRESS,String (200),Default: empty string '',No,""
+,OriginalHeaders.BROKER_TYPE,String (50),Default: 'googlepubsub',Yes,googlepubsub
+,OriginalHeaders.SPAN_ID,String (50),Generate unique span ID,Yes,339e9caaae8f5f9d
+,OriginalHeaders.APP_ID_TRACE,String (200),Default: application trace ID,Yes,com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf
+,OriginalHeaders.PERSIST_TO_MSG_STORE,String (5),Default: 'true',Yes,true
+,OriginalHeaders.ComponentName,String (50),Default: 'xint',Yes,xint
+,OriginalHeaders.SelectedOrganization,String (10),Default: 'CFR',Yes,CFR
+,OriginalHeaders.AllBusinessUnitsAccessible,String (5),Default: 'false',No,false
+,OriginalHeaders.TRANSACTIONAL,String (5),Default: 'false',No,false
+,OriginalHeaders.UserLocale,String (5),Default: 'en',Yes,en
+,OriginalHeaders.QueueName,String (100),Default: 'OB_XINT_PublishReleaseToStoreMSGType_GCPQ-CFR',Yes,OB_XINT_PublishReleaseToStoreMSGType_GCPQ-CFR
+,OriginalHeaders.direction,String (20),Default: 'Outbound',Yes,Outbound
+,OriginalHeaders.fromInboundQueueName,String (100),Default: 'awpf-payload-queue-ord',Yes,awpf-payload-queue-ord
+,OriginalHeaders.app-id,String (200),Default: application ID,Yes,com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf
+,OriginalHeaders.TRACE_ID,String (50),Generate unique trace ID,Yes,1615f26c4d1db7a8
+,OriginalHeaders.fromInboundMessageType,String (50),Default: 'awpf-payload',Yes,awpf-payload
+,OriginalHeaders.TenantId,String (50),Default: 'crcpopr11o',Yes,crcpopr11o
+,OriginalHeaders.MSG_TYPE,String (100),Default: 'OB_XINT_PublishReleaseToStoreMSGType_GCPMT',Yes,OB_XINT_PublishReleaseToStoreMSGType_GCPMT
+,OriginalHeaders.MSG_ID_PK,String (50),Generate unique message ID,Yes,3851787561187179410880997417394891
+,OriginalHeaders.OUTBOUND_CONDITION_EVALUATION,Boolean,Default: true,Yes,true
+,OriginalHeaders.ProvisioningProfile,String (50),Default: null,No,null
+,OriginalHeaders.OUTBOUND_MSG_TYPE,String (100),Default: 'OB_XINT_PublishReleaseToStoreMSGType_GCPMT',Yes,OB_XINT_PublishReleaseToStoreMSGType_GCPMT
+,OriginalHeaders.MessageCategory,String (50),Default: null,No,null
+,OriginalHeaders.Location,String (50),Default: null,No,null
