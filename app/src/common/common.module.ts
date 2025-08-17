@@ -5,6 +5,7 @@ import { DynamicIdGeneratorService } from './services/dynamic-id-generator.servi
 import { CalculationService } from './services/shared/calculation.service';
 import { BusinessRulesService } from './services/shared/business-rules.service';
 import { TimestampService } from './services/shared/timestamp.service';
+import { FileOutputService } from './services/shared/file-output.service';
 
 // Domain Services
 import { PaymentTransformationService } from './services/domain/payment-transformation.service';
@@ -33,6 +34,7 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     CalculationService,
     BusinessRulesService,
     TimestampService,
+    FileOutputService,
     
     // Domain Services (Order: dependency order matters)
     PaymentTransactionTransformationService,
@@ -56,6 +58,7 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     CalculationService,
     BusinessRulesService,
     TimestampService,
+    FileOutputService,
     
     // Export domain services
     PaymentTransformationService,

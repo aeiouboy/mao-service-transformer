@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
 import { 
   PMPOrderInputDTO, 
   ReleaseOutputDTO
@@ -8,6 +6,7 @@ import {
 import { CalculationService } from './shared/calculation.service';
 import { OrderTransformationService } from './domain/order-transformation.service';
 import { OrderTransformationOrchestratorService } from './orchestration/order-transformation-orchestrator.service';
+import { FileOutputService } from './shared/file-output.service';
 
 /**
  * Facade service for PMP to Release transformation.
@@ -24,7 +23,8 @@ export class ReleaseOrderTransformationService {
   constructor(
     private readonly calculationService: CalculationService,
     private readonly orderTransformationService: OrderTransformationService,
-    private readonly orchestratorService: OrderTransformationOrchestratorService
+    private readonly orchestratorService: OrderTransformationOrchestratorService,
+    private readonly fileOutputService: FileOutputService
   ) {}
 
   /**
@@ -89,22 +89,20 @@ export class ReleaseOrderTransformationService {
     return Promise.resolve(this.orchestratorService.orchestrateTransformation(input));
   }
 
-  public async saveTransformedOrder(input: PMPOrderInputDTO, outputDir: string = '/Users/chongraktanaka/oms-mapping/release'): Promise<string> {
+  /**
+   * Save transformed order to file system
+   * @param input PMP order input data
+   * @param outputDir Output directory path (optional)
+   * @returns Promise resolving to file path of saved output
+   */
+  public async saveTransformedOrder(input: PMPOrderInputDTO, outputDir?: string): Promise<string> {
     const transformed = this.transform(input);
     
-    // Ensure output directory exists
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-
     // Use AlternateOrderId if available, otherwise OrderId
     const outputOrderId = input.AlternateOrderId || input.OrderId;
-    const fileName = `orderid${outputOrderId}.json`;
-    const filePath = path.join(outputDir, fileName);
-
-    fs.writeFileSync(filePath, JSON.stringify(transformed, null, 2), 'utf-8');
-
-    return filePath;
+    
+    // Delegate file operations to dedicated service
+    return this.fileOutputService.saveOrderToFile(transformed, outputOrderId, outputDir);
   }
 
   /**
