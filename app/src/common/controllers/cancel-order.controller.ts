@@ -21,7 +21,9 @@ export class CancelOrderController {
    */
   @Post(':orderId/cancel')
   @HttpCode(HttpStatus.OK)
-  async cancelOrder(@Param('orderId') orderId: string): Promise<any> {
+  async cancelOrder(
+    @Param('orderId') orderId: string,
+  ): Promise<Record<string, unknown>> {
     try {
       // Validate orderId
       if (!orderId || orderId.trim().length === 0) {

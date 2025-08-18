@@ -5,10 +5,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 /**
  * File-Based Order Repository Service
- * 
+ *
  * Provides order data from release files without requiring a database.
  * Simulates database operations using JSON files stored in the release directory.
- * 
+ *
  * Features:
  * - Load order data from release files
  * - Validate order existence
@@ -17,10 +17,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
  */
 @Injectable()
 export class FileBasedOrderRepositoryService {
-
   /**
    * Load complete order data for the specified OrderId
-   * 
+   *
    * @param orderId - The order identifier to load
    * @returns Promise<OrderData> - Complete order information
    * @throws HttpException - When order not found or invalid
@@ -28,18 +27,17 @@ export class FileBasedOrderRepositoryService {
   public async loadOrderData(orderId: string): Promise<any> {
     try {
       const releaseData = await this.loadReleaseFile(orderId);
-      
+
       return {
-        orderId: orderId,
+        orderId,
         orderData: releaseData,
         orderLines: this.extractOrderLines(releaseData),
         payments: this.extractPayments(releaseData),
         customer: this.extractCustomerInfo(releaseData),
         shipping: this.extractShippingInfo(releaseData),
         financials: this.extractFinancialInfo(releaseData),
-        metadata: this.extractMetadata(releaseData)
+        metadata: this.extractMetadata(releaseData),
       };
-      
     } catch (error: any) {
       if (error instanceof HttpException) {
         throw error;
@@ -54,47 +52,50 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Check if order exists and can be cancelled
-   * 
+   *
    * @param orderId - The order identifier to check
    * @returns Promise<boolean> - True if order exists and can be cancelled
    */
   public async canCancelOrder(orderId: string): Promise<boolean> {
     try {
       const orderData = await this.loadOrderData(orderId);
-      
       // Business rules for cancellation eligibility
       const isConfirmed = orderData.orderData.IsConfirmed;
       const isOnHold = orderData.orderData.IsOnHold;
       const cancelAllowed = orderData.orderData.ExtendedFields?.CancelAllowed;
       const maxFulfillmentStatusId = orderData.orderData.MaxFulfillmentStatusId;
-      
+
       // Order can be cancelled if:
       // - Order is confirmed
-      // - Not on hold (or hold allows cancellation)  
+      // - Not on hold (or hold allows cancellation)
       // - Cancel explicitly allowed
       // - Status allows cancellation (3000 = Active, allows cancel)
-      return isConfirmed && 
-             (!isOnHold || cancelAllowed) && 
-             cancelAllowed && 
-             (maxFulfillmentStatusId === "3000");
-             
+      return (
+        isConfirmed &&
+        (!isOnHold || cancelAllowed) &&
+        cancelAllowed &&
+        maxFulfillmentStatusId === '3000'
+      );
     } catch (error) {
-      console.warn(`Cannot determine cancel eligibility for ${orderId}:`, error);
+      console.warn(
+        `Cannot determine cancel eligibility for ${orderId}:`,
+        error,
+      );
+
       return false;
     }
   }
 
   /**
    * Load release file for the specified OrderId
-   * 
+   *
    * @private
    * @param orderId - The order identifier
    * @returns Promise<any> - Parsed release data
    * @throws HttpException - When file not found or invalid
    */
-  private async loadReleaseFile(orderId: string): Promise<any> {
+  private loadReleaseFile(orderId: string): any {
     const releaseDir = path.join(process.cwd(), 'release');
-    
     // Check multiple possible file naming patterns
     const possibleFiles = [
       `${orderId}-Rel.json`,
@@ -108,6 +109,7 @@ export class FileBasedOrderRepositoryService {
       if (fs.existsSync(filePath)) {
         try {
           const fileContent = fs.readFileSync(filePath, 'utf-8');
+
           return JSON.parse(fileContent);
         } catch (parseError: any) {
           throw new HttpException(
@@ -126,7 +128,7 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Extract order lines from release data
-   * 
+   *
    * @private
    * @param releaseData - The release data object
    * @returns any[] - Array of order line objects
@@ -138,7 +140,7 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Extract payment information from release data
-   * 
+   *
    * @private
    * @param releaseData - The release data object
    * @returns any[] - Array of payment objects
@@ -149,7 +151,7 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Extract customer information from release data
-   * 
+   *
    * @private
    * @param releaseData - The release data object
    * @returns any - Customer information object
@@ -166,14 +168,14 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Extract shipping information from release data
-   * 
+   *
    * @private
    * @param releaseData - The release data object
    * @returns any - Shipping information object
    */
   private extractShippingInfo(releaseData: any): any {
     const firstOrderLine = this.extractOrderLines(releaseData)[0];
-    
+
     return {
       addressId: releaseData.AddressId || null,
       shipToAddress: firstOrderLine?.ShipToAddress || null,
@@ -184,7 +186,7 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Extract financial information from release data
-   * 
+   *
    * @private
    * @param releaseData - The release data object
    * @returns any - Financial summary object
@@ -201,7 +203,7 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Extract metadata from release data
-   * 
+   *
    * @private
    * @param releaseData - The release data object
    * @returns any - Metadata object
@@ -219,25 +221,29 @@ export class FileBasedOrderRepositoryService {
 
   /**
    * Get all available orders (for testing purposes)
-   * 
+   *
    * @returns Promise<string[]> - Array of available order IDs
    */
-  public async getAvailableOrders(): Promise<string[]> {
+  public getAvailableOrders(): string[] {
     try {
       const releaseDir = path.join(process.cwd(), 'release');
-      
+
       if (!fs.existsSync(releaseDir)) {
         return [];
       }
-      
+
       const files = fs.readdirSync(releaseDir);
       const orderIds: string[] = [];
-      
+
       for (const file of files) {
-        if (file.endsWith('.json') && !file.includes('cancel') && !file.includes('test')) {
+        if (
+          file.endsWith('.json') &&
+          !file.includes('cancel') &&
+          !file.includes('test')
+        ) {
           // Extract OrderId from filename patterns
           let orderId = null;
-          
+
           if (file.includes('-Rel.json')) {
             orderId = file.replace('-Rel.json', '');
           } else if (file.startsWith('orderid')) {
@@ -245,16 +251,17 @@ export class FileBasedOrderRepositoryService {
           } else {
             orderId = file.replace('.json', '');
           }
-          
+
           if (orderId && orderId.length > 3) {
             orderIds.push(orderId);
           }
         }
       }
-      
+
       return orderIds;
     } catch (error) {
       console.warn('Failed to get available orders:', error);
+
       return [];
     }
   }

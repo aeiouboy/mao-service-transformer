@@ -1,6 +1,23 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { Controller, Get } from '@nestjs/common';
 
 import { ReleaseOrderTransformationService } from '../services/release-order-transformation.service';
+
+interface TransformationResult {
+  success: boolean;
+  message: string;
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  error?: string;
+}
+
+interface HealthResult {
+  status: string;
+  service: string;
+  timestamp: string;
+}
 
 @Controller('api')
 export class SimpleTransformController {
@@ -9,11 +26,8 @@ export class SimpleTransformController {
   ) {}
 
   @Get('test')
-  async testTransformation() {
+  testTransformation(): TransformationResult {
     try {
-      // Load sample data using file system (simple approach)
-      const fs = require('fs');
-      const path = require('path');
       // Get the sample input JSON file
       const samplePath = path.join(
         process.cwd(),
@@ -22,15 +36,17 @@ export class SimpleTransformController {
         'samples',
         'sample_input.json',
       );
-      const sampleInput = JSON.parse(fs.readFileSync(samplePath, 'utf8'));
+      const sampleInput = JSON.parse(
+        fs.readFileSync(samplePath, 'utf8'),
+      ) as Record<string, unknown>;
       // Transform the order
-      const result = this.transformationService.transform(sampleInput);
+      const result = this.transformationService.transform(sampleInput as any);
 
       return {
         success: true,
         message: 'Transformation successful',
         input: sampleInput,
-        output: result,
+        output: result as unknown as Record<string, unknown>,
       };
     } catch (error) {
       return {
@@ -42,7 +58,7 @@ export class SimpleTransformController {
   }
 
   @Get('health')
-  async health() {
+  health(): HealthResult {
     return {
       status: 'OK',
       service: 'MAO Service Transformer',

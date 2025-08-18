@@ -39,32 +39,36 @@ export class OrderCancellationService {
   ): Promise<any> {
     try {
       console.log(`🔄 Processing cancel request for OrderId: ${orderId}`);
-      
+
       // 1. Validate order can be cancelled
       const canCancel = await this.orderRepository.canCancelOrder(orderId);
+
       if (!canCancel) {
         throw new HttpException(
           `Order ${orderId} cannot be cancelled. Either order not found or not eligible for cancellation.`,
           HttpStatus.BAD_REQUEST,
         );
       }
-      
+
       // 2. Load complete order data from repository
       console.log(`📊 Loading order data for: ${orderId}`);
+
       const orderData = await this.orderRepository.loadOrderData(orderId);
-      
+
       // 3. Transform using field mapping service
       console.log(`🔧 Applying cancel transformation with business rules`);
+
       const cancelResponse = this.fieldMapping.transformToCancelResponse(
         orderData,
         cancelRequest || {
           CancelReason: { ReasonId: '1000.000' },
           CancelComments: 'Order cancelled via API',
-          OrgId: 'CFR'
+          OrgId: 'CFR',
         },
       );
-      
+
       console.log(`✅ Cancel transformation completed for OrderId: ${orderId}`);
+
       return cancelResponse;
     } catch (error: any) {
       if (error instanceof HttpException) {
@@ -72,6 +76,7 @@ export class OrderCancellationService {
       }
 
       console.error(`❌ Cancel transformation failed for ${orderId}:`, error);
+
       throw new HttpException(
         `Failed to transform release to cancel: ${error.message || String(error)}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -84,7 +89,7 @@ export class OrderCancellationService {
    *
    * @returns Promise<string[]> - Array of available order IDs
    */
-  public async getAvailableOrders(): Promise<string[]> {
+  public getAvailableOrders(): string[] {
     return this.orderRepository.getAvailableOrders();
   }
 

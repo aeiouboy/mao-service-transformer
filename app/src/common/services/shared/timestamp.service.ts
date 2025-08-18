@@ -49,7 +49,7 @@ export class TimestampService {
 
       // Captured date (-10 seconds from base, early in order processing)
       captured_date: -10000,
-      
+
       // Archive date (90 days from base - for cancelled orders)
       archive_date: 7776000000, // 90 days * 24 * 60 * 60 * 1000 ms
     };
