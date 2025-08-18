@@ -330,8 +330,8 @@ export class CancelFieldMappingService {
         IsReturn: false,
         IsTaxOverridden: false,
         
-        // ORDER LINE NOTE - Complex nested structure from template
-        OrderLineNote: this.buildOrderLineNotes(line, cancelTimestamp, index),
+        // ORDER LINE NOTE - Complex nested structure from template with item-specific NoteIds
+        OrderLineNote: this.buildOrderLineNotes(line, cancelTimestamp, index, line.OrderId),
         
         OrderLineTagDetail: [],
         IsServiceFulfilled: false,
@@ -475,7 +475,7 @@ export class CancelFieldMappingService {
    * @param itemId - Item identifier for tracking
    * @returns any[] - Array of quantity detail objects with complete status progression
    */
-  private transformQuantityDetailsToCancel(quantityDetails: any[], cancelTimestamp: string, itemId?: string): any[] {
+  private transformQuantityDetailsToCancel(_quantityDetails: any[], cancelTimestamp: string, itemId?: string): any[] {
     // Generate comprehensive quantity detail progression as seen in template
     const baseQuantityDetails = [
       // Original order status
@@ -601,51 +601,70 @@ export class CancelFieldMappingService {
   }
 
   /**
-   * Build OrderLineNote array matching template structure
+   * Build OrderLineNote array matching template structure with correct item-specific NoteIds
+   * 
+   * Based on template analysis:
+   * - OrderLine[0]: R02_OrderId
+   * - OrderLine[1]: R03_OrderId  
+   * - OrderLine[2]: R04_OrderId
+   * - OrderLine[3]: R05_OrderId
+   * - OrderLine[4]: R06_OrderId
+   * - OrderLine[5]: R07_OrderId
    * 
    * @private
    * @param line - Order line data
    * @param cancelTimestamp - Cancellation timestamp
-   * @param index - Line index for unique IDs
-   * @returns any[] - Array of OrderLineNote objects
+   * @param index - Line index for sequential NoteId generation
+   * @param orderId - Order identifier for NoteId
+   * @returns any[] - Array of OrderLineNote objects with correct item-specific NoteIds
    */
-  private buildOrderLineNotes(line: any, cancelTimestamp: string, index: number): any[] {
+  private buildOrderLineNotes(line: any, cancelTimestamp: string, index: number, orderId?: string): any[] {
+    // Generate sequential NoteId based on OrderLine index (R02 for first line, R03 for second, etc.)
+    const noteIdPrefix = `R${String(index + 2).padStart(2, '0')}`; // R02, R03, R04, R05, R06, R07
+    const orderIdForNote = orderId || line.OrderId || 'unknown';
+    
     return [
       {
-        UpdatedBy: "apiuser4pmp",
+        UpdatedBy: "pubsubuser@pmp",
         UpdatedTimestamp: cancelTimestamp,
         OrgId: "CFR",
-        NoteId: `R01_${line.OrderId || 'unknown'}_${index + 1}`,
-        CreatedBy: "apiuser4pmp", 
+        NoteId: `${noteIdPrefix}_${orderIdForNote}`,
+        CreatedBy: "pubsubuser@pmp", 
         CreatedTimestamp: cancelTimestamp,
-        NoteType: { NoteTypeId: "R01" },
+        NoteType: { NoteTypeId: "0006" },
         DisplaySequence: null,
-        NoteText: "System generated cancellation note",
-        NoteCategory: { NoteCategoryId: "General" }
+        NoteText: "",
+        Process: "saveOrder::-1843768273",
+        IsVisible: true,
+        NoteCategory: { NoteCategoryId: "CustomerCommunication" }
       },
       {
-        UpdatedBy: "apiuser4pmp",
+        UpdatedBy: "integrationuser@crc.com",
         UpdatedTimestamp: cancelTimestamp,
         OrgId: "CFR",
-        NoteId: `R02_${line.OrderId || 'unknown'}_${index + 1}`,
-        CreatedBy: "apiuser4pmp",
+        NoteId: `${orderIdForNote}_1755487553468`,
+        CreatedBy: "integrationuser@crc.com",
         CreatedTimestamp: cancelTimestamp,
-        NoteType: { NoteTypeId: "R02" },
+        NoteType: { NoteTypeId: "0003" },
         DisplaySequence: null,
         NoteText: "Customer requested late order cancellation",
-        NoteCategory: { NoteCategoryId: "Cancel" }
+        Process: "postReleaseCancellation",
+        IsVisible: true,
+        NoteCategory: { NoteCategoryId: "CustomerCommunication" }
       },
       {
-        UpdatedBy: "apiuser4pmp",
+        UpdatedBy: "integrationuser@crc.com",
         UpdatedTimestamp: cancelTimestamp,
         OrgId: "CFR",
-        NoteId: `R03_${line.OrderId || 'unknown'}_${index + 1}`,
-        CreatedBy: "apiuser4pmp",
+        NoteId: `${orderIdForNote}_1755487554795`,
+        CreatedBy: "integrationuser@crc.com",
         CreatedTimestamp: cancelTimestamp,
-        NoteType: { NoteTypeId: "R03" },
+        NoteType: { NoteTypeId: "0003" },
         DisplaySequence: null,
         NoteText: "Order line cancelled post-fulfillment",
-        NoteCategory: { NoteCategoryId: "Fulfillment" }
+        Process: "postReleaseCancellation",
+        IsVisible: true,
+        NoteCategory: { NoteCategoryId: "CustomerCommunication" }
       }
     ];
   }
@@ -691,7 +710,7 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any - OrderLinePromisingInfo object
    */
-  private buildOrderLinePromisingInfo(line: any, cancelTimestamp: string): any {
+  private buildOrderLinePromisingInfo(_line: any, cancelTimestamp: string): any {
     return {
       InventorySegmentId: null,
       CreatedTimestamp: cancelTimestamp,
@@ -730,7 +749,7 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any - OrderLineExtension1 object
    */
-  private buildOrderLineExtension1(line: any, cancelTimestamp: string): any {
+  private buildOrderLineExtension1(line: any, _cancelTimestamp: string): any {
     return {
       Extended: {
         OfferId: null,
@@ -811,21 +830,53 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any[] - Array of order note objects
    */
-  private buildOrderNotes(orderData: any, cancelRequest: any, cancelTimestamp: string): any[] {
+  private buildOrderNotes(_orderData: any, cancelRequest: any, cancelTimestamp: string): any[] {
     const notes = [];
     
-    // Add cancel note
+    // Generate required IDs matching template structure
+    const numericNoteId = `${Date.now()}${Math.floor(Math.random() * 10000)}`;
+    const pkId = `${Date.now()}${Math.floor(Math.random() * 100000)}`;
+    const contextId = this.generateUUID();
+    
+    // Build complete OrderNote structure matching template exactly
     notes.push({
-      NoteId: `R02_${orderData.orderId}`,
-      NoteTypeId: "General",
-      NoteText: cancelRequest?.CancelComments || "Order cancelled by customer request",
-      CreatedBy: "apiuser4pmp",
-      CreatedTimestamp: cancelTimestamp,
-      UpdatedBy: "apiuser4pmp",
+      NoteId: numericNoteId,
       UpdatedTimestamp: cancelTimestamp,
+      CreatedBy: "pubsubuser@pmp", // Fixed: should be pubsubuser@pmp, not apiuser4pmp
+      CreatedTimestamp: cancelTimestamp,
+      DisplaySequence: null,
+      NoteText: cancelRequest?.CancelComments || "Order cancelled by customer request",
+      Process: "saveOrder::-1843768273",
+      OrgId: "CFR",
+      UpdatedBy: "pubsubuser@pmp", // Fixed: should be pubsubuser@pmp, not apiuser4pmp
+      NoteType: {
+        NoteTypeId: "0004" // Fixed: should be "0004", not "General"
+      },
+      ContextId: contextId,
+      PK: pkId,
+      PurgeDate: null,
+      IsVisible: true,
+      NoteCategory: {
+        NoteCategoryId: "CustomerCommunication"
+      },
+      Unique_Identifier: `${pkId}__${numericNoteId}`
     });
 
     return notes;
+  }
+
+  /**
+   * Generate UUID for ContextId
+   * 
+   * @private
+   * @returns string - Generated UUID
+   */
+  private generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
   /**
@@ -838,11 +889,13 @@ export class CancelFieldMappingService {
    */
   private buildOrderExtension1(orderData: any, cancelTimestamp: string): any {
     return {
-      UpdatedBy: "apiuser4pmp",
+      UpdatedBy: "pubsubuser@pmp", // Fixed: should be pubsubuser@pmp, not apiuser4pmp
       UpdatedTimestamp: cancelTimestamp,
-      Process: "postReleaseCancellation",
+      OrgId: "CFR", // Added missing field
+      CreatedTimestamp: cancelTimestamp, // Added missing field  
+      CreatedBy: "pubsubuser@pmp", // Added missing field
       Extended: {
-        ...orderData.metadata.extendedFields,
+        ...orderData.metadata?.extendedFields,
         CancelAllowed: false, // Changed after cancellation
       },
     };
@@ -856,18 +909,19 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any[] - Release array
    */
-  private buildRelease(orderData: any, cancelTimestamp: string): any[] {
+  private buildRelease(_orderData: any, cancelTimestamp: string): any[] {
     return [
       {
         ReleaseType: null,
         UpdatedTimestamp: cancelTimestamp,
         ServiceLevelCode: "STD",
         ShipToLocationId: null,
-        CreatedBy: "pubsubuser@pmp",
+        EffectiveRank: "Not Applicable", // Added missing field from template
+        CreatedBy: "pubsubuser@pmp", // Correct user
         CreatedTimestamp: cancelTimestamp,
-        Process: "postReleaseCancellation",
-        OrgId: "CFR",
-        UpdatedBy: "apiuser4pmp",
+        // Removed UpdatedBy - template doesn't have this field
+        // Removed Process - template doesn't have this field  
+        // Removed OrgId - template doesn't have this field at Release level
         StatusId: "9000",
         ReleaseDate: cancelTimestamp
       }
@@ -882,13 +936,13 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any[] - Milestone events array
    */
-  private buildOrderMilestoneEvents(orderData: any, cancelTimestamp: string): any[] {
+  private buildOrderMilestoneEvents(_orderData: any, cancelTimestamp: string): any[] {
     return [
       {
         MonitoringRuleId: "Release Order",
         UpdatedTimestamp: cancelTimestamp,
         OrgId: "CFR",
-        UpdatedBy: "apiuser4pmp",
+        UpdatedBy: "pubsubuser@pmp", // Fixed: should match CreatedBy
         CreatedTimestamp: cancelTimestamp,
         CreatedBy: "pubsubuser@pmp",
         Process: "postReleaseCancellation",
@@ -905,7 +959,7 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any[] - Milestones array
    */
-  private buildOrderMilestones(orderData: any, cancelTimestamp: string): any[] {
+  private buildOrderMilestones(_orderData: any, cancelTimestamp: string): any[] {
     return [
       {
         MonitoringRuleId: null,
@@ -920,17 +974,4 @@ export class CancelFieldMappingService {
     ];
   }
 
-  /**
-   * Map shipping address information
-   * 
-   * @private
-   * @param shipping - Shipping information object
-   * @returns any - Mapped address object
-   */
-  private mapShipToAddress(shipping: any): any {
-    return shipping.shipToAddress || {
-      AddressId: shipping.addressId,
-      ServiceLevelCode: shipping.serviceLevelCode,
-    };
-  }
 }
