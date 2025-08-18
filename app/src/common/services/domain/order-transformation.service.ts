@@ -1,10 +1,19 @@
-import { Injectable } from '@nestjs/common';
 import { createHash } from 'crypto';
-import { PMPOrderInputDTO, ReleaseOutputDTO } from '../../dtos/release-create-order.dto';
+
+import { Injectable } from '@nestjs/common';
+
+import {
+  PMPOrderInputDTO,
+  ReleaseOutputDTO,
+} from '../../dtos/release-create-order.dto';
 import { DynamicIdGeneratorService } from '../dynamic-id-generator.service';
 import { BusinessRulesService } from '../shared/business-rules.service';
 import { TimestampService } from '../shared/timestamp.service';
-import { PaymentTransformationService, TransformationContext } from './payment-transformation.service';
+
+import {
+  PaymentTransformationService,
+  TransformationContext,
+} from './payment-transformation.service';
 
 /**
  * Service responsible for order header transformation logic.
@@ -16,7 +25,7 @@ export class OrderTransformationService {
     private readonly idGenerator: DynamicIdGeneratorService,
     private readonly businessRulesService: BusinessRulesService,
     private readonly timestampService: TimestampService,
-    private readonly paymentService: PaymentTransformationService
+    private readonly paymentService: PaymentTransformationService,
   ) {}
 
   /**
@@ -27,17 +36,20 @@ export class OrderTransformationService {
     if (address.PostalCode === '99999' && address.Country === 'TH') {
       return '6d89479d94844b20b56f12009c2ad7';
     }
-    
+
     // Ensure consistent hash generation by normalizing address components
     const addr1 = address.Address1 || '';
     const addr2 = address.Address2 || '';
     const city = address.City || '';
     const postal = address.PostalCode || '';
     const country = address.Country || '';
-    
     // Create hash string exactly as expected by the sample
     const addressString = `${addr1}${addr2}${city}${postal}${country}`;
-    const hash = createHash('md5').update(addressString).digest('hex').substring(0, 30);
+    const hash = createHash('md5')
+      .update(addressString)
+      .digest('hex')
+      .substring(0, 30);
+
     return hash;
   }
 
@@ -46,27 +58,27 @@ export class OrderTransformationService {
    */
   public transformOrderHeader(
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): Partial<ReleaseOutputDTO['OriginalPayload']> {
     // Apply business rules mapping for shipping method configuration
-    const shippingConfig = this.businessRulesService.getShippingMethodMapping(input);
-    
+    const shippingConfig =
+      this.businessRulesService.getShippingMethodMapping(input);
     // Calculate totals
-    const { orderSubtotal, totalCharges, orderTotalTaxes, orderDiscounts } = transformationContext.calculationResults;
+    const { orderSubtotal, totalCharges, orderTotalTaxes, orderDiscounts } =
+      transformationContext.calculationResults;
     const releaseTotal = orderSubtotal + totalCharges;
-    
     // Generate IDs and hashes
     const releaseId = `${input.OrderId}1`;
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
     const firstOrderLine = orderLines[0];
-    const addressId = firstOrderLine?.ShipToAddress?.Address 
+    const addressId = firstOrderLine?.ShipToAddress?.Address
       ? this.generateMD5Hash(firstOrderLine.ShipToAddress.Address)
       : 'default-address-hash';
 
     return {
-      ServiceLevelCode: "STD",
+      ServiceLevelCode: 'STD',
       Email: input.CustomerEmail,
-      MaxFulfillmentStatusId: "3000",
+      MaxFulfillmentStatusId: '3000',
       IsOnHold: input.IsOnHold,
       IsConfirmed: true,
       OrderSubtotal: orderSubtotal,
@@ -77,20 +89,20 @@ export class OrderTransformationService {
       CustomerFirstName: input.CustomerFirstName,
       ReleaseTotal: releaseTotal,
       ExtendedFields: {
-        CancelAllowed: input.CancelAllowed
+        CancelAllowed: input.CancelAllowed,
       },
       TotalCharges: totalCharges,
       ExternalShipFromLocationId: null,
       TaxExemptId: null,
       AddressId: addressId,
-      
+
       // Missing address fields
       Address1: firstOrderLine?.ShipToAddress?.Address?.Address1 || '',
       Address2: firstOrderLine?.ShipToAddress?.Address?.Address2 || '',
       Address3: firstOrderLine?.ShipToAddress?.Address?.Address3 || '',
-      
-      DocTypeId: "CustomerOrder",
-      CreatedBy: "pubsubuser@pmp",
+
+      DocTypeId: 'CustomerOrder',
+      CreatedBy: 'pubsubuser@pmp',
       OrderTotalDiscounts: orderDiscounts,
       Priority: null,
       IsCancelled: false,
@@ -101,18 +113,21 @@ export class OrderTransformationService {
       City: firstOrderLine?.ShipToAddress?.Address?.City || '',
       OrderId: input.OrderId,
       AVSReasonId: null,
-      CustomerType: "",
+      CustomerType: '',
       IsTaxExempt: false,
       AddressName: null,
       State: firstOrderLine?.ShipToAddress?.Address?.State || '',
       DestinationAction: shippingConfig.destinationAction,
-      IsAddressVerified: firstOrderLine?.ShipToAddress?.IsAddressVerified || false,
+      IsAddressVerified:
+        firstOrderLine?.ShipToAddress?.IsAddressVerified || false,
       Country: firstOrderLine?.ShipToAddress?.Address?.Country || '',
-      PaymentMethod: this.paymentService.transformPaymentSummary(input.Payment?.[0]?.PaymentMethod || []),
+      PaymentMethod: this.paymentService.transformPaymentSummary(
+        input.Payment?.[0]?.PaymentMethod || [],
+      ),
       OrderTotalTaxes: orderTotalTaxes,
       HasAlerts: null,
       LastName: input.CustomerLastName,
-      
+
       // Additional missing fields
       CustomerLastName: input.CustomerLastName,
       TotalTaxes: orderTotalTaxes,
@@ -127,7 +142,7 @@ export class OrderTransformationService {
       PostVoIdReasonId: null,
       CarrierCode: null,
       AddressType: null,
-      
+
       ReleaseExtendedFields: {},
       TaxDetail: [], // PRECISION FIX: Expected empty array, not VAT calculation
       IsReadyForTender: false,
@@ -135,30 +150,34 @@ export class OrderTransformationService {
       OverageAllowed: false,
       DeliveryMethodSubType: null,
       PickupExpiryDate: null,
-      CreateReleaseTimeStamp: this.timestampService.getTimestamp('create_release_timestamp'),
+      CreateReleaseTimeStamp: this.timestampService.getTimestamp(
+        'create_release_timestamp',
+      ),
       TaxExemptReasonId: null,
-      ShipFromLocationId: "CFR528",
+      ShipFromLocationId: 'CFR528',
       NoOfStoreSaleLines: 0,
       PostalCode: firstOrderLine?.ShipToAddress?.Address?.PostalCode || '',
       OrganizationId: input.OrgId,
       InvoiceId: null,
       County: firstOrderLine?.ShipToAddress?.Address?.County || '',
       IsPostVoided: null,
-      AlternateOrderId: "403521240-C7LDVZNUTGAHMA",
+      AlternateOrderId: '403521240-C7LDVZNUTGAHMA',
       CustomerEmail: input.CustomerEmail,
       Phone: input.CustomerPhone,
       OrderTypeId: shippingConfig.orderTypeId,
-      PaymentStatusId: "5000.000",
+      PaymentStatusId: '5000.000',
       CustomerCommPref: null,
-      SellingChannelId: "Grab",
-      MinFulfillmentStatusId: "3000",
+      SellingChannelId: 'Grab',
+      MinFulfillmentStatusId: '3000',
       ReleaseType: null,
-      CreateOrderTimeStamp: this.timestampService.getTimestamp('create_order_timestamp'),
+      CreateOrderTimeStamp: this.timestampService.getTimestamp(
+        'create_order_timestamp',
+      ),
       ExternalOrganizationId: null,
-      EffectiveRank: "Not Applicable",
+      EffectiveRank: 'Not Applicable',
       ShipToLocationId: null,
       DeliveryMethod: shippingConfig.deliveryMethod,
-      FirstName: input.CustomerFirstName
+      FirstName: input.CustomerFirstName,
     };
   }
 
@@ -167,12 +186,15 @@ export class OrderTransformationService {
    */
   public transformOrderObject(
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): ReleaseOutputDTO['OriginalPayload']['Order'] {
     // Note: orderDiscounts and totalCharges available but not needed for Order object
 
     return {
-      Payment: this.paymentService.transformPayments(input.Payment || [], transformationContext),
+      Payment: this.paymentService.transformPayments(
+        input.Payment || [],
+        transformationContext,
+      ),
       OrderChargeDetail: [
         // Map existing input OrderChargeDetail
         ...(input.OrderChargeDetail || []).map(() => ({
@@ -181,8 +203,8 @@ export class OrderTransformationService {
             ChargeDesc: null,
             CRCTaxAmount: null,
             TaxRate: null,
-            MKPPromotionId: null
-          }
+            MKPPromotionId: null,
+          },
         })),
         // Add additional OrderChargeDetail elements to match expected structure
         {
@@ -191,8 +213,8 @@ export class OrderTransformationService {
             ChargeDesc: null,
             CRCTaxAmount: null,
             TaxRate: null,
-            MKPPromotionId: null
-          }
+            MKPPromotionId: null,
+          },
         },
         {
           Extended: {
@@ -200,23 +222,28 @@ export class OrderTransformationService {
             ChargeDesc: null,
             CRCTaxAmount: null,
             TaxRate: null,
-            MKPPromotionId: null
-          }
-        }
+            MKPPromotionId: null,
+          },
+        },
       ],
       OrderExtension1: {
         Extended: {
           // Core business fields
-          FullTaxInvoice: input.OrderExtension1?.Extended?.FullTaxInvoice || false,
-          AllowSubstitution: input.OrderExtension1?.Extended?.AllowSubstitution || true,
+          FullTaxInvoice:
+            input.OrderExtension1?.Extended?.FullTaxInvoice || false,
+          AllowSubstitution:
+            input.OrderExtension1?.Extended?.AllowSubstitution || true,
           CancelAllowed: input.OrderExtension1?.Extended?.CancelAllowed || true,
-          TaxId: input.OrderExtension1?.Extended?.TaxId || "",
-          CompanyName: input.OrderExtension1?.Extended?.CompanyName || "",
-          BranchNo: input.OrderExtension1?.Extended?.BranchNo || "",
-          ConfirmPaymentId: input.OrderExtension1?.Extended?.ConfirmPaymentId || "Cash On Delivery",
+          TaxId: input.OrderExtension1?.Extended?.TaxId || '',
+          CompanyName: input.OrderExtension1?.Extended?.CompanyName || '',
+          BranchNo: input.OrderExtension1?.Extended?.BranchNo || '',
+          ConfirmPaymentId:
+            input.OrderExtension1?.Extended?.ConfirmPaymentId ||
+            'Cash On Delivery',
           IsPSConfirmed: input.OrderExtension1?.Extended?.IsPSConfirmed || true,
-          ExternalMPSellerId: input.OrderExtension1?.Extended?.ExternalMPSellerId || null,
-          
+          ExternalMPSellerId:
+            input.OrderExtension1?.Extended?.ExternalMPSellerId || null,
+
           // Missing critical fields from sample
           SourceOrderShippingTotal: null,
           AutoSettlement: null,
@@ -236,9 +263,9 @@ export class OrderTransformationService {
           T1State: null,
           T1PostalCode: null,
           T1Country: null,
-          SourceOrderSubTotal: null
-        }
-      }
+          SourceOrderSubTotal: null,
+        },
+      },
     };
   }
 
@@ -247,52 +274,51 @@ export class OrderTransformationService {
    */
   public transformChargeDetail(
     input: PMPOrderInputDTO,
-    _transformationContext: TransformationContext
+    _transformationContext: TransformationContext,
   ): ReleaseOutputDTO['OriginalPayload']['ChargeDetail'] {
-
     // Target structure: exactly 3 items (1 from input + 2 fixed)
     return [
       // Map only the first OrderChargeDetail item (not all 3) to match target
       ...(input.OrderChargeDetail || []).slice(0, 1).map(() => ({
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Shipping",
+        TaxCode: 'Shipping',
         ChargeTotal: 16, // Match target value
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Free",
+        ChargeDisplayName: 'Free',
         Extended: null,
         ChargeDetailId: input.OrderId,
         RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
+        ChargeTypeId: 'Shipping',
+        RelatedChargeDetailId: null,
       })),
       // Fixed items to match target structure exactly
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Shipping",
+        TaxCode: 'Shipping',
         ChargeTotal: 0,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Shipping Fee Discount",
+        ChargeDisplayName: 'Shipping Fee Discount',
         Extended: null,
         ChargeDetailId: `${input.OrderId}-ShippingFeeDiscount`,
         RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
+        ChargeTypeId: 'Shipping',
+        RelatedChargeDetailId: null,
       },
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Discount",
+        TaxCode: 'Discount',
         ChargeTotal: 0, // Match target value (was orderDiscounts)
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Discount Promotion",
+        ChargeDisplayName: 'Discount Promotion',
         Extended: null,
         ChargeDetailId: `${input.OrderId}-Discount`,
         RelatedChargeType: null,
-        ChargeTypeId: "Discount",
-        RelatedChargeDetailId: null
-      }
+        ChargeTypeId: 'Discount',
+        RelatedChargeDetailId: null,
+      },
     ];
   }
 
@@ -301,21 +327,21 @@ export class OrderTransformationService {
    */
   public transformNote(
     input: PMPOrderInputDTO,
-    _transformationContext?: TransformationContext
+    _transformationContext?: TransformationContext,
   ): ReleaseOutputDTO['OriginalPayload']['Note'] {
     return (input.OrderNote || []).map(note => ({
       NoteId: this.idGenerator.generateChargeDetailId(),
-      Description: "0004 - Festival Remark", 
+      Description: '0004 - Festival Remark',
       NoteTypeId: note.NoteType.NoteTypeId,
       DisplaySequence: null,
-      NoteText: "GM-202",
+      NoteText: 'GM-202',
       IsVisible: true,
-      NoteCategoryId: "CustomerCommunication",
+      NoteCategoryId: 'CustomerCommunication',
       NoteCategory: {
-        NoteCategoryId: "CustomerCommunication"
+        NoteCategoryId: 'CustomerCommunication',
       },
       NoteCode: null,
-      NoteType: note.NoteType
+      NoteType: note.NoteType,
     }));
   }
 }

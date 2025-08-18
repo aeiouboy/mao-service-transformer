@@ -3,8 +3,8 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 
-import { RequestIdMiddleware } from './common/middlewares';
 import { CommonModule } from './common/common.module';
+import { RequestIdMiddleware } from './common/middlewares';
 import {
   AppConfigModule,
   DatabaseModule,

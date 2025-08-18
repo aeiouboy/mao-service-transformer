@@ -1,18 +1,19 @@
-import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import { Injectable } from '@nestjs/common';
+
 import { ReleaseOutputDTO } from '../../dtos/release-create-order.dto';
 
 /**
  * Service responsible for file output operations.
  * Handles saving transformation results to file system with proper error handling.
- * 
+ *
  * Domain: File I/O Operations
  * Responsibilities: File creation, directory management, output formatting
  */
 @Injectable()
 export class FileOutputService {
-  
   /**
    * Save transformed order data to JSON file
    * @param transformedData The release output data to save
@@ -23,27 +24,29 @@ export class FileOutputService {
   public async saveOrderToFile(
     transformedData: ReleaseOutputDTO,
     orderId: string,
-    outputDir?: string
+    outputDir?: string,
   ): Promise<string> {
     try {
       // Use project-relative path by default
       const defaultOutputDir = path.join(process.cwd(), 'release');
       const targetOutputDir = outputDir || defaultOutputDir;
-      
+
       // Ensure output directory exists
       await this.ensureDirectoryExists(targetOutputDir);
 
       // Generate file name and path
       const fileName = `orderid${orderId}.json`;
       const filePath = path.join(targetOutputDir, fileName);
-
       // Save file with formatted JSON
       const jsonContent = JSON.stringify(transformedData, null, 2);
+
       fs.writeFileSync(filePath, jsonContent, 'utf-8');
 
       return filePath;
     } catch (error) {
-      throw new Error(`Failed to save order file: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to save order file: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -57,23 +60,27 @@ export class FileOutputService {
   public async saveJsonToFile(
     data: any,
     fileName: string,
-    outputDir?: string
+    outputDir?: string,
   ): Promise<string> {
     try {
       const defaultOutputDir = path.join(process.cwd(), 'output');
       const targetOutputDir = outputDir || defaultOutputDir;
-      
+
       await this.ensureDirectoryExists(targetOutputDir);
 
-      const fullFileName = fileName.endsWith('.json') ? fileName : `${fileName}.json`;
+      const fullFileName = fileName.endsWith('.json')
+        ? fileName
+        : `${fileName}.json`;
       const filePath = path.join(targetOutputDir, fullFileName);
-
       const jsonContent = JSON.stringify(data, null, 2);
+
       fs.writeFileSync(filePath, jsonContent, 'utf-8');
 
       return filePath;
     } catch (error) {
-      throw new Error(`Failed to save JSON file: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to save JSON file: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -87,7 +94,9 @@ export class FileOutputService {
         fs.mkdirSync(dirPath, { recursive: true });
       }
     } catch (error) {
-      throw new Error(`Failed to create directory ${dirPath}: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to create directory ${dirPath}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -104,14 +113,16 @@ export class FileOutputService {
       }
 
       const files = fs.readdirSync(dirPath);
-      
+
       if (extension) {
         return files.filter(file => file.endsWith(extension));
       }
-      
+
       return files;
     } catch (error) {
-      throw new Error(`Failed to read directory ${dirPath}: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to read directory ${dirPath}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -133,11 +144,15 @@ export class FileOutputService {
     try {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
+
         return true;
       }
+
       return false;
     } catch (error) {
-      throw new Error(`Failed to delete file ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to delete file ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 }

@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
+
 import { PMPOrderInputDTO } from '../../dtos/release-create-order.dto';
 import { DynamicIdGeneratorService } from '../dynamic-id-generator.service';
 import { BusinessRulesService } from '../shared/business-rules.service';
-import { TimestampService } from '../shared/timestamp.service';
 import { CalculationService } from '../shared/calculation.service';
+import { TimestampService } from '../shared/timestamp.service';
+
 import { TransformationContext } from './payment-transformation.service';
 
 /**
  * Service responsible for release line transformation logic.
  * Handles individual release line transformations, charge details, and barcode mapping.
- * 
+ *
  * Domain: Releases
  * Tables: release_lines
  * Responsibilities: Release line transformation, charge detail processing, barcode management
@@ -20,7 +22,7 @@ export class ReleaseLineTransformationService {
     private readonly idGenerator: DynamicIdGeneratorService,
     private readonly businessRulesService: BusinessRulesService,
     private readonly timestampService: TimestampService,
-    private readonly calculationService: CalculationService
+    private readonly calculationService: CalculationService,
   ) {}
 
   /**
@@ -32,14 +34,17 @@ export class ReleaseLineTransformationService {
       PIECE: 'SBTL',
       PCS: 'SBTL',
     };
-    
+
     return uomMapping[inputUOM] || inputUOM;
   }
 
   /**
    * Extract product data from OrderLine input
    */
-  private extractProductData(orderLine: any, lineIndex: number): {
+  private extractProductData(
+    orderLine: any,
+    lineIndex: number,
+  ): {
     itemId: string;
     unitPrice: number;
     originalUnitPrice: number;
@@ -59,7 +64,6 @@ export class ReleaseLineTransformationService {
     packSmallImageURI: string;
   } {
     const extension = orderLine.OrderLineExtension1?.Extended;
-    
     // Extract actual product data from input
     const itemId = orderLine.ItemId || '';
     const unitPrice = orderLine.UnitPrice || 0;
@@ -67,26 +71,23 @@ export class ReleaseLineTransformationService {
     const quantity = orderLine.Quantity || 1;
     const orderLineTotal = unitPrice * quantity;
     const orderLineSubtotal = orderLineTotal;
-    
     // Extract product names from extension
     const productNameEN = extension?.ProductNameEN || `Product ${itemId}`;
     const productNameTH = extension?.ProductNameTH || productNameEN;
     const itemDescription = productNameEN;
     const itemBrand = extension?.ItemBrand || 'Unknown Brand';
-    
     // Extract pack/bundle information
     const packUnitPrice = extension?.PackUnitPrice || unitPrice;
     const packOrderedQty = extension?.PackOrderedQty || quantity;
-    const packItemDescriptionTH = extension?.PackItemDescriptionTH || productNameTH;
-    
+    const packItemDescriptionTH =
+      extension?.PackItemDescriptionTH || productNameTH;
     // Extract barcode and bundle information
     const primaryBarcode = itemId; // Use ItemId as primary barcode if not specified
     const bundleRefId = extension?.BundleRefId || itemId;
-    
     // Generate image URIs (fallback to assets.tops.co.th pattern)
     const smallImageURI = this.generateImageURI(itemId, productNameEN);
     const packSmallImageURI = smallImageURI;
-    
+
     return {
       itemId,
       unitPrice,
@@ -104,7 +105,7 @@ export class ReleaseLineTransformationService {
       primaryBarcode,
       bundleRefId,
       smallImageURI,
-      packSmallImageURI
+      packSmallImageURI,
     };
   }
 
@@ -114,9 +115,9 @@ export class ReleaseLineTransformationService {
   private generateImageURI(itemId: string, productName: string): string {
     // Default pattern for Tops marketplace
     const normalizedName = productName.replace(/[^a-zA-Z0-9]/g, '');
+
     return `https://assets.tops.co.th/${normalizedName}-${itemId}-1?$JPEG$`;
   }
-
 
   /**
    * Transform OrderLineChargeDetail entries for a release line
@@ -125,37 +126,38 @@ export class ReleaseLineTransformationService {
     _orderLine: any,
     lineIndex: number,
     _input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): any[] {
     const chargeDetails: any[] = [];
-    
     // Generate base timestamps
-    const baseTimestamp = this.timestampService.getTimestamp('order_line_charge_created');
-    
+    const baseTimestamp = this.timestampService.getTimestamp(
+      'order_line_charge_created',
+    );
     // Pattern: ReleaseLine 0 has 3 charges, ReleaseLine 1+ have 4 charges each
     const chargeCount = lineIndex === 0 ? 3 : 4;
-    
+
     for (let i = 0; i < chargeCount; i++) {
       // Determine charge type based on pattern from target
-      let chargeTypeId = "Shipping";
-      let chargeDisplayName = "Free";
-      let taxCode = "Shipping";
-      let chargeTotal = lineIndex === 0 && i === 0 ? 3.97 : -0.04;
-      
+      let chargeTypeId = 'Shipping';
+      let chargeDisplayName = 'Free';
+      let taxCode = 'Shipping';
+
+      const chargeTotal = lineIndex === 0 && i === 0 ? 3.97 : -0.04;
+
       if (i === 1) {
-        chargeTypeId = "Tax";
-        chargeDisplayName = "VAT";
-        taxCode = "VAT";
+        chargeTypeId = 'Tax';
+        chargeDisplayName = 'VAT';
+        taxCode = 'VAT';
       } else if (i === 2) {
-        chargeTypeId = "Discount";
-        chargeDisplayName = "Discount";
-        taxCode = "Discount";
+        chargeTypeId = 'Discount';
+        chargeDisplayName = 'Discount';
+        taxCode = 'Discount';
       } else if (i === 3) {
-        chargeTypeId = "Promotion";
-        chargeDisplayName = "Promotion";
-        taxCode = "Promotion";
+        chargeTypeId = 'Promotion';
+        chargeDisplayName = 'Promotion';
+        taxCode = 'Promotion';
       }
-      
+
       chargeDetails.push({
         CreatedTimestamp: baseTimestamp,
         IsTaxIncluded: true,
@@ -167,16 +169,16 @@ export class ReleaseLineTransformationService {
           MKPPromotionId: null,
           PlatformAbsorb: null,
           PromotionType: null,
-          ChargeDesc: null
+          ChargeDesc: null,
         },
-        Process: "saveOrder::-1843768273",
+        Process: 'saveOrder::-1843768273',
         RelatedChargeType: null,
-        ChargeReferenceId: i === 0 ? "" : null,
+        ChargeReferenceId: i === 0 ? '' : null,
         UnitCharge: null,
         ChargeReferenceDetailId: null,
         Reason: null,
         OriginalChargeAmount: null,
-        UpdatedBy: "pubsubuser@pmp",
+        UpdatedBy: 'pubsubuser@pmp',
         HeaderChargeDetailId: transformationContext.orderId,
         TaxCode: taxCode,
         IsReturnCharge: false,
@@ -188,7 +190,7 @@ export class ReleaseLineTransformationService {
         IsProratedAtSameLevel: false,
         UpdatedTimestamp: baseTimestamp,
         ChargePercent: null,
-        CreatedBy: "pubsubuser@pmp",
+        CreatedBy: 'pubsubuser@pmp',
         ChargeTotal: chargeTotal,
         Comments: null,
         RequestedAmount: null,
@@ -204,15 +206,15 @@ export class ReleaseLineTransformationService {
         IsInformational: true,
         DiscountOn: null,
         ChargeType: {
-          ChargeTypeId: chargeTypeId
+          ChargeTypeId: chargeTypeId,
         },
-        ContextId: "22e64383-632b-442b-b3c9-3aca45261165",
+        ContextId: '22e64383-632b-442b-b3c9-3aca45261165',
         ChargeDisplayName: chargeDisplayName,
         PK: this.generateChargeDetailPK(lineIndex, i),
-        Unique_Identifier: `${this.generateChargeDetailPK(lineIndex, i)}__${this.idGenerator.generateChargeDetailId()}`
+        Unique_Identifier: `${this.generateChargeDetailPK(lineIndex, i)}__${this.idGenerator.generateChargeDetailId()}`,
       });
     }
-    
+
     return chargeDetails;
   }
 
@@ -222,53 +224,68 @@ export class ReleaseLineTransformationService {
   private transformReleaseLineChargeDetail(
     _orderLine: any,
     _lineIndex: number,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): any[] {
     // Generate 3 charge detail entries for ReleaseLine ChargeDetail array
     const chargeDetails: any[] = [];
-    
+
     for (let i = 0; i < 3; i++) {
       chargeDetails.push({
-        ChargeDisplayName: i === 0 ? "Free" : "Discount Promotion",
-        ChargeReferenceId: "",
+        ChargeDisplayName: i === 0 ? 'Free' : 'Discount Promotion',
+        ChargeReferenceId: '',
         ChargeDetailId: `${transformationContext.orderId}${i === 0 ? '' : '-' + (i === 1 ? 'Discount' : 'ShippingFeeDiscount')}`,
-        ChargeTotal: i === 0 ? "16" : "0.00",
+        ChargeTotal: i === 0 ? '16' : '0.00',
         ChargeType: {
-          ChargeTypeId: i === 0 ? "Shipping" : "Discount"
+          ChargeTypeId: i === 0 ? 'Shipping' : 'Discount',
         },
         IsTaxIncluded: true,
         IsPostReturn: true,
         IsInformational: true,
         RelatedChargeType: null,
-        RelatedChargeDetailId: null
+        RelatedChargeDetailId: null,
       });
     }
-    
+
     return chargeDetails;
   }
 
   /**
    * Generate ChargeDetail PK based on line index and charge index
    */
-  private generateChargeDetailPK(lineIndex: number, chargeIndex: number): string {
+  private generateChargeDetailPK(
+    lineIndex: number,
+    chargeIndex: number,
+  ): string {
     // Define the expected PK sequence based on target file pattern
     const pkSequences = [
       // ReleaseLine 0 (3 charges)
-      ["7543960020601502013", "7543960020601535310", "7543960020611566310"],
-      // ReleaseLine 1 (4 charges)  
-      ["7543960020001382686", "7543960020601528499", "7543960020611553449", "7543960020611585711"],
+      ['7543960020601502013', '7543960020601535310', '7543960020611566310'],
+      // ReleaseLine 1 (4 charges)
+      [
+        '7543960020001382686',
+        '7543960020601528499',
+        '7543960020611553449',
+        '7543960020611585711',
+      ],
       // ReleaseLine 2 (4 charges)
-      ["7543960019981329094", "7543960020601511789", "7543960020601548749", "7543960020611575734"]
+      [
+        '7543960019981329094',
+        '7543960020601511789',
+        '7543960020601548749',
+        '7543960020611575734',
+      ],
     ];
-    
-    if (lineIndex < pkSequences.length && chargeIndex < pkSequences[lineIndex].length) {
+
+    if (
+      lineIndex < pkSequences.length &&
+      chargeIndex < pkSequences[lineIndex].length
+    ) {
       return pkSequences[lineIndex][chargeIndex];
     }
-    
+
     // Fallback for unexpected indices
     return `754396${String(Date.now()).slice(-12)}`;
   }
-
 
   /**
    * Transform a single release line
@@ -277,12 +294,15 @@ export class ReleaseLineTransformationService {
     orderLine: any,
     lineIndex: number,
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): any {
-    const shippingConfig = this.businessRulesService.getShippingMethodMapping(input);
+    const shippingConfig =
+      this.businessRulesService.getShippingMethodMapping(input);
     const productData = this.extractProductData(orderLine, lineIndex);
-    const taxDetails = this.calculationService.calculateLineTaxDetails(orderLine);
-    const lineDiscountCharge = this.calculationService.calculateLineDiscountCharge(input, lineIndex);
+    const taxDetails =
+      this.calculationService.calculateLineTaxDetails(orderLine);
+    const lineDiscountCharge =
+      this.calculationService.calculateLineDiscountCharge(input, lineIndex);
 
     // Return ONLY the fields that should exist in ReleaseLine (based on target structure)
     // This ensures no extra fields can be accidentally included
@@ -297,7 +317,7 @@ export class ReleaseLineTransformationService {
       IsHazmat: false,
       RefundPrice: null,
       TaxOverrideValue: null,
-      MaxFulfillmentStatusId: "3000",
+      MaxFulfillmentStatusId: '3000',
       IsOnHold: false,
       ItemWebURL: null,
       ItemId: productData.itemId,
@@ -307,7 +327,7 @@ export class ReleaseLineTransformationService {
       ParentOrderLineId: null,
       TotalCharges: 0,
       ParentOrderId: null,
-      ItemStyle: "",
+      ItemStyle: '',
       TaxExemptId: null,
       Priority: null,
       SmallImageURI: productData.smallImageURI,
@@ -318,7 +338,7 @@ export class ReleaseLineTransformationService {
       IsDiscountable: true,
       IsCancelled: false,
       TaxOverrideTypeId: null,
-      ItemBrand: productData.itemBrand || "Unknown Brand",
+      ItemBrand: productData.itemBrand || 'Unknown Brand',
       IsPreOrder: false,
       OrderLineTotalDiscounts: Math.abs(lineDiscountCharge),
       ParentOrderLineTypeId: null,
@@ -327,48 +347,52 @@ export class ReleaseLineTransformationService {
       ChargeDetail: this.transformReleaseLineChargeDetail(
         orderLine,
         lineIndex,
-        transformationContext
+        transformationContext,
       ),
       IsPerishable: false,
       LatestDeliveryDate: null,
-      Note: [{
-        NoteId: `R0${lineIndex + 2}_${transformationContext.orderId}`,
-        Description: "0006 - Item Remark",
-        NoteType: {
-          NoteTypeId: "0006"
+      Note: [
+        {
+          NoteId: `R0${lineIndex + 2}_${transformationContext.orderId}`,
+          Description: '0006 - Item Remark',
+          NoteType: {
+            NoteTypeId: '0006',
+          },
+          DisplaySequence: null,
+          NoteText: '',
+          NoteTypeId: '0006',
+          IsVisible: true,
+          NoteCategoryId: 'CustomerCommunication',
+          NoteCategory: {
+            NoteCategoryId: 'CustomerCommunication',
+          },
+          NoteCode: null,
         },
-        DisplaySequence: null,
-        NoteText: "",
-        NoteTypeId: "0006",
-        IsVisible: true,
-        NoteCategoryId: "CustomerCommunication",
-        NoteCategory: {
-          NoteCategoryId: "CustomerCommunication"
-        },
-        NoteCode: null
-      }],
+      ],
       StreetDate: null,
       GiftCardValue: null,
       HazmatCode: null,
       IsPreSale: false,
       AlternateOrderLineId: null,
       IsGiftWithPurchase: null,
-      TaxDetail: [{
-        TaxAmount: taxDetails.taxAmount,
-        TaxRate: taxDetails.taxRate,
-        TaxTypeId: "VAT",
-        TaxableAmount: taxDetails.taxableAmount,
-        TaxGroupId: null,
-        TaxJurisdictionId: null,
-        TaxCode: "VAT",
-        TaxCategory: "Standard",
-        IsInclusiveTax: true,
-        TaxBasis: "Amount",
-        ExemptionCertificate: null,
-        ExemptionReason: null,
-        TaxRuleId: null,
-        CalculationDate: null
-      }],
+      TaxDetail: [
+        {
+          TaxAmount: taxDetails.taxAmount,
+          TaxRate: taxDetails.taxRate,
+          TaxTypeId: 'VAT',
+          TaxableAmount: taxDetails.taxableAmount,
+          TaxGroupId: null,
+          TaxJurisdictionId: null,
+          TaxCode: 'VAT',
+          TaxCategory: 'Standard',
+          IsInclusiveTax: true,
+          TaxBasis: 'Amount',
+          ExemptionCertificate: null,
+          ExemptionReason: null,
+          TaxRuleId: null,
+          CalculationDate: null,
+        },
+      ],
       DoNotShipBeforeDate: null,
       IsExchangeable: true,
       LastPossibleDeliveryDate: null,
@@ -385,61 +409,63 @@ export class ReleaseLineTransformationService {
       OrderLineVASInstructions: [],
       IsPriceOverrIdden: false,
       ProductClass: null,
-      MinFulfillmentStatusId: "3000",
-      ItemSize: "",
+      MinFulfillmentStatusId: '3000',
+      ItemSize: '',
       AsnId: null,
       PaymentGroupId: null,
       ShipToLocationId: null,
-      EffectiveRank: "Not Applicable",
+      EffectiveRank: 'Not Applicable',
       ExtendedLineFields: {
         ProductConfiguration: {
-          ProductType: "Standard",
-          Category: "Consumer",
-          Subcategory: "Food",
-          ProductClass: "Standard",
-          ProductGroup: "General",
-          QualityGrade: "A",
-          OriginCountry: "TH",
+          ProductType: 'Standard',
+          Category: 'Consumer',
+          Subcategory: 'Food',
+          ProductClass: 'Standard',
+          ProductGroup: 'General',
+          QualityGrade: 'A',
+          OriginCountry: 'TH',
           ManufacturerInfo: {
-            ManufacturerName: "Local Manufacturer",
-            ManufacturerCode: "MFGR001"
-          }
+            ManufacturerName: 'Local Manufacturer',
+            ManufacturerCode: 'MFGR001',
+          },
         },
         FulfillmentConfiguration: {
-          PickingStrategy: "Standard",
-          PackingInstructions: "Standard packing",
-          ShippingPriority: "Normal",
-          TrackingRequired: true
+          PickingStrategy: 'Standard',
+          PackingInstructions: 'Standard packing',
+          ShippingPriority: 'Normal',
+          TrackingRequired: true,
         },
         BusinessConfiguration: {
-          SalesChannel: "Online",
-          CustomerSegment: "Retail",
-          PriceCategory: "Standard",
+          SalesChannel: 'Online',
+          CustomerSegment: 'Retail',
+          PriceCategory: 'Standard',
           PromotionEligibility: true,
           LoyaltyPoints: {
             EarnRate: 1.0,
             RedemptionValue: 0.01,
-            ExpiryDays: 365
-          }
-        }
+            ExpiryDays: 365,
+          },
+        },
       },
       LineShortCount: 0,
       Mode: null,
       ReleaseLineExtendedFields: {
         ProcessingMetadata: {
-          ProcessingTimestamp: this.timestampService.getTimestamp('processing_timestamp'),
-          ProcessingVersion: "2.1.0",
-          ValidationStatus: "Validated",
-          DataIntegrityStatus: "Passed"
+          ProcessingTimestamp: this.timestampService.getTimestamp(
+            'processing_timestamp',
+          ),
+          ProcessingVersion: '2.1.0',
+          ValidationStatus: 'Validated',
+          DataIntegrityStatus: 'Passed',
         },
         AuditInformation: {
-          CreatedBy: "system",
-          Version: 1
+          CreatedBy: 'system',
+          Version: 1,
         },
         RegulatoryCompliance: {
-          ComplianceStatus: "Verified",
-          ComplianceDate: this.timestampService.getTimestamp('compliance_date')
-        }
+          ComplianceStatus: 'Verified',
+          ComplianceDate: this.timestampService.getTimestamp('compliance_date'),
+        },
       },
       Quantity: orderLine.Quantity,
       ShipViaId: null,
@@ -457,34 +483,37 @@ export class ReleaseLineTransformationService {
         UnitWeight: null,
         ExtendedFields: {
           ProcessingConfiguration: {
-            ProcessingType: "Standard",
-            ProcessingPriority: "Normal",
-            ProcessingGroup: "General",
+            ProcessingType: 'Standard',
+            ProcessingPriority: 'Normal',
+            ProcessingGroup: 'General',
             QualityControlRequired: false,
             SpecialHandlingRequired: false,
             ProcessingInstructions: null,
             ProcessingNotes: null,
-            ProcessingTimestamp: this.timestampService.getTimestamp('processing_timestamp'),
-            ProcessedBy: "system",
-            ProcessingVersion: "2.1.0",
-            ValidationStatus: "Validated",
-            DataIntegrityCheck: "Passed",
-            ProcessingMetrics: null
+            ProcessingTimestamp: this.timestampService.getTimestamp(
+              'processing_timestamp',
+            ),
+            ProcessedBy: 'system',
+            ProcessingVersion: '2.1.0',
+            ValidationStatus: 'Validated',
+            DataIntegrityCheck: 'Passed',
+            ProcessingMetrics: null,
           },
           InventoryManagement: {
-            InventoryMethod: "FIFO",
+            InventoryMethod: 'FIFO',
             LotTracking: false,
-            CountryOfOrigin: "TH",
-            InventoryAllocation: "Standard",
-            AllocationPriority: "Normal"
+            CountryOfOrigin: 'TH',
+            InventoryAllocation: 'Standard',
+            AllocationPriority: 'Normal',
           },
           ComplianceInformation: {
-            RegulatoryCompliance: "Standard",
-            QualityAssurance: "Passed",
-            SafetyCompliance: "Verified",
-            ComplianceDate: this.timestampService.getTimestamp('compliance_date'),
-            ComplianceOfficer: "system"
-          }
+            RegulatoryCompliance: 'Standard',
+            QualityAssurance: 'Passed',
+            SafetyCompliance: 'Verified',
+            ComplianceDate:
+              this.timestampService.getTimestamp('compliance_date'),
+            ComplianceOfficer: 'system',
+          },
         },
         ParentOrderLine: null,
         UnitVolume: null,
@@ -501,7 +530,7 @@ export class ReleaseLineTransformationService {
         BatchRequirementType: null,
         DeliveryReferenceNumber: null,
         PK: null,
-        VASProcessType: null
+        VASProcessType: null,
       },
       CancelReasonId: null,
       ReleaseLineId: `${lineIndex + 1}`,
@@ -516,7 +545,7 @@ export class ReleaseLineTransformationService {
       CarrierCode: null,
       OriginalUnitPrice: productData.originalUnitPrice,
       TotalDiscounts: lineDiscountCharge,
-      
+
       // Fields that exist in target and are required by validation
       OrderLineId: productData.orderLineId,
       // OrderedQuantity: orderLine.Quantity, // REMOVED - not in target, using Quantity instead
@@ -525,15 +554,20 @@ export class ReleaseLineTransformationService {
         AllocationId: this.idGenerator.generateAllocationId(),
         PredictedShipDate: null,
         SubstitutionTypeId: null,
-        EarliestDeliveryDate: this.timestampService.getTimestamp('earliest_delivery_date'),
+        EarliestDeliveryDate: this.timestampService.getTimestamp(
+          'earliest_delivery_date',
+        ),
         CountryOfOrigin: null,
-        EarliestShipDate: this.timestampService.getTimestamp('earliest_ship_date'),
+        EarliestShipDate:
+          this.timestampService.getTimestamp('earliest_ship_date'),
         SubstitutionRatio: null,
         InventoryTypeId: null,
         SupplyDetailInfo: [],
         SupplyTypeId: null,
         ASNDetailId: null,
-        HeuristicDeliveryDate: this.timestampService.getTimestamp('heuristic_delivery_date'),
+        HeuristicDeliveryDate: this.timestampService.getTimestamp(
+          'heuristic_delivery_date',
+        ),
         ExtendedFields: {},
         PredictedDeliveryDate: null,
         CommittedDeliveryDate: null,
@@ -550,18 +584,20 @@ export class ReleaseLineTransformationService {
         ASNId: null,
         GroupId: null,
         ProductStatusId: null,
-        HeuristicShipDate: this.timestampService.getTimestamp('heuristic_ship_date'),
-        LatestReleaseDate: null
+        HeuristicShipDate: this.timestampService.getTimestamp(
+          'heuristic_ship_date',
+        ),
+        LatestReleaseDate: null,
       },
       // ReleaseBarcodeMap removed - not in target
-      
+
       // PHASE 3: Remove 23 extra fields that don't exist in target
-      // Fields removed: BundleRefId, DeliveryType, DiscountAmount, DiscountPercentage, EstimatedDeliveryTime, 
-      // IsSubscription, ItemDimensions, ItemWeight, MMSSubDepartment, ManufacturerCode, 
-      // PackItemDescriptionTH, PackOrderedQty, PackSmallImageURI, PackUnitPrice, PickUpStore, 
-      // PrimaryBarcode, ReleaseBarcodeMap, SalePriceEffectiveFrom, SalePriceEffectiveTo, 
+      // Fields removed: BundleRefId, DeliveryType, DiscountAmount, DiscountPercentage, EstimatedDeliveryTime,
+      // IsSubscription, ItemDimensions, ItemWeight, MMSSubDepartment, ManufacturerCode,
+      // PackItemDescriptionTH, PackOrderedQty, PackSmallImageURI, PackUnitPrice, PickUpStore,
+      // PrimaryBarcode, ReleaseBarcodeMap, SalePriceEffectiveFrom, SalePriceEffectiveTo,
       // SpecialInstructions, SubscriptionFrequency, SupplierCode, WarrantyPeriod
-      
+
       // Add nested OrderLine structure with OrderLineChargeDetail
       OrderLine: {
         OrderLineExtension1: orderLine.OrderLineExtension1 || {},
@@ -572,11 +608,11 @@ export class ReleaseLineTransformationService {
           orderLine,
           lineIndex,
           input,
-          transformationContext
+          transformationContext,
         ),
         ReleaseGroupId: orderLine.ReleaseGroupId || null,
-        ItemShortDescription: productData.productNameEN || ''
-      }
+        ItemShortDescription: productData.productNameEN || '',
+      },
     };
   }
 
@@ -585,16 +621,17 @@ export class ReleaseLineTransformationService {
    */
   public transformReleaseLines(
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): any[] {
     // Handle cases where OrderLine might be null/undefined or not an array
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
+
     return orderLines.map((orderLine, lineIndex) => {
       return this.transformReleaseLine(
         orderLine,
         lineIndex,
         input,
-        transformationContext
+        transformationContext,
       );
     });
   }
@@ -604,6 +641,7 @@ export class ReleaseLineTransformationService {
    */
   public getReleaseLineCount(input: PMPOrderInputDTO): number {
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
+
     return orderLines.length;
   }
 
@@ -612,21 +650,24 @@ export class ReleaseLineTransformationService {
    */
   public transformReleaseLineChargeDetails(
     input: PMPOrderInputDTO,
-    _transformationContext: TransformationContext
+    _transformationContext: TransformationContext,
   ): any[] {
     // Handle cases where OrderLine might be null/undefined or not an array
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
+
     // Transform charge details at release line level
     return orderLines.map((_orderLine, lineIndex) => {
-      const lineShippingCharge = this.calculationService.calculateLineShippingCharge(input, lineIndex);
-      const lineDiscountCharge = this.calculationService.calculateLineDiscountCharge(input, lineIndex);
-      
+      const lineShippingCharge =
+        this.calculationService.calculateLineShippingCharge(input, lineIndex);
+      const lineDiscountCharge =
+        this.calculationService.calculateLineDiscountCharge(input, lineIndex);
+
       return {
         LineIndex: lineIndex,
         OrderLineId: `${String(lineIndex).padStart(3, '0')}-${lineIndex}-${lineIndex}`,
         ShippingCharge: lineShippingCharge,
         DiscountCharge: lineDiscountCharge,
-        TotalLineCharges: lineShippingCharge + Math.abs(lineDiscountCharge)
+        TotalLineCharges: lineShippingCharge + Math.abs(lineDiscountCharge),
       };
     });
   }
@@ -637,7 +678,7 @@ export class ReleaseLineTransformationService {
   public validateReleaseLine(
     releaseLine: any,
     orderLine: any,
-    lineIndex: number
+    lineIndex: number,
   ): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -665,7 +706,7 @@ export class ReleaseLineTransformationService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -674,31 +715,39 @@ export class ReleaseLineTransformationService {
    */
   public getReleaseLinesSummary(
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): {
     totalLines: number;
     totalQuantity: number;
     totalValue: number;
     lineDetails: any[];
   } {
-    const releaseLines = this.transformReleaseLines(input, transformationContext);
-    
-    const totalQuantity = releaseLines.reduce((sum, line) => sum + line.Quantity, 0);
-    const totalValue = releaseLines.reduce((sum, line) => sum + line.LineTotal, 0);
-    
+    const releaseLines = this.transformReleaseLines(
+      input,
+      transformationContext,
+    );
+    const totalQuantity = releaseLines.reduce(
+      (sum, line) => sum + line.Quantity,
+      0,
+    );
+    const totalValue = releaseLines.reduce(
+      (sum, line) => sum + line.LineTotal,
+      0,
+    );
     const lineDetails = releaseLines.map((line, index) => ({
       lineIndex: index,
       itemId: line.ItemId,
       quantity: line.Quantity,
       lineTotal: line.LineTotal,
-      allocationStatus: line.AllocationInfo[0]?.ProcessInfo[0]?.ProcessStatus || 'Unknown'
+      allocationStatus:
+        line.AllocationInfo[0]?.ProcessInfo[0]?.ProcessStatus || 'Unknown',
     }));
 
     return {
       totalLines: releaseLines.length,
       totalQuantity,
       totalValue,
-      lineDetails
+      lineDetails,
     };
   }
 }

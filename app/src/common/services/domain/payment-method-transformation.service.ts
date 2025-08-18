@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TimestampService } from '../shared/timestamp.service';
+
 import { DynamicIdGeneratorService } from '../dynamic-id-generator.service';
+import { TimestampService } from '../shared/timestamp.service';
+
 import { PaymentTransactionTransformationService } from './payment-transaction-transformation.service';
 import { TransformationContext } from './payment-transformation.service';
 
@@ -9,26 +11,33 @@ export class PaymentMethodTransformationService {
   constructor(
     private readonly timestampService: TimestampService,
     private readonly idGenerator: DynamicIdGeneratorService,
-    private readonly paymentTransactionService: PaymentTransactionTransformationService
+    private readonly paymentTransactionService: PaymentTransactionTransformationService,
   ) {}
 
   /**
    * Transform payment method objects from input to release format
    */
-  public transformPaymentMethods(paymentMethods: any[], context: TransformationContext): any[] {
+  public transformPaymentMethods(
+    paymentMethods: any[],
+    context: TransformationContext,
+  ): any[] {
     // Handle cases where paymentMethods might be null/undefined or not an array
     const methods = Array.isArray(paymentMethods) ? paymentMethods : [];
-    
+
     return methods.map(method => ({
       Actions: {},
       PK: this.idGenerator.generatePaymentMethodId(),
-      CreatedBy: "pubsubuser@pmp",
-      CreatedTimestamp: this.timestampService.getTimestamp('payment_method_created'),
-      UpdatedBy: "pubsubuser@pmp",
-      UpdatedTimestamp: this.timestampService.getTimestamp('payment_method_updated'),
+      CreatedBy: 'pubsubuser@pmp',
+      CreatedTimestamp: this.timestampService.getTimestamp(
+        'payment_method_created',
+      ),
+      UpdatedBy: 'pubsubuser@pmp',
+      UpdatedTimestamp: this.timestampService.getTimestamp(
+        'payment_method_updated',
+      ),
       Messages: null,
       OrgId: context.orgId,
-      PaymentMethodId: "fcf8e04e-f409-408d-b103-233af73af95e",
+      PaymentMethodId: 'fcf8e04e-f409-408d-b103-233af73af95e',
       CurrencyCode: method.CurrencyCode,
       AlternateCurrencyCode: null,
       ConversionRate: null,
@@ -50,7 +59,7 @@ export class PaymentMethodTransformationService {
       ChargeSequence: null,
       IsSuspended: method.IsSuspended,
       EntryTypeId: null,
-      GatewayId: "Simulator",
+      GatewayId: 'Simulator',
       RoutingNumber: null,
       RoutingDisplayNumber: null,
       CheckNumber: null,
@@ -77,53 +86,65 @@ export class PaymentMethodTransformationService {
       ShopperReference: null,
       SuggestedAmount: null,
       PurgeDate: null,
-      BillingAddress: this.transformBillingAddress(method.BillingAddress, context),
+      BillingAddress: this.transformBillingAddress(
+        method.BillingAddress,
+        context,
+      ),
       PaymentMethodAttribute: [],
       PaymentMethodEncrAttribute: [],
-      PaymentTransaction: this.paymentTransactionService.transformPaymentTransactions(
-        method.PaymentTransaction || [],
-        context
-      ),
+      PaymentTransaction:
+        this.paymentTransactionService.transformPaymentTransactions(
+          method.PaymentTransaction || [],
+          context,
+        ),
       ParentOrderPaymentMethod: [],
       PaymentType: {
-        PaymentTypeId: "Cash On Delivery"
+        PaymentTypeId: 'Cash On Delivery',
       },
       CardType: null,
       AccountType: null,
       PaymentCategory: null,
       Extended: {
-        BillingNameString: `${method.BillingAddress?.Address?.FirstName || ''} ${method.BillingAddress?.Address?.LastName || ''}`.trim(),
+        BillingNameString:
+          `${method.BillingAddress?.Address?.FirstName || ''} ${method.BillingAddress?.Address?.LastName || ''}`.trim(),
         BillingAddressString: `${method.BillingAddress?.Address?.Address1 || ''},${method.BillingAddress?.Address?.Address2 || ''},`,
         InstallmentPlan: null,
         BillingAddressString2: `${method.BillingAddress?.Address?.City || ''},${method.BillingAddress?.Address?.County || ''},${method.BillingAddress?.Address?.State || ''},${method.BillingAddress?.Address?.Country || ''},${method.BillingAddress?.Address?.PostalCode || ''}`,
-        InstallmentRate: null
-      }
+        InstallmentRate: null,
+      },
     }));
   }
 
   /**
    * Transform billing address object
    */
-  public transformBillingAddress(billingAddress: any, context: TransformationContext): any {
+  public transformBillingAddress(
+    billingAddress: any,
+    context: TransformationContext,
+  ): any {
     // Handle cases where billingAddress might be null/undefined or missing Address
     const addressData = billingAddress?.Address || {};
     const extendedData = billingAddress?.Extended || {};
-    
+
     return {
       Actions: {},
       PK: this.idGenerator.generateBillingAddressId(),
-      CreatedBy: "pubsubuser@pmp",
-      CreatedTimestamp: this.timestampService.getTimestamp('billing_address_created'),
-      UpdatedBy: "pubsubuser@pmp",
-      UpdatedTimestamp: this.timestampService.getTimestamp('billing_address_updated'),
+      CreatedBy: 'pubsubuser@pmp',
+      CreatedTimestamp: this.timestampService.getTimestamp(
+        'billing_address_created',
+      ),
+      UpdatedBy: 'pubsubuser@pmp',
+      UpdatedTimestamp: this.timestampService.getTimestamp(
+        'billing_address_updated',
+      ),
       Messages: null,
       OrgId: context.orgId,
       Address: addressData,
       PurgeDate: null,
       Extended: {
         ...extendedData,
-        AddressRef: "|||4016|TH"
-      }
+        AddressRef: '|||4016|TH',
+      },
     };
   }
 }

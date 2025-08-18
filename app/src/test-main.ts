@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+
 import { TestAppModule } from './test-app.module';
 
 /**
@@ -19,10 +20,13 @@ async function bootstrap() {
 
   // Start the server
   const port = process.env.APP_PORT || 3001;
+
   await app.listen(port);
 
   console.log(`🚀 Test Application is running on: http://localhost:${port}`);
-  console.log(`🎯 Test transformation endpoint: http://localhost:${port}/api/test`);
+  console.log(
+    `🎯 Test transformation endpoint: http://localhost:${port}/api/test`,
+  );
   console.log(`💚 Health check endpoint: http://localhost:${port}/api/health`);
 }
 

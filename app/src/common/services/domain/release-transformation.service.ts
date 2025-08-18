@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+
 import { PMPOrderInputDTO } from '../../dtos/release-create-order.dto';
 import { DynamicIdGeneratorService } from '../dynamic-id-generator.service';
 import { TimestampService } from '../shared/timestamp.service';
+
 import { TransformationContext } from './payment-transformation.service';
 
 /**
  * Service responsible for release header transformation logic.
  * Handles release-level metadata, configuration, and coordination with release lines.
- * 
+ *
  * Domain: Releases
  * Tables: releases
  * Responsibilities: Release creation, metadata management, release coordination
@@ -16,7 +18,7 @@ import { TransformationContext } from './payment-transformation.service';
 export class ReleaseTransformationService {
   constructor(
     private readonly idGenerator: DynamicIdGeneratorService,
-    private readonly timestampService: TimestampService
+    private readonly timestampService: TimestampService,
   ) {}
 
   /**
@@ -24,24 +26,29 @@ export class ReleaseTransformationService {
    */
   public transformReleaseHeader(
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): any {
     return {
       ReleaseId: this.idGenerator.generateReleaseId(),
       ReleaseNumber: `REL-${input.OrderId}`,
-      ReleaseType: "Standard",
-      ReleaseStatus: "Open",
-      Priority: "Normal",
+      ReleaseType: 'Standard',
+      ReleaseStatus: 'Open',
+      Priority: 'Normal',
       CreatedDate: this.timestampService.getTimestamp('release_created_date'),
       ModifiedDate: this.timestampService.getTimestamp('release_modified_date'),
       OrderId: transformationContext.orderId,
       OrgId: transformationContext.orgId,
       TotalLines: this.calculateTotalLines(input),
       TotalQuantity: this.calculateTotalQuantity(input),
-      EstimatedReleaseDate: this.timestampService.getTimestamp('estimated_release_date'),
+      EstimatedReleaseDate: this.timestampService.getTimestamp(
+        'estimated_release_date',
+      ),
       ActualReleaseDate: null,
       Notes: this.transformReleaseNotes(input),
-      ExtendedFields: this.transformReleaseExtendedFields(input, transformationContext)
+      ExtendedFields: this.transformReleaseExtendedFields(
+        input,
+        transformationContext,
+      ),
     };
   }
 
@@ -50,6 +57,7 @@ export class ReleaseTransformationService {
    */
   private calculateTotalLines(input: PMPOrderInputDTO): number {
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
+
     return orderLines.length;
   }
 
@@ -58,6 +66,7 @@ export class ReleaseTransformationService {
    */
   private calculateTotalQuantity(input: PMPOrderInputDTO): number {
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
+
     return orderLines.reduce((total, line) => {
       return total + (line.Quantity || 0);
     }, 0);
@@ -68,7 +77,7 @@ export class ReleaseTransformationService {
    */
   private transformReleaseNotes(input: PMPOrderInputDTO): string {
     const notes: string[] = [];
-    
+
     // Add order-level notes if available
     // Note: PMPOrderInputDTO doesn't have a Note field, but we keep this for future extension
     // if (input.Note) {
@@ -77,13 +86,13 @@ export class ReleaseTransformationService {
 
     // Add delivery notes
     notes.push('Release created for order fulfillment');
-    
+
     // Add special instructions if any
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
-    const hasSpecialDelivery = orderLines.some(line => 
-      line.OrderLineExtension1?.Extended?.SlotBookingId
+    const hasSpecialDelivery = orderLines.some(
+      line => line.OrderLineExtension1?.Extended?.SlotBookingId,
     );
-    
+
     if (hasSpecialDelivery) {
       notes.push('Contains time-slot delivery items');
     }
@@ -96,7 +105,7 @@ export class ReleaseTransformationService {
    */
   private transformReleaseExtendedFields(
     input: PMPOrderInputDTO,
-    _transformationContext: TransformationContext
+    _transformationContext: TransformationContext,
   ): any {
     return {
       OriginalOrderId: input.OrderId,
@@ -105,14 +114,14 @@ export class ReleaseTransformationService {
       DeliveryType: this.determineDeliveryType(input),
       FulfillmentPriority: this.determineFulfillmentPriority(input),
       ProcessingLocation: this.determineProcessingLocation(input),
-      ReleaseVersion: "1.0",
-      CreatedBy: "MAO_SERVICE_TRANSFORMER",
-      LastModifiedBy: "MAO_SERVICE_TRANSFORMER",
+      ReleaseVersion: '1.0',
+      CreatedBy: 'MAO_SERVICE_TRANSFORMER',
+      LastModifiedBy: 'MAO_SERVICE_TRANSFORMER',
       BusinessContext: {
-        Marketplace: "TOPS",
-        Channel: "Online",
-        Region: input.OrderLine[0]?.ShipToAddress?.Address?.Country || "TH"
-      }
+        Marketplace: 'TOPS',
+        Channel: 'Online',
+        Region: input.OrderLine[0]?.ShipToAddress?.Address?.Country || 'TH',
+      },
     };
   }
 
@@ -121,15 +130,15 @@ export class ReleaseTransformationService {
    */
   private determineDeliveryType(input: PMPOrderInputDTO): string {
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
-    const hasSlotBooking = orderLines.some(line => 
-      line.OrderLineExtension1?.Extended?.SlotBookingId
+    const hasSlotBooking = orderLines.some(
+      line => line.OrderLineExtension1?.Extended?.SlotBookingId,
     );
-    
+
     if (hasSlotBooking) {
-      return "Scheduled";
+      return 'Scheduled';
     }
 
-    return "Standard";
+    return 'Standard';
   }
 
   /**
@@ -138,16 +147,18 @@ export class ReleaseTransformationService {
   private determineFulfillmentPriority(input: PMPOrderInputDTO): string {
     // Check for expedited delivery
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
-    const hasExpedited = orderLines.some(line => 
-      line.PromisedDeliveryDate && 
-      new Date(line.PromisedDeliveryDate) <= new Date(Date.now() + 24 * 60 * 60 * 1000)
+    const hasExpedited = orderLines.some(
+      line =>
+        line.PromisedDeliveryDate &&
+        new Date(line.PromisedDeliveryDate) <=
+          new Date(Date.now() + 24 * 60 * 60 * 1000),
     );
 
     if (hasExpedited) {
-      return "High";
+      return 'High';
     }
 
-    return "Normal";
+    return 'Normal';
   }
 
   /**
@@ -157,17 +168,20 @@ export class ReleaseTransformationService {
     // Handle cases where OrderLine might be null/undefined or not an array
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
     // Get the most common ship-from location
-    const locations = orderLines.map(line => 
-      line.OrderLinePromisingInfo?.ShipFromLocationId || "WAREHOUSE_001"
+    const locations = orderLines.map(
+      line =>
+        line.OrderLinePromisingInfo?.ShipFromLocationId || 'WAREHOUSE_001',
+    );
+    const locationCounts = locations.reduce(
+      (counts, location) => {
+        counts[location] = (counts[location] || 0) + 1;
+
+        return counts;
+      },
+      {} as Record<string, number>,
     );
 
-    const locationCounts = locations.reduce((counts, location) => {
-      counts[location] = (counts[location] || 0) + 1;
-      return counts;
-    }, {} as Record<string, number>);
-
-    return Object.entries(locationCounts)
-      .sort(([, a], [, b]) => b - a)[0][0];
+    return Object.entries(locationCounts).sort(([, a], [, b]) => b - a)[0][0];
   }
 
   /**
@@ -175,14 +189,14 @@ export class ReleaseTransformationService {
    */
   public transformReleaseSystemFields(): any {
     return {
-      TenantId: "crcpopr11o",
-      MSG_TYPE: "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+      TenantId: 'crcpopr11o',
+      MSG_TYPE: 'OB_XINT_PublishReleaseToStoreMSGType_GCPMT',
       MSG_ID_PK: this.idGenerator.generateMessageId(),
       OUTBOUND_CONDITION_EVALUATION: true,
       ProvisioningProfile: null,
-      OUTBOUND_MSG_TYPE: "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+      OUTBOUND_MSG_TYPE: 'OB_XINT_PublishReleaseToStoreMSGType_GCPMT',
       MessageCategory: null,
-      Location: null
+      Location: null,
     };
   }
 
@@ -191,7 +205,7 @@ export class ReleaseTransformationService {
    */
   public validateReleaseHeader(
     releaseHeader: any,
-    input: PMPOrderInputDTO
+    input: PMPOrderInputDTO,
   ): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -207,18 +221,24 @@ export class ReleaseTransformationService {
     // Validate totals consistency
     const orderLines = Array.isArray(input.OrderLine) ? input.OrderLine : [];
     const expectedTotalLines = orderLines.length;
+
     if (releaseHeader.TotalLines !== expectedTotalLines) {
-      errors.push(`TotalLines mismatch: expected ${expectedTotalLines}, got ${releaseHeader.TotalLines}`);
+      errors.push(
+        `TotalLines mismatch: expected ${expectedTotalLines}, got ${releaseHeader.TotalLines}`,
+      );
     }
 
     const expectedTotalQuantity = this.calculateTotalQuantity(input);
+
     if (releaseHeader.TotalQuantity !== expectedTotalQuantity) {
-      errors.push(`TotalQuantity mismatch: expected ${expectedTotalQuantity}, got ${releaseHeader.TotalQuantity}`);
+      errors.push(
+        `TotalQuantity mismatch: expected ${expectedTotalQuantity}, got ${releaseHeader.TotalQuantity}`,
+      );
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -227,7 +247,7 @@ export class ReleaseTransformationService {
    */
   public getReleaseSummary(
     input: PMPOrderInputDTO,
-    transformationContext: TransformationContext
+    transformationContext: TransformationContext,
   ): {
     releaseId: string;
     totalLines: number;
@@ -236,15 +256,18 @@ export class ReleaseTransformationService {
     priority: string;
     processingLocation: string;
   } {
-    const releaseHeader = this.transformReleaseHeader(input, transformationContext);
-    
+    const releaseHeader = this.transformReleaseHeader(
+      input,
+      transformationContext,
+    );
+
     return {
       releaseId: releaseHeader.ReleaseId,
       totalLines: releaseHeader.TotalLines,
       totalQuantity: releaseHeader.TotalQuantity,
       deliveryType: releaseHeader.ExtendedFields.DeliveryType,
       priority: releaseHeader.ExtendedFields.FulfillmentPriority,
-      processingLocation: releaseHeader.ExtendedFields.ProcessingLocation
+      processingLocation: releaseHeader.ExtendedFields.ProcessingLocation,
     };
   }
 }

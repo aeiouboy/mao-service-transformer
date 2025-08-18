@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 /**
  * Dynamic ID Generator Service
- * 
+ *
  * Replaces hardcoded ID sequences with dynamic, unique ID generation.
  * Ensures every order gets unique IDs to prevent conflicts and enable proper audit trails.
  */
@@ -26,23 +26,21 @@ export class DynamicIdGeneratorService {
   /**
    * Generate a unique ID with optional type prefix
    * Format: {timestamp}{counter}{random}
-   * 
+   *
    * @param type - Optional type identifier (e.g., 'PAYMENT', 'PMT_METHOD')
    * @returns Unique ID string
    */
   generateUniqueId(type?: string): string {
     // Increment counter for each ID generated
     this.idCounter++;
-    
+
     // Create timestamp-based ID
     const timestamp = (this.baseTimestamp + this.idCounter).toString();
-    
     // Add random component for additional uniqueness
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    
     // Combine components
     const uniqueId = `${timestamp}${random}`;
-    
+
     // Add type prefix if provided
     return type ? `${type}_${uniqueId}` : uniqueId;
   }
@@ -51,28 +49,28 @@ export class DynamicIdGeneratorService {
    * Generate Payment-specific ID - deterministic sequence to match expected output
    */
   generatePaymentId(): string {
-    return "7543960027815601342"; // Payment[0].PK - always return first in sequence
+    return '7543960027815601342'; // Payment[0].PK - always return first in sequence
   }
 
   /**
    * Generate PaymentMethod-specific ID - second in sequence
    */
   generatePaymentMethodId(): string {
-    return "7543960028655638704"; // PaymentMethod[0].PK - always return second in sequence
+    return '7543960028655638704'; // PaymentMethod[0].PK - always return second in sequence
   }
 
   /**
    * Generate BillingAddress-specific ID - third in sequence
    */
   generateBillingAddressId(): string {
-    return "7543960028665647216"; // BillingAddress.PK - always return third in sequence
+    return '7543960028665647216'; // BillingAddress.PK - always return third in sequence
   }
 
   /**
    * Generate PaymentTransaction-specific ID - fourth in sequence
    */
   generatePaymentTransactionId(): string {
-    return "7543960028665655444"; // PaymentTransaction.PK - always return fourth in sequence
+    return '7543960028665655444'; // PaymentTransaction.PK - always return fourth in sequence
   }
 
   /**
@@ -81,7 +79,10 @@ export class DynamicIdGeneratorService {
    */
   generateChargeDetailId(): string {
     const timestamp = (Date.now() + this.idCounter++).toString().slice(-8);
-    const random = Math.floor(Math.random() * 9999999).toString().padStart(7, '0');
+    const random = Math.floor(Math.random() * 9999999)
+      .toString()
+      .padStart(7, '0');
+
     return `44401${timestamp}${random}`;
   }
 
@@ -91,7 +92,10 @@ export class DynamicIdGeneratorService {
    */
   generateNoteId(): string {
     const timestamp = (Date.now() + this.idCounter++).toString().slice(-10);
-    const random = Math.floor(Math.random() * 999999).toString().padStart(6, '0');
+    const random = Math.floor(Math.random() * 999999)
+      .toString()
+      .padStart(6, '0');
+
     return `444${timestamp}${random}`;
   }
 
@@ -101,7 +105,10 @@ export class DynamicIdGeneratorService {
    */
   generateAllocationId(): string {
     const timestamp = (Date.now() + this.idCounter++).toString().slice(-10);
-    const random = Math.floor(Math.random() * 99999).toString().padStart(5, '0');
+    const random = Math.floor(Math.random() * 99999)
+      .toString()
+      .padStart(5, '0');
+
     return `17929${timestamp}${random}`;
   }
 
@@ -111,7 +118,10 @@ export class DynamicIdGeneratorService {
    */
   generateReleaseId(): string {
     const timestamp = (Date.now() + this.idCounter++).toString().slice(-8);
-    const random = Math.floor(Math.random() * 999999).toString().padStart(6, '0');
+    const random = Math.floor(Math.random() * 999999)
+      .toString()
+      .padStart(6, '0');
+
     return `REL${timestamp}${random}`;
   }
 
@@ -121,7 +131,10 @@ export class DynamicIdGeneratorService {
    */
   generateMessageId(): string {
     const timestamp = (Date.now() + this.idCounter++).toString();
-    const random = Math.floor(Math.random() * 999999999).toString().padStart(9, '0');
+    const random = Math.floor(Math.random() * 999999999)
+      .toString()
+      .padStart(9, '0');
+
     return `${timestamp}${random}`;
   }
 
@@ -130,13 +143,13 @@ export class DynamicIdGeneratorService {
    * Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
    */
   generateUUIDStyle(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+
       return v.toString(16);
     });
   }
-
 
   /**
    * Get current counter value (useful for debugging)
@@ -167,10 +180,11 @@ export class DynamicIdGeneratorService {
 
     for (let i = 0; i < count; i++) {
       let newId: string;
+
       do {
         newId = this.generateUniqueId(type);
       } while (usedIds.has(newId)); // Ensure uniqueness within batch
-      
+
       ids.push(newId);
       usedIds.add(newId);
     }

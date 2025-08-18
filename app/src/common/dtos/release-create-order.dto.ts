@@ -1,14 +1,14 @@
 import { Type } from 'class-transformer';
 import {
-  IsNumber,
-  IsString,
-  IsOptional,
-  IsInt,
-  IsDefined,
-  IsObject,
-  IsBoolean,
-  IsArray,
   ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsDefined,
+  IsInt,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 
@@ -1957,4 +1957,3 @@ export class ReleaseOutputDTO {
   @Type(() => OriginalHeadersDTO)
   OriginalHeaders: OriginalHeadersDTO;
 }
-

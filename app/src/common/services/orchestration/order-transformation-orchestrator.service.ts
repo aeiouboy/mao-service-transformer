@@ -1,29 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { 
-  PMPOrderInputDTO, 
-  ReleaseOutputDTO
+
+import {
+  PMPOrderInputDTO,
+  ReleaseOutputDTO,
 } from '../../dtos/release-create-order.dto';
+import { AllocationTransformationService } from '../domain/allocation-transformation.service';
+import { OrderLineTransformationService } from '../domain/order-line-transformation.service';
+import { OrderTransformationService } from '../domain/order-transformation.service';
+import { PaymentMethodTransformationService } from '../domain/payment-method-transformation.service';
+import { PaymentTransactionTransformationService } from '../domain/payment-transaction-transformation.service';
+import {
+  PaymentTransformationService,
+  TransformationContext,
+} from '../domain/payment-transformation.service';
+import { ReleaseLineTransformationService } from '../domain/release-line-transformation.service';
+import { ReleaseTransformationService } from '../domain/release-transformation.service';
 import { DynamicIdGeneratorService } from '../dynamic-id-generator.service';
 import { CalculationService } from '../shared/calculation.service';
 import { TimestampService } from '../shared/timestamp.service';
 
 // Domain Services
-import { OrderTransformationService } from '../domain/order-transformation.service';
-import { OrderLineTransformationService } from '../domain/order-line-transformation.service';
-import { PaymentTransformationService } from '../domain/payment-transformation.service';
-import { PaymentMethodTransformationService } from '../domain/payment-method-transformation.service';
-import { PaymentTransactionTransformationService } from '../domain/payment-transaction-transformation.service';
-import { AllocationTransformationService } from '../domain/allocation-transformation.service';
-import { ReleaseTransformationService } from '../domain/release-transformation.service';
-import { ReleaseLineTransformationService } from '../domain/release-line-transformation.service';
 
 // Context interface from domain services
-import { TransformationContext } from '../domain/payment-transformation.service';
 
 /**
  * Central orchestrator service for order transformation workflows.
  * Coordinates all domain services to produce complete release transformations.
- * 
+ *
  * Responsibilities:
  * - Workflow orchestration and service coordination
  * - Error handling and transaction management
@@ -37,7 +40,7 @@ export class OrderTransformationOrchestratorService {
     private readonly idGenerator: DynamicIdGeneratorService,
     private readonly calculationService: CalculationService,
     private readonly timestampService: TimestampService,
-    
+
     // Domain services
     private readonly orderTransformationService: OrderTransformationService,
     private readonly orderLineTransformationService: OrderLineTransformationService,
@@ -46,7 +49,7 @@ export class OrderTransformationOrchestratorService {
     private readonly paymentTransactionTransformationService: PaymentTransactionTransformationService,
     private readonly allocationTransformationService: AllocationTransformationService,
     private readonly releaseTransformationService: ReleaseTransformationService,
-    private readonly releaseLineTransformationService: ReleaseLineTransformationService
+    private readonly releaseLineTransformationService: ReleaseLineTransformationService,
   ) {}
 
   /**
@@ -57,65 +60,67 @@ export class OrderTransformationOrchestratorService {
     try {
       // Phase 1: Initialize transformation context
       const context = this.initializeTransformationContext(input);
-      
       // Phase 2: Transform order domain
       const orderComponents = this.transformOrderDomain(input, context);
-      
       // Phase 3: Transform payment domain (if payments exist)
       const paymentComponents = this.transformPaymentDomain(input, context);
-      
       // Phase 4: Transform allocation domain
-      const allocationComponents = this.transformAllocationDomain(input, context);
-      
+      const allocationComponents = this.transformAllocationDomain(
+        input,
+        context,
+      );
       // Phase 5: Transform release domain
       const releaseComponents = this.transformReleaseDomain(input, context);
-      
       // Phase 6: Assemble final output
       const finalOutput = this.assembleReleaseOutput(
         orderComponents,
         paymentComponents,
         allocationComponents,
         releaseComponents,
-        context
+        context,
       );
-      
+
       // Phase 7: Validate complete transformation
       this.validateTransformation(finalOutput, input);
-      
+
       return finalOutput;
-      
     } catch (error) {
-      throw new Error(`Transformation orchestration failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Transformation orchestration failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
   /**
    * Initialize transformation context with calculations and timestamps
    */
-  private initializeTransformationContext(input: PMPOrderInputDTO): TransformationContext {
+  private initializeTransformationContext(
+    input: PMPOrderInputDTO,
+  ): TransformationContext {
     // Reset ID generator for consistent patterns
     this.idGenerator.resetCounter();
-    
+
     // Calculate all financial totals
     const orderSubtotal = this.calculationService.calculateOrderSubtotal(input);
     const totalCharges = this.calculationService.calculateShippingCharge(input);
-    const orderTotalTaxes = this.calculationService.calculateOrderTotalTaxes(input);
-    const orderDiscounts = this.calculationService.calculateOrderDiscounts(input);
-
+    const orderTotalTaxes =
+      this.calculationService.calculateOrderTotalTaxes(input);
+    const orderDiscounts =
+      this.calculationService.calculateOrderDiscounts(input);
     // Generate all timestamps
     const timestamps = this.timestampService.getAllStandardTimestamps();
 
     return {
       orderId: input.OrderId,
       orgId: input.OrgId,
-      input: input,
-      timestamps: timestamps,
+      input,
+      timestamps,
       calculationResults: {
         orderSubtotal,
         totalCharges,
         orderTotalTaxes,
-        orderDiscounts
-      }
+        orderDiscounts,
+      },
     };
   }
 
@@ -124,7 +129,7 @@ export class OrderTransformationOrchestratorService {
    */
   private transformOrderDomain(
     input: PMPOrderInputDTO,
-    context: TransformationContext
+    context: TransformationContext,
   ): {
     orderHeader: any;
     orderObject: any;
@@ -135,14 +140,22 @@ export class OrderTransformationOrchestratorService {
   } {
     try {
       // Transform order header components
-      const orderHeader = this.orderTransformationService.transformOrderHeader(input, context);
-      const orderObject = this.orderTransformationService.transformOrderObject(input, context);
-      const chargeDetail = this.orderTransformationService.transformChargeDetail(input, context);
+      const orderHeader = this.orderTransformationService.transformOrderHeader(
+        input,
+        context,
+      );
+      const orderObject = this.orderTransformationService.transformOrderObject(
+        input,
+        context,
+      );
+      const chargeDetail =
+        this.orderTransformationService.transformChargeDetail(input, context);
       const note = this.orderTransformationService.transformNote(input);
-      
       // Transform order lines with dynamic support
-      const orderLines = this.orderLineTransformationService.transformOrderLines(input, context);
-      const deliveryLineCount = this.orderLineTransformationService.getDeliveryLineCount(input);
+      const orderLines =
+        this.orderLineTransformationService.transformOrderLines(input, context);
+      const deliveryLineCount =
+        this.orderLineTransformationService.getDeliveryLineCount(input);
 
       return {
         orderHeader,
@@ -150,10 +163,12 @@ export class OrderTransformationOrchestratorService {
         chargeDetail,
         note,
         orderLines,
-        deliveryLineCount
+        deliveryLineCount,
       };
     } catch (error) {
-      throw new Error(`Order domain transformation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Order domain transformation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -162,7 +177,7 @@ export class OrderTransformationOrchestratorService {
    */
   private transformPaymentDomain(
     input: PMPOrderInputDTO,
-    context: TransformationContext
+    context: TransformationContext,
   ): {
     payments: any[];
     paymentMethods: any[];
@@ -175,29 +190,38 @@ export class OrderTransformationOrchestratorService {
       }
 
       // Transform payment components
-      const payments = this.paymentTransformationService.transformPayments(input.Payment, context);
-      
+      const payments = this.paymentTransformationService.transformPayments(
+        input.Payment,
+        context,
+      );
       // Extract payment methods from payment objects
-      const allPaymentMethods = input.Payment.flatMap(payment => payment.PaymentMethod || []);
-      const paymentMethods = this.paymentMethodTransformationService.transformPaymentMethods(
-        allPaymentMethods,
-        context
+      const allPaymentMethods = input.Payment.flatMap(
+        payment => payment.PaymentMethod || [],
       );
-      
+      const paymentMethods =
+        this.paymentMethodTransformationService.transformPaymentMethods(
+          allPaymentMethods,
+          context,
+        );
       // Extract payment transactions from payment methods
-      const allPaymentTransactions = allPaymentMethods.flatMap(method => method.PaymentTransaction || []);
-      const paymentTransactions = this.paymentTransactionTransformationService.transformPaymentTransactions(
-        allPaymentTransactions,
-        context
+      const allPaymentTransactions = allPaymentMethods.flatMap(
+        method => method.PaymentTransaction || [],
       );
+      const paymentTransactions =
+        this.paymentTransactionTransformationService.transformPaymentTransactions(
+          allPaymentTransactions,
+          context,
+        );
 
       return {
         payments,
         paymentMethods,
-        paymentTransactions
+        paymentTransactions,
       };
     } catch (error) {
-      throw new Error(`Payment domain transformation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Payment domain transformation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -206,22 +230,32 @@ export class OrderTransformationOrchestratorService {
    */
   private transformAllocationDomain(
     input: PMPOrderInputDTO,
-    context: TransformationContext
+    context: TransformationContext,
   ): {
     allocations: Record<number, any[]>;
     allocationSummary: any;
   } {
     try {
       // Transform allocations for all order lines
-      const allocations = this.allocationTransformationService.transformOrderLineAllocations(input, context);
-      const allocationSummary = this.allocationTransformationService.getAllocationSummary(input, context);
+      const allocations =
+        this.allocationTransformationService.transformOrderLineAllocations(
+          input,
+          context,
+        );
+      const allocationSummary =
+        this.allocationTransformationService.getAllocationSummary(
+          input,
+          context,
+        );
 
       return {
         allocations,
-        allocationSummary
+        allocationSummary,
       };
     } catch (error) {
-      throw new Error(`Allocation domain transformation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Allocation domain transformation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -230,7 +264,7 @@ export class OrderTransformationOrchestratorService {
    */
   private transformReleaseDomain(
     input: PMPOrderInputDTO,
-    context: TransformationContext
+    context: TransformationContext,
   ): {
     releaseHeader: any;
     releaseLines: any[];
@@ -239,23 +273,33 @@ export class OrderTransformationOrchestratorService {
   } {
     try {
       // Transform release header
-      const releaseHeader = this.releaseTransformationService.transformReleaseHeader(input, context);
-      
+      const releaseHeader =
+        this.releaseTransformationService.transformReleaseHeader(
+          input,
+          context,
+        );
       // Transform release lines
-      const releaseLines = this.releaseLineTransformationService.transformReleaseLines(input, context);
-      const releaseLineCount = this.releaseLineTransformationService.getReleaseLineCount(input);
-      
+      const releaseLines =
+        this.releaseLineTransformationService.transformReleaseLines(
+          input,
+          context,
+        );
+      const releaseLineCount =
+        this.releaseLineTransformationService.getReleaseLineCount(input);
       // Transform system fields
-      const systemFields = this.releaseTransformationService.transformReleaseSystemFields();
+      const systemFields =
+        this.releaseTransformationService.transformReleaseSystemFields();
 
       return {
         releaseHeader,
         releaseLines,
         releaseLineCount,
-        systemFields
+        systemFields,
       };
     } catch (error) {
-      throw new Error(`Release domain transformation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Release domain transformation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -267,11 +311,11 @@ export class OrderTransformationOrchestratorService {
     _paymentComponents: any | null,
     _allocationComponents: any,
     releaseComponents: any,
-    _context: TransformationContext
+    _context: TransformationContext,
   ): ReleaseOutputDTO {
     try {
       // Phase 2: Clean structure without additional metadata fields
-      
+
       // Base release output structure with correct field sequence to match target
       const orderHeader = orderComponents.orderHeader;
       const releaseOutput = {
@@ -296,14 +340,14 @@ export class OrderTransformationOrchestratorService {
           ReleaseTotal: orderHeader.ReleaseTotal,
           TaxExemptId: orderHeader.TaxExemptId,
           AddressId: orderHeader.AddressId,
-          
+
           // Order object must appear right after AddressId (target line 22)
           Order: orderComponents.orderObject,
-          
+
           // Add back fields that were moved to correct positions
           TotalCharges: orderHeader.TotalCharges,
           ExternalShipFromLocationId: orderHeader.ExternalShipFromLocationId,
-          
+
           // Continue with remaining orderHeader fields in target sequence
           AVSReasonId: orderHeader.AVSReasonId,
           Address1: orderHeader.Address1,
@@ -374,21 +418,24 @@ export class OrderTransformationOrchestratorService {
           TaxDetail: orderHeader.TaxDetail,
           TaxExemptReasonId: orderHeader.TaxExemptReasonId,
           TotalDiscounts: orderHeader.TotalDiscounts,
-          TotalTaxes: orderHeader.TotalTaxes
+          TotalTaxes: orderHeader.TotalTaxes,
         },
-        OriginalHeaders: this.generateOriginalHeaders(_context)
+        OriginalHeaders: this.generateOriginalHeaders(_context),
       };
 
       // Add payment components to Order object if they exist
       if (_paymentComponents && _paymentComponents.payments) {
-        releaseOutput.OriginalPayload.Order.Payment = _paymentComponents.payments;
+        releaseOutput.OriginalPayload.Order.Payment =
+          _paymentComponents.payments;
       }
 
       // Return with type assertion since the current output structure
       // may not match the strict DTO definition but maintains compatibility
       return releaseOutput as unknown as ReleaseOutputDTO;
     } catch (error) {
-      throw new Error(`Release output assembly failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Release output assembly failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -397,7 +444,7 @@ export class OrderTransformationOrchestratorService {
    */
   private validateTransformation(
     output: ReleaseOutputDTO,
-    input: PMPOrderInputDTO
+    input: PMPOrderInputDTO,
   ): void {
     try {
       const errors: string[] = [];
@@ -414,12 +461,16 @@ export class OrderTransformationOrchestratorService {
       // }
 
       // Validate order line count consistency
-      if (output.OriginalPayload?.ReleaseLine?.length !== input.OrderLine.length) {
+      if (
+        output.OriginalPayload?.ReleaseLine?.length !== input.OrderLine.length
+      ) {
         errors.push('Release line count does not match input order line count');
       }
 
       // Validate delivery line count
-      if (output.OriginalPayload?.NoOfDeliveryLines !== input.OrderLine.length) {
+      if (
+        output.OriginalPayload?.NoOfDeliveryLines !== input.OrderLine.length
+      ) {
         errors.push('NoOfDeliveryLines does not match actual line count');
       }
 
@@ -430,7 +481,9 @@ export class OrderTransformationOrchestratorService {
         throw new Error(`Validation failed: ${errors.join('; ')}`);
       }
     } catch (error) {
-      throw new Error(`Transformation validation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Transformation validation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -440,18 +493,19 @@ export class OrderTransformationOrchestratorService {
   private validateDomainComponents(
     output: ReleaseOutputDTO,
     input: PMPOrderInputDTO,
-    errors: string[]
+    errors: string[],
   ): void {
     try {
       // Validate release lines
       if (output.OriginalPayload?.ReleaseLine) {
         output.OriginalPayload.ReleaseLine.forEach((releaseLine, index) => {
-          const validation = this.releaseLineTransformationService.validateReleaseLine(
-            releaseLine,
-            input.OrderLine[index],
-            index
-          );
-          
+          const validation =
+            this.releaseLineTransformationService.validateReleaseLine(
+              releaseLine,
+              input.OrderLine[index],
+              index,
+            );
+
           if (!validation.isValid) {
             errors.push(...validation.errors);
           }
@@ -460,7 +514,9 @@ export class OrderTransformationOrchestratorService {
 
       // Additional validations can be added here for other domains
     } catch (error) {
-      errors.push(`Domain validation failed: ${error instanceof Error ? error.message : String(error)}`);
+      errors.push(
+        `Domain validation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -476,14 +532,19 @@ export class OrderTransformationOrchestratorService {
     requiredServices: string[];
   } {
     const totalLines = input.OrderLine.length;
-    const totalQuantity = input.OrderLine.reduce((sum, line) => sum + line.Quantity, 0);
+    const totalQuantity = input.OrderLine.reduce(
+      (sum, line) => sum + line.Quantity,
+      0,
+    );
     const hasPayments = input.Payment && input.Payment.length > 0;
-    
+
     // Estimate complexity based on order characteristics
     let estimatedComplexity: 'Low' | 'Medium' | 'High' = 'Low';
+
     if (totalLines > 10 || hasPayments || totalQuantity > 50) {
       estimatedComplexity = 'Medium';
     }
+
     if (totalLines > 20 || totalQuantity > 100) {
       estimatedComplexity = 'High';
     }
@@ -494,14 +555,14 @@ export class OrderTransformationOrchestratorService {
       'OrderLineTransformationService',
       'AllocationTransformationService',
       'ReleaseTransformationService',
-      'ReleaseLineTransformationService'
+      'ReleaseLineTransformationService',
     ];
 
     if (hasPayments) {
       requiredServices.push(
         'PaymentTransformationService',
         'PaymentMethodTransformationService',
-        'PaymentTransactionTransformationService'
+        'PaymentTransactionTransformationService',
       );
     }
 
@@ -511,7 +572,7 @@ export class OrderTransformationOrchestratorService {
       totalQuantity,
       hasPayments,
       estimatedComplexity,
-      requiredServices
+      requiredServices,
     };
   }
 
@@ -531,11 +592,26 @@ export class OrderTransformationOrchestratorService {
       const services = [
         { name: 'CalculationService', service: this.calculationService },
         { name: 'TimestampService', service: this.timestampService },
-        { name: 'OrderTransformationService', service: this.orderTransformationService },
-        { name: 'OrderLineTransformationService', service: this.orderLineTransformationService },
-        { name: 'AllocationTransformationService', service: this.allocationTransformationService },
-        { name: 'ReleaseTransformationService', service: this.releaseTransformationService },
-        { name: 'ReleaseLineTransformationService', service: this.releaseLineTransformationService }
+        {
+          name: 'OrderTransformationService',
+          service: this.orderTransformationService,
+        },
+        {
+          name: 'OrderLineTransformationService',
+          service: this.orderLineTransformationService,
+        },
+        {
+          name: 'AllocationTransformationService',
+          service: this.allocationTransformationService,
+        },
+        {
+          name: 'ReleaseTransformationService',
+          service: this.releaseTransformationService,
+        },
+        {
+          name: 'ReleaseLineTransformationService',
+          service: this.releaseLineTransformationService,
+        },
       ];
 
       for (const { name, service } of services) {
@@ -549,7 +625,9 @@ export class OrderTransformationOrchestratorService {
           }
         } catch (error) {
           serviceStatus[name] = false;
-          errors.push(`${name} health check failed: ${error instanceof Error ? error.message : String(error)}`);
+          errors.push(
+            `${name} health check failed: ${error instanceof Error ? error.message : String(error)}`,
+          );
         }
       }
 
@@ -558,59 +636,64 @@ export class OrderTransformationOrchestratorService {
       return {
         isHealthy,
         serviceStatus,
-        errors
+        errors,
       };
     } catch (error) {
       return {
         isHealthy: false,
         serviceStatus,
-        errors: [`Health check failed: ${error instanceof Error ? error.message : String(error)}`]
+        errors: [
+          `Health check failed: ${error instanceof Error ? error.message : String(error)}`,
+        ],
       };
     }
   }
-
 
   /**
    * Generate OriginalHeaders structure to match target format
    */
   private generateOriginalHeaders(context: TransformationContext): any {
-    const currentTimestamp = this.timestampService.getTimestamp('msg_submission_time');
-    const currentTimestampUTC = this.timestampService.getTimestamp('msg_submission_time_utc');
-    
+    const currentTimestamp = this.timestampService.getTimestamp(
+      'msg_submission_time',
+    );
+    const currentTimestampUTC = this.timestampService.getTimestamp(
+      'msg_submission_time_utc',
+    );
+
     return {
       SelectedLocation: null,
-      User: "pubsubuser@pmp",
+      User: 'pubsubuser@pmp',
       Organization: context.orgId,
-      IsRetransmitMsg: "true",
+      IsRetransmitMsg: 'true',
       msg_submission_time: currentTimestamp,
       SelectedBusinessUnit: null,
       Label: null,
-      fromInboundServiceId: "PayloadMsgProcessor",
+      fromInboundServiceId: 'PayloadMsgProcessor',
       msg_submission_time_utc: currentTimestampUTC,
-      BROKER_ADDRESS: "",
-      BROKER_TYPE: "googlepubsub",
+      BROKER_ADDRESS: '',
+      BROKER_TYPE: 'googlepubsub',
       SPAN_ID: this.idGenerator.generateSpanId(),
-      APP_ID_TRACE: "com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf",
-      PERSIST_TO_MSG_STORE: "true",
-      ComponentName: "xint",
+      APP_ID_TRACE: 'com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf',
+      PERSIST_TO_MSG_STORE: 'true',
+      ComponentName: 'xint',
       SelectedOrganization: context.orgId,
-      AllBusinessUnitsAccessible: "false",
-      TRANSACTIONAL: "false",
-      UserLocale: "en",
+      AllBusinessUnitsAccessible: 'false',
+      TRANSACTIONAL: 'false',
+      UserLocale: 'en',
       QueueName: `OB_XINT_PublishReleaseToStoreMSGType_GCPQ-${context.orgId}`,
-      direction: "Outbound",
-      fromInboundQueueName: "awpf-payload-queue-ord",
-      "app-id": "com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf",
+      direction: 'Outbound',
+      fromInboundQueueName: 'awpf-payload-queue-ord',
+      'app-id': 'com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf',
       TRACE_ID: this.idGenerator.generateTraceId(),
-      fromInboundMessageType: "awpf-payload",
-      TenantId: "crcpopr11o",
-      MSG_TYPE: "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+      fromInboundMessageType: 'awpf-payload',
+      TenantId: 'crcpopr11o',
+      MSG_TYPE: 'OB_XINT_PublishReleaseToStoreMSGType_GCPMT',
       MSG_ID_PK: this.idGenerator.generateMsgIdPK(),
       OUTBOUND_CONDITION_EVALUATION: true,
       ProvisioningProfile: null,
-      OUTBOUND_MSG_TYPE: "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+      OUTBOUND_MSG_TYPE: 'OB_XINT_PublishReleaseToStoreMSGType_GCPMT',
       MessageCategory: null,
-      Location: null
+      Location: null,
     };
   }
 }

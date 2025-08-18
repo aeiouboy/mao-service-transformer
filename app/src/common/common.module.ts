@@ -1,33 +1,37 @@
 import { Module } from '@nestjs/common';
 
 // Shared Services
-import { DynamicIdGeneratorService } from './services/dynamic-id-generator.service';
-import { CalculationService } from './services/shared/calculation.service';
-import { BusinessRulesService } from './services/shared/business-rules.service';
-import { TimestampService } from './services/shared/timestamp.service';
-import { FileOutputService } from './services/shared/file-output.service';
-
-// Domain Services
-import { PaymentTransformationService } from './services/domain/payment-transformation.service';
+import { CancelOrderController } from './controllers/cancel-order.controller';
+import { SimpleTransformController } from './controllers/simple-transform.controller';
+import { AllocationTransformationService } from './services/domain/allocation-transformation.service';
+import { CancelFieldMappingService } from './services/domain/cancel-field-mapping.service';
+import { FileBasedOrderRepositoryService } from './services/domain/file-based-order-repository.service';
+import { OrderCancellationService } from './services/domain/order-cancellation.service';
+import { OrderLineTransformationService } from './services/domain/order-line-transformation.service';
+import { OrderTransformationService } from './services/domain/order-transformation.service';
 import { PaymentMethodTransformationService } from './services/domain/payment-method-transformation.service';
 import { PaymentTransactionTransformationService } from './services/domain/payment-transaction-transformation.service';
-import { OrderTransformationService } from './services/domain/order-transformation.service';
-import { OrderLineTransformationService } from './services/domain/order-line-transformation.service';
-import { AllocationTransformationService } from './services/domain/allocation-transformation.service';
-import { ReleaseTransformationService } from './services/domain/release-transformation.service';
+import { PaymentTransformationService } from './services/domain/payment-transformation.service';
 import { ReleaseLineTransformationService } from './services/domain/release-line-transformation.service';
+import { ReleaseTransformationService } from './services/domain/release-transformation.service';
+import { DynamicIdGeneratorService } from './services/dynamic-id-generator.service';
+import { OrderTransformationOrchestratorService } from './services/orchestration/order-transformation-orchestrator.service';
+import { ReleaseOrderTransformationService } from './services/release-order-transformation.service';
+import { BusinessRulesService } from './services/shared/business-rules.service';
+import { CalculationService } from './services/shared/calculation.service';
+import { FileOutputService } from './services/shared/file-output.service';
+import { TimestampService } from './services/shared/timestamp.service';
+
+// Domain Services
 
 // Orchestration Services
-import { OrderTransformationOrchestratorService } from './services/orchestration/order-transformation-orchestrator.service';
 
 // Main Transformation Service (Facade)
-import { ReleaseOrderTransformationService } from './services/release-order-transformation.service';
 
 // Controllers
-import { SimpleTransformController } from './controllers/simple-transform.controller';
 
 @Module({
-  controllers: [SimpleTransformController],
+  controllers: [SimpleTransformController, CancelOrderController],
   providers: [
     // Shared Services
     DynamicIdGeneratorService,
@@ -35,7 +39,7 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     BusinessRulesService,
     TimestampService,
     FileOutputService,
-    
+
     // Domain Services (Order: dependency order matters)
     PaymentTransactionTransformationService,
     PaymentMethodTransformationService,
@@ -45,10 +49,13 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     AllocationTransformationService,
     ReleaseTransformationService,
     ReleaseLineTransformationService,
-    
+    FileBasedOrderRepositoryService,
+    CancelFieldMappingService,
+    OrderCancellationService,
+
     // Orchestration Services
     OrderTransformationOrchestratorService,
-    
+
     // Main Transformation Service (Facade)
     ReleaseOrderTransformationService,
   ],
@@ -59,7 +66,7 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     BusinessRulesService,
     TimestampService,
     FileOutputService,
-    
+
     // Export domain services
     PaymentTransformationService,
     PaymentMethodTransformationService,
@@ -69,10 +76,13 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     AllocationTransformationService,
     ReleaseTransformationService,
     ReleaseLineTransformationService,
-    
+    FileBasedOrderRepositoryService,
+    CancelFieldMappingService,
+    OrderCancellationService,
+
     // Export orchestration services
     OrderTransformationOrchestratorService,
-    
+
     // Export main service
     ReleaseOrderTransformationService,
   ],
