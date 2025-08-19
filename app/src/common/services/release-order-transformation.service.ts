@@ -30,11 +30,11 @@ export class ReleaseOrderTransformationService {
   ) {}
 
   /**
-   * Calculate shipping charges based on order data
-   * @deprecated Use calculationService.calculateShippingCharge instead
+   * Calculate total charges from OrderChargeDetail (CSV compliant)
+   * @deprecated Use calculationService.calculateTotalCharges instead
    */
   public calculateShippingCharge(input: PMPOrderInputDTO): number {
-    return this.calculationService.calculateShippingCharge(input);
+    return this.calculationService.calculateTotalCharges(input);
   }
 
   /**

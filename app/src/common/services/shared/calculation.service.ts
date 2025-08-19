@@ -49,39 +49,42 @@ export class CalculationService {
   }
 
   /**
-   * Calculate shipping charges based on order data
+   * Calculate total charges from OrderChargeDetail array (CSV compliant)
+   * CSV #54: TotalCharges = SUM OrderChargeDetail[].ChargeTotal
    */
-  public calculateShippingCharge(input: PMPOrderInputDTO): number {
-    // Calculate shipping charge based on order line total
-    const orderSubtotal = this.calculateOrderSubtotal(input);
+  public calculateTotalCharges(input: PMPOrderInputDTO): number {
+    // Direct mapping as per CSV specification - sum existing charge values
+    return (
+      input.OrderChargeDetail?.reduce((sum, charge) => {
+        const chargeTotal =
+          typeof charge.ChargeTotal === 'string'
+            ? parseFloat(charge.ChargeTotal)
+            : charge.ChargeTotal || 0;
 
-    // Business rule: Free shipping if order > 100, otherwise flat rate
-    if (orderSubtotal >= 100) {
-      return 0;
-    }
-
-    // Calculate proportional shipping charge (approximately 2.5% of subtotal)
-    return Math.round(orderSubtotal * 0.025 * 100) / 100;
+        return sum + chargeTotal;
+      }, 0) || 0
+    );
   }
 
   /**
-   * Calculate line-level shipping charge
+   * Calculate line-level charge allocation from OrderChargeDetail
+   * Used for proportional allocation of existing charges to order lines
    */
-  public calculateLineShippingCharge(
+  public calculateLineChargeAllocation(
     input: PMPOrderInputDTO,
     lineIndex: number,
   ): number {
-    const totalShipping = this.calculateShippingCharge(input);
+    const totalCharges = this.calculateTotalCharges(input);
     const lineSubtotal = this.calculateLineSubtotal(
       input.OrderLine[lineIndex] || input.OrderLine[0],
     );
     const orderSubtotal = this.calculateOrderSubtotal(input);
 
-    // Proportional allocation of shipping cost to this line
+    // Proportional allocation of total charges to this line
     if (orderSubtotal === 0) return 0;
 
     return (
-      Math.round(totalShipping * (lineSubtotal / orderSubtotal) * 100) / 100
+      Math.round(totalCharges * (lineSubtotal / orderSubtotal) * 100) / 100
     );
   }
 

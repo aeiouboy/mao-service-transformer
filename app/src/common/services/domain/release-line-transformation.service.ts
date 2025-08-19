@@ -657,17 +657,17 @@ export class ReleaseLineTransformationService {
 
     // Transform charge details at release line level
     return orderLines.map((_orderLine, lineIndex) => {
-      const lineShippingCharge =
-        this.calculationService.calculateLineShippingCharge(input, lineIndex);
+      const lineChargeAllocation =
+        this.calculationService.calculateLineChargeAllocation(input, lineIndex);
       const lineDiscountCharge =
         this.calculationService.calculateLineDiscountCharge(input, lineIndex);
 
       return {
         LineIndex: lineIndex,
         OrderLineId: `${String(lineIndex).padStart(3, '0')}-${lineIndex}-${lineIndex}`,
-        ShippingCharge: lineShippingCharge,
+        ShippingCharge: lineChargeAllocation,
         DiscountCharge: lineDiscountCharge,
-        TotalLineCharges: lineShippingCharge + Math.abs(lineDiscountCharge),
+        TotalLineCharges: lineChargeAllocation + Math.abs(lineDiscountCharge),
       };
     });
   }

@@ -102,7 +102,7 @@ export class OrderTransformationOrchestratorService {
 
     // Calculate all financial totals
     const orderSubtotal = this.calculationService.calculateOrderSubtotal(input);
-    const totalCharges = this.calculationService.calculateShippingCharge(input);
+    const totalCharges = this.calculationService.calculateTotalCharges(input);
     const orderTotalTaxes =
       this.calculationService.calculateOrderTotalTaxes(input);
     const orderDiscounts =
