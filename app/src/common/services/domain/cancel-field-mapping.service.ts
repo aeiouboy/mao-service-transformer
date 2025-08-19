@@ -755,6 +755,7 @@ export class CancelFieldMappingService {
    * @param line - Order line data
    * @returns any - ShipToAddress object
    */
+  // @ts-ignore - Reserved for future implementation
   private buildShipToAddress(_line: any): any {
     return {
       AddressName: null,
@@ -789,6 +790,7 @@ export class CancelFieldMappingService {
    * @param cancelTimestamp - Cancellation timestamp
    * @returns any - OrderLinePromisingInfo object
    */
+  // @ts-ignore - Reserved for future implementation
   private buildOrderLinePromisingInfo(
     _line: any,
     _cancelTimestamp: string,

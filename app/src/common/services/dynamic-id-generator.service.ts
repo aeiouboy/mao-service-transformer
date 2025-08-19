@@ -212,4 +212,13 @@ export class DynamicIdGeneratorService {
   generateMsgIdPK(): string {
     return Date.now().toString() + Math.random().toString().substring(2, 8);
   }
+
+  /**
+   * Generate Process ID for release order process field
+   * Format: 8-digit numeric process identifier
+   */
+  generateProcessId(): string {
+    // Generate consistent process ID for release orders
+    return Math.floor(10000000 + Math.random() * 90000000).toString();
+  }
 }

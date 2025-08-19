@@ -1,0 +1,476 @@
+{
+  "OriginalPayload": {
+    "CancelLineCount": 0,
+    "CancelledOrderSubTotal": null,
+    "SuspendedOrderId": null,
+    "Invoice": [],
+    "BusinessDate": null,
+    "ReturnTrackingDetail": [],
+    "MaxFulfillmentStatusId": "3000",
+    "MinFulfillmentStatusId": "3000",
+    "MinFulfillmentStatus": {
+      "StatusId": "3000"
+    },
+    "IsOnHold": false,
+    "Process": "releaseOrder::29999713",
+    "IsConfirmed": true,
+    "CurrencyCode": "THB",
+    "SellingLocationId": null,
+    "EventSubmitTime": "2038-01-18T23:59:00",
+    "UpdatedBy": "pubsubusercfr@mdc",
+    "FulfillmentStatus": "Released",
+    "CustomerFirstName": "Grab Customer",
+    "CustomerLastName": "-",
+    "CustomerTypeId": "",
+    "CustomerEmail": "undefined",
+    "DocType": {
+      "DocTypeId": "CustomerOrder"
+    },
+    "DoNotReleaseBefore": null,
+    "AlternateOrderId": "403521240-C7LDVZNUTGAHMA",
+    "OrderType": {
+      "OrderTypeId": "MKP-HD-STD"
+    },
+    "CountedDate": "2025-01-08T14:02:21.924",
+    "PublishStatus": null,
+    "UpdatedTimestamp": "2025-01-08T14:05:32.606",
+    "ReturnLabelEmail": null,
+    "MaxReturnStatusId": null,
+    "ProcessInfo": null,
+    "TotalCharges": 16,
+    "OrderLineCount": 3,
+    "OrderToken": "GTJ6vaiD0ubWi0lTaXjk06ac7da2ed82ca19148541bbe3e5f396",
+    "IsArchiveInProgress": false,
+    "CreatedBy": "pubsubusercfr@mdc",
+    "Priority": null,
+    "IsCancelled": false,
+    "OrderTagDetail": [],
+    "CustomerId": null,
+    "OrderId": "403521240-C7LDVZNUTGAHMA",
+    "OrderSubTotal": 157,
+    "Order": {
+      "CancelReason": null,
+      "ParentReservationRequestId": "FC4322501081656263",
+      "OrderTrackingInfo": [],
+      "ContactPreference": [],
+      "ReturnLabel": [],
+      "RelatedOrders": [],
+      "TotalInformationalTaxes": 22.17,
+      "ConfirmedDate": "2025-01-08T14:02:20.709",
+      "ArchiveDate": null,
+      "TransactionReference": [],
+      "OrderPromisingInfo": null,
+      "MinReturnStatusId": null,
+      "RunId": null,
+      "PackageCount": null,
+      "SellingChannel": {
+        "SellingChannelId": "Grab"
+      },
+      "OrderLocale": "th",
+      "IsOrderCountable": true,
+      "TotalTaxes": 10.24,
+      "CapturedDate": "2025-08-05T12:13:12Z",
+      "NextEventTime": null,
+      "ChangeLog": {
+        "ModTypes": {
+          "QuantityDetail": [
+            "QuantityDetail::QuantityStatus::Increase::3000"
+          ]
+        }
+      },
+      "OrderTotal": 173,
+      "TotalDiscounts": 0,
+      "CancelComments": null,
+      "MaxFulfillmentStatus": {
+        "StatusId": "3000"
+      },
+      "MerchSaleLineCount": 3,
+      "OrgId": "CFR",
+      "Payment": [
+        {
+          "PaymentMethod": [
+            {
+              "PaymentMethodId": "fcf8e04e-f409-408d-b103-233af73af95e",
+              "Amount": 157,
+              "CurrencyCode": "THB",
+              "GatewayId": "Simulator",
+              "PaymentType": {
+                "PaymentTypeId": "Cash On Delivery"
+              },
+              "CurrentSettledAmount": 157,
+              "IsCopied": false,
+              "IsModifiable": false,
+              "IsSuspended": false,
+              "IsVoided": false,
+              "BillingAddress": {
+                "Address": {
+                  "Address1": "Grab Address1",
+                  "Address2": "Grab Address2",
+                  "Address3": "",
+                  "City": "-",
+                  "County": "-",
+                  "Email": "undefined",
+                  "Country": "TH",
+                  "FirstName": "Grab Customer",
+                  "LastName": "-",
+                  "Phone": "0101010122",
+                  "PostalCode": "99999",
+                  "State": "-",
+                  "BranchNo": "",
+                  "TaxId": "",
+                  "CompanyName": "Grab Customer"
+                },
+                "Extended": {
+                  "AddressRef": "|||4016|TH"
+                }
+              },
+              "PaymentTransaction": [
+                {
+                  "PaymentTransactionId": "fcf8e04e-f409-408d-b103-233af73af95e",
+                  "IsActivation": false,
+                  "IsActive": true,
+                  "IsCopied": false,
+                  "IsValidForRefund": true,
+                  "OrderId": "403521240-C7LDVZNUTGAHMA",
+                  "ReconciliationId": "403521240-C7LDVZNUTGAHMA",
+                  "RequestId": "403521240-C7LDVZNUTGAHMA",
+                  "RequestToken": "403521240-C7LDVZNUTGAHMA",
+                  "ProcessedAmount": 157,
+                  "TransactionDate": "2025-08-05T12:13:12Z",
+                  "PaymentResponseStatus": {
+                    "PaymentResponseStatusId": "Success"
+                  },
+                  "Status": {
+                    "PaymentTransactionStatusId": "Closed"
+                  },
+                  "TransmissionStatus": {
+                    "PaymentTransmissionStatusId": "Closed"
+                  },
+                  "RequestedAmount": 157,
+                  "TransactionType": {
+                    "PaymentTransactionTypeId": "Settlement"
+                  }
+                }
+              ]
+            }
+          ],
+          "ProcessingMode": {
+            "ProcessingModeId": "ExternalProcessing"
+          }
+        }
+      ],
+      "OrderChargeDetail": [
+        {
+          "CreatedTimestamp": "2025-01-08T14:02:06.501",
+          "IsTaxIncluded": true,
+          "Extended": {
+            "JdaDiscCode": null,
+            "ChargeDesc": null,
+            "CRCTaxAmount": -5.23,
+            "TaxRate": null
+          },
+          "Process": "saveOrder::98395853",
+          "RelatedChargeType": null,
+          "ChargeReferenceId": "",
+          "Reason": null,
+          "IsProrated": true,
+          "UpdatedBy": "pubsubusercfr@mdc",
+          "OriginalChargeAmount": null,
+          "TaxCode": "Shipping",
+          "IsReturnCharge": false,
+          "ChargeDetailId": "403521240-C7LDVZNUTGAHMA",
+          "ParentChargeDetailId": null,
+          "RelatedChargeDetailId": null,
+          "IsProratedAtSameLevel": false,
+          "UpdatedTimestamp": "2025-01-08T14:02:06.501",
+          "CreatedBy": "pubsubusercfr@mdc",
+          "ChargePercent": null,
+          "ChargeTotal": 16,
+          "Comments": null,
+          "RequestedAmount": 80,
+          "IsOverridden": false,
+          "IsPostReturn": true,
+          "IsOrderDiscount": false,
+          "FulfillmentGroupId": null,
+          "OrgId": "CFR",
+          "ChargeSequence": 0,
+          "IsInformational": true,
+          "DiscountOn": null,
+          "ChargeType": {
+            "ChargeTypeId": "Shipping"
+          },
+          "ChargeDisplayName": "Free"
+        },
+        {
+          "CreatedTimestamp": "2025-01-08T14:02:06.501",
+          "IsTaxIncluded": true,
+          "Extended": {
+            "JdaDiscCode": null,
+            "ChargeDesc": null,
+            "CRCTaxAmount": -5.23,
+            "TaxRate": null
+          },
+          "Process": "saveOrder::51758041",
+          "RelatedChargeType": null,
+          "Reason": null,
+          "IsProrated": true,
+          "UpdatedBy": "pubsubusercfr@mdc",
+          "OriginalChargeAmount": null,
+          "TaxCode": "Shipping",
+          "IsReturnCharge": false,
+          "ChargeDetailId": "403521240-C7LDVZNUTGAHMA-Discount",
+          "ParentChargeDetailId": null,
+          "RelatedChargeDetailId": null,
+          "IsProratedAtSameLevel": false,
+          "UpdatedTimestamp": "2025-01-08T14:02:06.501",
+          "CreatedBy": "pubsubusercfr@mdc",
+          "ChargePercent": null,
+          "ChargeTotal": "0.00",
+          "Comments": null,
+          "RequestedAmount": 80,
+          "IsOverridden": false,
+          "IsPostReturn": true,
+          "IsOrderDiscount": false,
+          "FulfillmentGroupId": null,
+          "OrgId": "CFR",
+          "ChargeSequence": 0,
+          "IsInformational": true,
+          "DiscountOn": null,
+          "ChargeType": {
+            "ChargeTypeId": "Discount"
+          },
+          "ChargeDisplayName": "Discount Promotion"
+        },
+        {
+          "CreatedTimestamp": "2025-01-08T14:02:06.501",
+          "IsTaxIncluded": true,
+          "Extended": {
+            "JdaDiscCode": null,
+            "ChargeDesc": null,
+            "CRCTaxAmount": -5.23,
+            "TaxRate": null
+          },
+          "Process": "saveOrder::12040858",
+          "RelatedChargeType": null,
+          "Reason": null,
+          "IsProrated": true,
+          "UpdatedBy": "pubsubusercfr@mdc",
+          "OriginalChargeAmount": null,
+          "TaxCode": "Shipping",
+          "IsReturnCharge": false,
+          "ChargeDetailId": "403521240-C7LDVZNUTGAHMA-ShippingFeeDiscount",
+          "ParentChargeDetailId": null,
+          "RelatedChargeDetailId": null,
+          "IsProratedAtSameLevel": false,
+          "UpdatedTimestamp": "2025-01-08T14:02:06.501",
+          "CreatedBy": "pubsubusercfr@mdc",
+          "ChargePercent": null,
+          "ChargeTotal": "0.00",
+          "Comments": null,
+          "RequestedAmount": 80,
+          "IsOverridden": false,
+          "IsPostReturn": true,
+          "IsOrderDiscount": false,
+          "FulfillmentGroupId": null,
+          "OrgId": "CFR",
+          "ChargeSequence": 0,
+          "IsInformational": true,
+          "DiscountOn": null,
+          "ChargeType": {
+            "ChargeTypeId": "Shipping"
+          },
+          "ChargeDisplayName": "Shipping Fee Discount"
+        }
+      ],
+      "OrderHold": [
+        {
+          "HoldTypeId": "AwaitingPayment",
+          "StatusId": "2000",
+          "ResolveReasonId": "AcceptPayment"
+        }
+      ],
+      "OrderExtension1": {
+        "UpdatedBy": null,
+        "UpdatedTimestamp": null,
+        "OrgId": null,
+        "CreatedTimestamp": null,
+        "CreatedBy": null,
+        "Extended": {
+          "IsPSConfirmed": true,
+          "CancelAllowed": true,
+          "FullTaxInvoice": false,
+          "SourceOrderShippingTotal": null,
+          "TaxId": "",
+          "SourceOrderTotal": null,
+          "T1ConversionRate": null,
+          "Extended1": null,
+          "AllowSubstitution": true,
+          "T1RedemptionPoint": null,
+          "CompanyName": "",
+          "CustRef": null,
+          "SourceOrderTotalDiscount": null,
+          "BranchNo": "",
+          "ConfirmPaymentId": "Cash On Delivery",
+          "T1Number": null,
+          "T1PhoneNo": null,
+          "SourceOrderSubTotal": null,
+          "ExternalMPSellerId": null
+        },
+        "ContextId": null,
+        "Process": null,
+        "PK": null,
+        "PurgeDate": null,
+        "Unique_Identifier": null
+      },
+      "OrderExtension2": [],
+      "OrderExtension3": [],
+      "OrderExtension4": [],
+      "OrderExtension5": [],
+      "OrderTaxDetail": [
+        {
+          "VatTaxCode": null,
+          "IsInvoiceTax": null,
+          "CreatedTimestamp": null,
+          "TaxTypeId": "VAT",
+          "TaxIdentifier1": null,
+          "TaxIdentifier2": null,
+          "TaxIdentifier3": null,
+          "TaxIdentifier5": null,
+          "TaxIdentifier4": null,
+          "JurisdictionTypeId": null,
+          "Process": null,
+          "NonTaxableAmount": null,
+          "IsProrated": null,
+          "UpdatedBy": null,
+          "TaxAmount": 1.04,
+          "TaxCode": "SHIPPING",
+          "RateClassification": null,
+          "TaxDate": null,
+          "TaxRate": 0.07,
+          "TaxRatePercent": null,
+          "PurgeDate": null,
+          "UpdatedTimestamp": null,
+          "CreatedBy": null,
+          "TaxDetailId": null,
+          "TaxableAmount": 14.95,
+          "IsRetailDeliveryFee": null,
+          "TaxEngineId": null,
+          "Jurisdiction": null,
+          "FulfillmentGroupId": null,
+          "OrgId": null,
+          "IsInformational": true,
+          "ContextId": null,
+          "PK": null,
+          "TaxGateway": null,
+          "Unique_Identifier": null
+        }
+      ],
+      "OrderNote": [
+        {
+          "NoteId": null,
+          "UpdatedTimestamp": null,
+          "CreatedBy": null,
+          "CreatedTimestamp": null,
+          "DisplaySequence": null,
+          "NoteText": "GM-202",
+          "Process": null,
+          "OrgId": null,
+          "UpdatedBy": null,
+          "NoteType": {
+            "NoteTypeId": "0004"
+          },
+          "ContextId": null,
+          "PK": null,
+          "PurgeDate": null,
+          "IsVisible": null,
+          "NoteCategory": {
+            "NoteCategoryId": "CustomerCommunication"
+          },
+          "Unique_Identifier": "7363449265175637441__1000"
+        }
+      ],
+      "OrderAttribute": [],
+      "Release": [
+        {
+          "ReleaseType": null,
+          "UpdatedTimestamp": null,
+          "ServiceLevelCode": null,
+          "ShipToLocationId": null,
+          "EffectiveRank": null,
+          "CreatedBy": null,
+          "CreatedTimestamp": null,
+          "DeliveryMethodId": null,
+          "ShipFromLocationId": null,
+          "ShipViaId": null,
+          "Process": null,
+          "ReleaseId": null,
+          "OrderId": null,
+          "OrgId": null,
+          "UpdatedBy": null,
+          "ReleaseExtension1": null,
+          "DestinationAction": null,
+          "CarrierCode": null,
+          "ReleaseLine": []
+        }
+      ],
+      "OrderMilestoneEvent": [],
+      "CustomerIdentityDoc": [],
+      "OrderMilestone": []
+    },
+    "ReleaseLine": [
+      {
+        "OrderLineId": "000-0-0",
+        "ItemId": "8853474090594",
+        "Quantity": 12,
+        "UnitPrice": 3.25
+      },
+      {
+        "OrderLineId": "001-1-1",
+        "ItemId": "8853474091232",
+        "Quantity": 12,
+        "UnitPrice": 4.91
+      },
+      {
+        "OrderLineId": "002-2-2",
+        "ItemId": "8853474091256",
+        "Quantity": 6,
+        "UnitPrice": 9.83
+      }
+    ]
+  },
+  "OriginalHeaders": {
+    "SelectedLocation": null,
+    "User": "pubsubuser@pmp",
+    "Organization": "CFR",
+    "IsRetransmitMsg": "true",
+    "msg_submission_time": "2025-08-19T12:40:34.145Z",
+    "SelectedBusinessUnit": null,
+    "Label": null,
+    "fromInboundServiceId": "PayloadMsgProcessor",
+    "msg_submission_time_utc": "2025-08-19T12:40:34.146Z",
+    "BROKER_ADDRESS": "",
+    "BROKER_TYPE": "googlepubsub",
+    "SPAN_ID": "bcf3d24d414388",
+    "APP_ID_TRACE": "com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf",
+    "PERSIST_TO_MSG_STORE": "true",
+    "ComponentName": "xint",
+    "SelectedOrganization": "CFR",
+    "AllBusinessUnitsAccessible": "false",
+    "TRANSACTIONAL": "false",
+    "UserLocale": "en",
+    "QueueName": "OB_XINT_PublishReleaseToStoreMSGType_GCPQ-CFR",
+    "direction": "Outbound",
+    "fromInboundQueueName": "awpf-payload-queue-ord",
+    "app-id": "com-manh-cp-xint-queue-proc-q-xint-657d955bff-pz5xf",
+    "TRACE_ID": "790119b6430408",
+    "fromInboundMessageType": "awpf-payload",
+    "TenantId": "crcpopr11o",
+    "MSG_TYPE": "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+    "MSG_ID_PK": "1755607234146697203",
+    "OUTBOUND_CONDITION_EVALUATION": true,
+    "ProvisioningProfile": null,
+    "OUTBOUND_MSG_TYPE": "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+    "MessageCategory": null,
+    "Location": null
+  }
+}
