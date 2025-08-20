@@ -11,7 +11,7 @@ const path = require('path');
 // Import the transformation service (simplified version for testing)
 const { ReleaseOrderTransformationService } = require('./app/dist/src/common/services/release-order-transformation.service.js');
 
-console.log('🧪 Testing CSV Alignment with Sample Input...\n');
+console.log('🧪 Testing CSV Alignment - RELEASE Case Only...\n');
 
 try {
   // Load sample input
@@ -402,8 +402,15 @@ try {
     console.log(`  ${status} ${field}: ${JSON.stringify(value)}`);
   });
 
-  // Save result to file for inspection
-  const outputPath = path.join(__dirname, 'release/csv-aligned-test-result.json');
+  // Save result to tests/outputs/release directory
+  const outputPath = path.join(__dirname, 'tests/outputs/release/csv-aligned-test-result.json');
+  
+  // Ensure directory exists
+  const outputDir = path.dirname(outputPath);
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+  
   fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
   
   console.log('\n📊 Transformation Results:');
@@ -415,8 +422,8 @@ try {
   console.log(`  CustomerFirstName: ${result.OriginalPayload.CustomerFirstName}`);
   console.log(`  CustomerLastName: ${result.OriginalPayload.CustomerLastName}`);
   
-  console.log('\n💾 Result saved to:', outputPath);
-  console.log('\n🎯 CSV Alignment Test: PASSED ✅');
+  console.log('\n💾 Release result saved to:', outputPath);
+  console.log('\n🎯 CSV Alignment Test (Release): PASSED ✅');
   
 } catch (error) {
   console.error('❌ Test failed with error:', error.message);
