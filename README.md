@@ -167,6 +167,279 @@ tests/outputs/
 - **ID Generation**: Sequence-based ID assignment for consistent transformation
 - **Timestamp Precision**: Fixed timestamps for deterministic output matching
 
+## Service Architecture & Workflows
+
+### 🚀 **Release Transformation Service (Order Creation)**
+
+The system implements a sophisticated 7-phase orchestration for transforming PMP orders into Release format:
+
+#### **Service Flow Overview**
+```
+PMPOrderInputDTO → [7-Phase Transformation] → ReleaseOutputDTO
+```
+
+#### **Step-by-Step Process**
+
+##### **Phase 1: Initialize Transformation Context**
+```typescript
+// Entry: OrderTransformationOrchestratorService.initializeTransformationContext()
+1. Reset ID generators for consistent patterns
+2. Calculate financial totals:
+   - Order subtotal (quantity × price per line)
+   - Total charges (shipping, handling fees)
+   - Order taxes (line-level + header-level)
+   - Order discounts (promotional + bulk)
+3. Generate standardized timestamps
+4. Create shared TransformationContext for all services
+```
+
+##### **Phase 2: Transform Order Domain**
+```typescript
+// Services: OrderTransformationService + OrderLineTransformationService
+1. Transform Order Header:
+   - Customer info (name, email, phone)
+   - Financial totals (subtotal, charges, taxes)
+   - Shipping details (addresses, methods)
+   - Status flags (confirmed, on-hold, etc.)
+
+2. Transform Order Object:
+   - Nested order structure for MAO format
+   - Customer addresses and extensions
+   - Order-level metadata and flags
+
+3. Transform Charge Details:
+   - Shipping charges with business rules
+   - Handling fees and surcharges
+   - Tax-inclusive/exclusive calculations
+
+4. Transform Order Lines (Dynamic):
+   - Loop through input.OrderLine array
+   - Extract product data (ID, name, pricing)
+   - Calculate line totals and taxes
+   - Process bundle/pack products
+   - Generate barcode and image URIs
+
+5. Generate Order Notes:
+   - System-generated notes
+   - Special delivery instructions
+   - Customer preferences
+```
+
+##### **Phase 3: Transform Payment Domain (Conditional)**
+```typescript
+// Services: PaymentTransformationService + Method + Transaction
+IF payments exist:
+1. Transform Payments:
+   - Payment amounts and currencies
+   - Payment status and dates
+   - Authorization details
+
+2. Transform Payment Methods:
+   - Credit card, bank transfer, etc.
+   - Method-specific details
+   - Security/encryption info
+
+3. Transform Payment Transactions:
+   - Transaction IDs and timestamps  
+   - Authorization and capture details
+   - Refund and void information
+```
+
+##### **Phase 4: Transform Allocation Domain**
+```typescript
+// Service: AllocationTransformationService
+1. Transform Order Line Allocations:
+   - Inventory allocation per line item
+   - Warehouse and location mapping
+   - Quantity reservations
+
+2. Generate Allocation Summary:
+   - Total allocated quantities
+   - Allocation status overview
+   - Inventory impact summary
+```
+
+##### **Phase 5: Transform Release Domain**
+```typescript
+// Services: ReleaseTransformationService + ReleaseLineTransformationService
+1. Transform Release Header:
+   - Generate unique Release ID
+   - Set release type and status
+   - Calculate total lines and quantities
+   - Determine fulfillment priority
+   - Create release notes and metadata
+
+2. Transform Release Lines:
+   - Map order lines to release lines
+   - Product details and quantities
+   - Shipping and delivery info
+   - Line-level charges and taxes
+
+3. Generate System Fields:
+   - MAO system metadata
+   - Message routing information
+   - Tracing and monitoring IDs
+```
+
+##### **Phase 6: Assemble Final Output**
+```typescript
+// Assembly: Precise field ordering and structure
+1. Create OriginalPayload structure:
+   - Order header fields in exact sequence
+   - Nested Order object at correct position
+   - ChargeDetail and ReleaseLine arrays
+   - All fields aligned with target format
+
+2. Generate OriginalHeaders:
+   - System headers (User, Organization)
+   - Message routing info
+   - Distributed tracing IDs
+   - Queue and broker details
+
+3. Combine into ReleaseOutputDTO format
+```
+
+##### **Phase 7: Comprehensive Validation**
+```typescript
+// Validation: Data integrity and consistency
+1. Structure Validation:
+   - Required fields present
+   - Correct data types
+   - Nested object integrity
+
+2. Business Logic Validation:
+   - Line counts match (Release vs Order)
+   - Financial totals consistency
+   - Status flag coherence
+
+3. Domain-Specific Validation:
+   - Release line validation per order line
+   - Payment consistency (if present)
+   - Allocation accuracy
+```
+
+---
+
+### ❌ **Cancel Transformation Service (Order Cancellation)**
+
+Focused service for transforming existing orders into standardized cancel format:
+
+#### **Service Flow Overview**
+```
+OrderID → [3-Step Cancel Process] → Cancel Message Format
+```
+
+#### **Step-by-Step Process**
+
+##### **Step 1: Validate Cancellation Eligibility**
+```typescript
+// Service: OrderCancellationService + FileBasedOrderRepositoryService
+1. Input Validation:
+   - OrderID format and length check
+   - Non-empty and valid characters
+
+2. Order Existence Check:
+   - File exists in release/ directory
+   - JSON structure is valid
+   - Order not already cancelled
+
+3. Business Rules Check:
+   - Order status allows cancellation
+   - No active shipments in progress
+   - Refund eligibility verification
+```
+
+##### **Step 2: Load Complete Order Data**
+```typescript
+// Service: FileBasedOrderRepositoryService
+1. File System Access:
+   - Build file path: release/orderid{OrderID}.json
+   - Read JSON file from filesystem
+   - Handle file access errors gracefully
+
+2. Data Parsing:
+   - Parse JSON content
+   - Validate data structure
+   - Extract order components
+
+3. Data Preparation:
+   - Prepare order data for transformation
+   - Identify cancellable components
+   - Set up cancel request context
+```
+
+##### **Step 3: Apply Cancel Transformation**
+```typescript
+// Service: CancelFieldMappingService
+1. Extract Base Information:
+   - Order ID, customer details
+   - Original order amounts
+   - Payment and shipping info
+
+2. Apply Cancel Business Rules:
+   - Set cancel reason code (default: 1000.000)
+   - Calculate refund amounts
+   - Update inventory status
+   - Set cancel timestamps
+
+3. Field Mapping Process:
+   - Transform order fields → cancel fields
+   - Map order lines → cancel line items
+   - Apply cancel-specific formatting
+   - Ensure MAO compliance
+
+4. Generate Cancel Response:
+   - Assemble complete cancel message
+   - Include original order reference
+   - Add cancel metadata and tracking
+   - Format according to cancel_fully.json structure
+```
+
+---
+
+### 🔧 **Supporting Services**
+
+#### **Dynamic ID Generator Service**
+- `generateReleaseId()`: "REL" + timestamp + counter
+- `generateMessageId()`: UUID-style message identifiers
+- `generateSpanId()`: Distributed tracing span IDs
+- `generateTraceId()`: Distributed tracing trace IDs
+- `resetCounter()`: Reset internal counters for consistency
+
+#### **Calculation Service**
+- `calculateOrderSubtotal()`: Sum of (quantity × unit price) with bundle handling
+- `calculateTotalCharges()`: Shipping + handling with business rules (free shipping >$100)
+- `calculateOrderTotalTaxes()`: Tax aggregation across all tax types
+- `calculateOrderDiscounts()`: Promotional and bulk discount calculations
+
+#### **Timestamp Service**
+- `getTimestamp(type)`: Generate formatted timestamps for specific purposes
+- `getAllStandardTimestamps()`: Create complete timestamp set for transformation
+- Handles various formats: ISO, epoch, MAO-specific formats
+
+#### **Business Rules Service**
+- Shipping method mapping based on order characteristics
+- Address validation and MD5 hash generation
+- Product bundle handling and pricing rules
+- Tax exemption and calculation logic
+
+---
+
+### 📊 **Service Comparison**
+
+| Aspect | **Release Service** | **Cancel Service** |
+|--------|-------------------|-------------------|
+| **Complexity** | High (7 phases, 8+ services) | Medium (3 steps, 3 services) |
+| **Input** | Complex PMPOrderInputDTO | Simple OrderID string |
+| **Process** | Multi-phase orchestration | Sequential transformation |
+| **Data Source** | Input payload | File-based repository |
+| **Output** | Complete ReleaseOutputDTO | Cancel message JSON |
+| **Services** | 8+ domain services | 3 specialized services |
+| **Calculations** | Extensive financial logic | Refund and status updates |
+| **Validation** | Comprehensive 7-level validation | Basic eligibility checks |
+
+---
+
 ## Data Flow Architecture
 
 ```
@@ -180,12 +453,6 @@ Sample Input → Class Validators → Shipping/Tax Rules → Monetary Totals →
 ```
 Order ID → Validate → Load Order Data → Apply Cancel Rules → Cancel Message
 ```
-
-### Cancel Service Features
-- **Data-Driven**: Uses real order information instead of static templates
-- **Field Mapping**: Leverages `CancelFieldMappingService` for precise transformations
-- **File-Based**: Uses `FileBasedOrderRepositoryService` (no database required)
-- **Production-Ready**: Comprehensive error handling with HTTP exceptions
 
 ## Configuration & Environment
 
