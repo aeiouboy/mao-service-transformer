@@ -10,7 +10,7 @@ import {
 import { Observable, from, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
-import { GRPC_STATUS_MAPPING } from 'src/common/constants';
+import { GRPC_STATUS_MAPPING } from 'src/shared/constants';
 import { AppConfigService } from 'src/core/config/services';
 import { LoggerService } from 'src/core/logger/services';
 

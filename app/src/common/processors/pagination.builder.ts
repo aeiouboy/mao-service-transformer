@@ -1,4 +1,4 @@
-import { PaginationDto, PaginationRequestDto } from '../dtos';
+import { PaginationDto, PaginationRequestDto } from '../../shared/dtos';
 
 export class PaginationBuilder {
   public static formatPaginationToFindOption({

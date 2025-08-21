@@ -1,0 +1,127 @@
+@startuml
+
+title Order Creation (Restful API)
+
+participant Client
+participant OrdersModule
+participant AzureBlobStorage
+entity ordersEntity
+entity orderLinesEntity
+entity paymentsEntity
+entity paymentMethodsEntity
+entity paymentTransactionsEntity
+entity allocationsEntity
+entity quantityDetailsEntity
+entity releasesEntity
+entity releaseLinesEntity
+
+Client -> OrdersModule : sends request
+note right
+POST method
+Headers: Authorization: Bearer <token>
+Organization: <org_id>
+Request Body: <order_creation_payload>
+end note
+
+group Validate DTO And Authentication
+  OrdersModule -> OrdersModule : check authen & permission
+  alt Unauthorized
+    OrdersModule --> Client : Error ERR_UNAUTHORIZED (401)
+  end
+  OrdersModule -> OrdersModule : validate data
+  alt Invalid
+    OrdersModule --> Client : Error ERR_BAD_REQUEST (400)
+  end
+end
+
+OrdersModule -> AzureBlobStorage :  get image url by barcode from blob storage
+OrdersModule -> OrdersModule : extract OrderNotes.NoteText to ShortOrderNumber
+OrdersModule -> OrdersModule : Mapping payload to entities
+
+group Validate Order
+  OrdersModule -> OrdersModule : check duplicate order id
+  alt new order
+    OrdersModule -> ordersEntity : create order
+		note right
+		order status is 'Open'
+		fulfillment status is 'Open'
+		payment status is 'Not Applicable'
+		max_fulfillment_status_id is '1000'
+		min_fulfillment_status_id is '1000'
+		end note 
+		OrdersModule -> orderLinesEntity : create order lines
+		note right
+		order line status is 'Open'
+		fulfillment status is 'Open'
+		max_fulfillment_status_id is '1000'
+		min_fulfillment_status_id is '1000'
+		end note 
+		OrdersModule -> quantityDetailsEntity : create quantity detail
+		note right
+		status id same as max_fulfillment_status_id
+		insert new record (as transaction history)
+		end note 
+		OrdersModule -> paymentsEntity : create payment
+		OrdersModule -> paymentMethodsEntity : create payment method
+		OrdersModule -> paymentTransactionsEntity : create payment transaction
+  else duplicated order
+  	OrdersModule -> ordersEntity : update only changed column to order
+		OrdersModule -> orderLinesEntity : update only changed column to order lines
+		OrdersModule -> paymentsEntity : update only changed column to payment
+		OrdersModule -> paymentMethodsEntity : update only changed column to payment method
+		OrdersModule -> paymentTransactionsEntity : update only changed column to payment transaction
+  end
+end
+
+OrdersModule -> OrdersModule : compare order total amount with sum of order lines amount
+alt not equal
+	OrdersModule -> ordersEntity : update payment status and order status to 'Awaiting Payment Info'
+else equal
+	OrdersModule -> OrdersModule : Mapping payload to allocation entities
+	OrdersModule -> allocationsEntity : create allocation
+	OrdersModule -> ordersEntity : update status
+	note right
+	order status is 'Allocated'
+	payment status is 'Paid'
+	max_fulfillment_status_id is '2000'
+	min_fulfillment_status_id is '2000'
+	end note 
+	OrdersModule -> orderLinesEntity : create order lines
+	note right
+	order line status is 'Allocated'
+	fulfillment status is 'Allocated'
+	max_fulfillment_status_id is '2000'
+	min_fulfillment_status_id is '2000'
+	end note 
+	OrdersModule -> quantityDetailsEntity : create quantity detail
+	note right
+	status id same as max_fulfillment_status_id
+	insert new record (as transaction history)
+	end note 
+	OrdersModule -> OrdersModule : Mapping payload to release and release lines entities
+	OrdersModule -> releasesEntity : create release
+	OrdersModule -> releaseLinesEntity : create release lines
+	OrdersModule -> ordersEntity : update status
+	note right
+	order status is 'Released'
+	fulfillment status is 'Released'
+	max_fulfillment_status_id is '3000'
+	min_fulfillment_status_id is '3000'
+	end note 
+	OrdersModule -> orderLinesEntity : create order lines
+		note right
+		order line status is 'Released'
+		fulfillment status is 'Released'
+		max_fulfillment_status_id is '3000'
+		min_fulfillment_status_id is '3000'
+		end note
+	OrdersModule -> quantityDetailsEntity : create quantity detail
+	note right
+	status id same as max_fulfillment_status_id
+	insert new record (as transaction history)
+	end note 
+end
+
+OrdersModule --> Client : Response CREATED (201)
+
+@enduml

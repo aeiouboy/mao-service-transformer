@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { Controller, Get } from '@nestjs/common';
 
-import { ReleaseOrderTransformationService } from '../services/release-order-transformation.service';
+import { ReleaseOrderTransformationService } from '../../modules/releases/services/release-order-transformation.service';
 
 interface TransformationResult {
   success: boolean;

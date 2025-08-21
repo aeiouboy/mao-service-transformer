@@ -4,9 +4,9 @@ import { RpcException } from '@nestjs/microservices';
 
 import { status } from '@grpc/grpc-js';
 
-import { ERROR_CODES, HTTP_STATUS_MAPPING } from 'src/common/constants';
-import { GRPC_EXCEPTION_ERROR_CODES } from 'src/common/constants/grpc-exception-mapping';
-import { ResponseDto } from 'src/common/dtos';
+import { ERROR_CODES, HTTP_STATUS_MAPPING } from 'src/shared/constants';
+import { GRPC_EXCEPTION_ERROR_CODES } from 'src/shared/constants/grpc-exception-mapping';
+import { ResponseDto } from 'src/shared/dtos';
 
 import { getResponseStatus } from '../helpers';
 

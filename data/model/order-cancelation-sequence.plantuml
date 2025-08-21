@@ -1,0 +1,111 @@
+@startuml
+
+title Order Cancellation (Restful API)
+
+participant Client
+participant OrdersModule
+entity ordersEntity
+entity orderLinesEntity
+entity paymentsEntity
+entity paymentMethodsEntity
+entity paymentTransactionsEntity
+entity releaseLinesEntity
+
+Client -> OrdersModule : sends request
+note right
+POST method
+Headers: Authorization: Bearer <token>
+Organization: <org_id>
+Request Body: <order_cancelation_payload>
+end note
+
+group Validate DTO And Authentication
+  OrdersModule -> OrdersModule : check authen & permission
+  alt Unauthorized
+    OrdersModule --> Client : Error ERR_UNAUTHORIZED (401)
+  end
+  OrdersModule -> OrdersModule : validate data
+  alt Invalid
+    OrdersModule --> Client : Error ERR_BAD_REQUEST (400)
+  end
+end
+
+group Check Is Order Cancellation Allowed
+	OrdersModule -> ordersEntity : find order by OrderId, OrgId and isActive = true
+	ordersEntity --> OrdersModule : return order details
+  OrdersModule -> OrdersModule : check is order cancellable
+
+  alt cancelAllowed = 'false'
+		OrdersModule --> Client : Error ERR_CANCEL_NOT_ALLOWED (403)
+	end
+end
+
+OrdersModule -> ordersEntity : update order status and change log by order id
+note right
+	order status is 'Canceled'
+	fulfillment status is 'Canceled'
+	payment status is 'Refunded'
+	max_fulfillment_status_id is '9000'
+	min_fulfillment_status_id is '9000'
+	is_cancelled is true
+	change log is {
+		"ModTypes": {
+			"Order": [
+				"Order::Cancel"
+			],
+			"OrderLine": [
+				"OrderLine::Cancel",
+				"OrderLine::Cancel::Customer"
+			]
+		}
+	}
+end note
+
+OrdersModule -> orderLinesEntity : update order line status and change log by order id
+note right
+	order status is 'Canceled'
+	fulfillment status is 'Canceled'
+	max_fulfillment_status_id is '9000'
+	min_fulfillment_status_id is '9000'
+	is_cancelled is true
+	change log is {
+		"ModTypes": {
+			"OrderLine": [
+				"OrderLine::Cancel",
+				"OrderLine::Cancel::Customer"
+			]
+		}
+	}
+end note
+
+OrdersModule -> paymentMethodsEntity : update payment method by order id
+note right
+	change amount is same as amount
+	current refunded amount is same as amount
+end note
+paymentMethodsEntity --> OrdersModule : return payment method detail
+OrdersModule -> OrdersModule : build payment transaction to create new record
+OrdersModule -> paymentTransactionsEntity : create payment transaction
+note right
+	payment response status is {
+		"PaymentResponseStatusId": "Success"
+	}
+	transmission status is {
+		"PaymentTransmissionStatusId": "Closed"
+	}
+	status is {
+		"PaymentTransactionStatusId": "Closed"
+	}
+	transaction type is {
+    "PaymentTransactionTypeId": "Refund"
+	}
+end note
+
+OrdersModule -> releaseLinesEntity : update release lines by and order id
+note right
+	cancelled_quantity is quantity
+end note
+
+OrdersModule --> Client : Response SUCCESS (200)
+
+@enduml

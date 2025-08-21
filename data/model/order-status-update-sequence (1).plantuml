@@ -1,0 +1,205 @@
+@startuml
+
+title Order Update Status (Restful API)
+
+participant Client
+participant OrdersModule
+entity ordersEntity
+entity orderLinesEntity
+entity paymentsEntity
+entity paymentMethodsEntity
+entity paymentTransactionsEntity
+entity allocationsEntity
+entity quantityDetailsEntity
+entity releaseLinesEntity
+entity fulfillmentDetailEntity
+
+Client -> OrdersModule : sends request
+note right
+POST method
+Headers: Authorization: Bearer <token>
+Organization: <org_id>
+Request Body: <order_status_update_payload>
+end note
+
+group Validate DTO And Authentication
+  OrdersModule -> OrdersModule : check authen & permission
+  alt Unauthorized
+    OrdersModule --> Client : Error ERR_UNAUTHORIZED (401)
+  end
+  OrdersModule -> OrdersModule : validate data
+  alt Invalid
+    OrdersModule --> Client : Error ERR_BAD_REQUEST (400)
+  end
+end
+
+OrdersModule -> OrdersModule : Mapping payload to fulfillment detail entities
+
+group Check Event Type ID
+  OrdersModule -> OrdersModule : check event type
+	
+  alt EventTypeID = 'StatusUpdate'
+		OrdersModule -> OrdersModule : transform and mapping
+		note right
+			transform key item to itemId
+			mapping statusId with status enum
+		end note
+	else EventTypeID = 'Ship'
+		OrdersModule -> OrdersModule : add new key and mapping
+		note right
+			add key statusId with value '7000'
+			mapping statusId with status enum
+		end note
+	else EventTypeID = 'Short'
+		OrdersModule -> OrdersModule : add new key and mapping
+		note right
+			add key statusId with value '9000'
+			mapping statusId with status enum
+		end note
+	end
+end
+
+OrdersModule -> fulfillmentDetailEntity : create fulfillment detail
+OrdersModule -> OrdersModule : Mapping payload to quantity detail entities
+OrdersModule -> quantityDetailsEntity : create quantity detail
+
+alt statusId = '3500'
+	OrdersModule -> OrdersModule : mapping status
+	note right
+		order line status is 'In Process'
+		fulfillment status is 'In Process'
+		max_fulfillment_status_id is '3500'
+		min_fulfillment_status_id is '3500'
+	end note 
+else statusId = '3600'
+	alt sum of quantity detail group by status = orderLine.quantity
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Picked'
+			fulfillment status is 'Picked'
+			max_fulfillment_status_id is '3600'
+			min_fulfillment_status_id is '3600'
+		end note 
+	else 
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Partially Picked'
+			fulfillment status is 'Picking'
+			max_fulfillment_status_id is '3600'
+		end note 
+	end
+else statusId = '3700'
+	alt sum of quantity detail group by status = orderLine.quantity
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Packed'
+			fulfillment status is 'Packed'
+			max_fulfillment_status_id is '3700'
+			min_fulfillment_status_id is '3700'
+		end note 
+	else 
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Partially Packed'
+			fulfillment status is 'Packing'
+			max_fulfillment_status_id is '3700'
+		end note 
+	end
+else statusId = '7000'
+	alt sum of quantity detail group by status = orderLine.quantity
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Fulfilled'
+			fulfillment status is 'Fulfilled'
+			max_fulfillment_status_id is '7000'
+			min_fulfillment_status_id is '7000'
+		end note 
+	else 
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Partially Fulfilled'
+			fulfillment status is 'Fulfilling'
+			max_fulfillment_status_id is '7000'
+		end note 
+	end
+
+	OrdersModule -> OrdersModule : mapping quantity detail entities to release line entity
+	OrdersModule -> releaseLineEntity : update release line
+	note right
+		fulfillment quantity += <quantity>
+	end note
+else statusId = '7500'
+	alt sum of quantity detail group by status = orderLine.quantity
+		OrdersModule -> OrdersModule : mapping status and find release id
+		note right
+			order line status is 'Delivered'
+			max_fulfillment_status_id is '7500'
+			min_fulfillment_status_id is '7500'
+		end note 
+	else 
+		OrdersModule -> OrdersModule : mapping status and find release id
+		note right
+			order line status is 'Partially Delivered'
+			max_fulfillment_status_id is '7500'
+		end note 
+	end
+else statusId = '9000'
+	alt sum of quantity detail group by status = orderLine.quantity
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Canceled'
+			fulfillment status is 'Canceled'
+			max_fulfillment_status_id is '9000'
+			min_fulfillment_status_id is '9000'
+		end note 
+	else sum of quantity detail group by status include 9000 = orderLine.quantity
+		OrdersModule -> OrdersModule : mapping status
+		note right
+			order line status is 'Fulfilled'
+			fulfillment status is 'Fulfilled'
+			max_fulfillment_status_id is '7000'
+			min_fulfillment_status_id is '7000'
+		end note 
+	end
+
+	OrdersModule -> OrdersModule : mapping quantity detail entities to release line entity
+	OrdersModule -> releaseLineEntity : update release line
+	note right
+		cancelled quantity += <quantity>
+	end note
+
+	OrdersModule -> OrdersModule : re-calculate
+	note right
+		re-calculate order line, order, payment method, payment transaction
+	end note
+
+	OrdersModule -> orderLineEntity : update order line on every amount change
+	OrdersModule -> orderEntity : update order line on every amount change
+	OrdersModule -> paymentsEntity : find payment method id by order id
+	paymentsEntity --> OrdersModule : return payment method id
+	OrdersModule -> paymentMethodsEntity : update payment method
+	note right
+		amount is same as 
+		order total - (sum of cancelled order line sub total - cancelled total discount)
+	end note
+	OrdersModule -> paymentTransactionsEntity : create payment transaction
+	note right
+		transaction type is 'Refunded'
+	end note
+
+end
+
+OrdersModule -> orderLinesEntity : update status
+OrdersModule -> OrdersModule : mapping status to ordersEntity
+OrdersModule -> ordersEntity : update status
+note right
+	order status is same as order line status
+	fulfillment status is same as order line fulfillment status
+	max_fulfillment_status_id is same as order line max_fulfillment_status_id
+	min_fulfillment_status_id is same as order line min_fulfillment_status_id
+end note
+
+
+OrdersModule --> Client : Response SUCCESS (200)
+
+@enduml

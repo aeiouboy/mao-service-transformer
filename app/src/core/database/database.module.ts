@@ -26,6 +26,15 @@ import { AppConfigService } from '../config/services';
           max: Number(await configService.get('DATABASE_MAX_POOL')) || 5,
         },
         define: { charset: 'utf8', collate: 'utf8_general_ci' },
+        dialectOptions: {
+          ssl: {
+            require:
+              (await configService.get('DATABASE_SSL_ENABLED')) === 'true',
+            rejectUnauthorized:
+              (await configService.get('DATABASE_SSL_REJECT_UNAUTHORIZED')) !==
+              'false',
+          },
+        },
       }),
     }),
   ],

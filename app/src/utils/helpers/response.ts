@@ -1,5 +1,5 @@
-import { ERROR_CODES } from 'src/common/constants';
-import { FindAndCountDto, ResponseDto } from 'src/common/dtos';
+import { ERROR_CODES } from 'src/shared/constants';
+import { FindAndCountDto, ResponseDto } from 'src/shared/dtos';
 
 export const getResponseStatus = <T>(
   errorCode: string,

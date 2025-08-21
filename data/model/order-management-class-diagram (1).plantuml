@@ -1,0 +1,426 @@
+@startuml
+
+package "Order Management System" {
+  
+  class orders {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+		- short_order_number: VARCHAR(255) <<INDEX>>
+    --
+    customer_type_id: VARCHAR(255)
+    customer_id: VARCHAR(255)
+    customer_email: VARCHAR(255)
+    customer_first_name: VARCHAR(255)
+    customer_last_name: VARCHAR(255)
+    customer_phone: VARCHAR(255)
+    currency_code: VARCHAR(255)
+    - selling_channel: VARCHAR(255)
+    - org_id: VARCHAR(255)
+    alternate_order_id: VARCHAR(255)
+    - max_fulfillment_status_id: VARCHAR(255)
+    - min_fulfillment_status_id: VARCHAR(255)
+    - order_sub_total: DECIMAL(18,4)
+    - order_total: DECIMAL(18,4)
+    - total_charges: DECIMAL(18,4)
+    - total_discounts: DECIMAL(18,4)
+    - total_taxes: DECIMAL(18,4)
+    cancelled_order_sub_total: DECIMAL(18,4)
+    is_on_hold: BOOLEAN <<DEFAULT false>>
+    cancel_allowed: BOOLEAN <<DEFAULT true>>
+    is_cancelled: BOOLEAN <<DEFAULT false>>
+    order_locale: VARCHAR(255)
+		- order_status: VARCHAR(255) <<INDEX>>
+		- fulfillment_status: VARCHAR(255) <<INDEX>>
+		- payment_status: VARCHAR(255) <<INDEX>>
+    do_not_release_before: TIMESTAMP
+    - captured_date: TIMESTAMP
+    --
+    doc_type: JSONB
+    order_hold: JSONB
+    order_actions: JSONB
+    order_extension1: JSONB
+    order_charge_detail: JSONB
+    order_tax_detail: JSONB
+    order_type: JSONB
+    order_note: JSONB
+    cancel_reason: JSONB
+		change_log: JSONB
+    --
+		parent_id: INT(255)
+    - version: INT(11) <<DEFAULT 1>>
+		- is_active: BOOLEAN <<DEFAULT true>>
+		--
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class order_lines {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - order_line_id: VARCHAR(255) <<INDEX>>
+    --
+    - org_id: VARCHAR(255)
+    release_group_id: VARCHAR(255)
+    shipping_method_id: VARCHAR(255)
+    fulfillment_group_id: VARCHAR(255)
+    - max_fulfillment_status_id: VARCHAR(255)
+    - min_fulfillment_status_id: VARCHAR(255)
+    ship_to_location_id: VARCHAR(255)
+    ship_from_address_id: VARCHAR(255)
+    - item_id: VARCHAR(255)
+    item_description: TEXT
+    is_gift: BOOLEAN <<DEFAULT false>>
+    is_tax_included: BOOLEAN <<DEFAULT true>>
+    is_pre_order: BOOLEAN <<DEFAULT false>>
+    is_cancelled: BOOLEAN <<DEFAULT false>>
+    promised_delivery_date: TIMESTAMP
+    small_image_uri: TEXT
+    - uom: VARCHAR(255)
+    - quantity: DECIMAL(18,4)
+    - unit_price: DECIMAL(18,4)
+    - original_unit_price: DECIMAL(18,4) 
+    - order_line_sub_total: DECIMAL(18,4)
+    - order_line_total: DECIMAL(18,4)
+    - order_line_tax_total: DECIMAL(18,4)
+    max_appeasement_amount: DECIMAL(18,4)
+    - total_discount_on_item: DECIMAL(18,4)
+    - total_discounts: DECIMAL(18,4)
+    - total_charges: DECIMAL(18,4)
+    cancelled_order_line_sub_total: DECIMAL(18,4)
+    cancelled_total_discounts: DECIMAL(18,4)
+		- fulfillment_status: VARCHAR(255) <<INDEX>>
+		- order_line_status: VARCHAR(255) <<INDEX>>
+    --
+    delivery_method: JSONB
+    order_line_note: JSONB
+    order_line_charge_detail: JSONB
+    order_line_tax_detail: JSONB
+    order_line_promising_info: JSONB
+    ship_to_address: JSONB
+    order_line_extension1: JSONB
+		change_log: JSONB
+    --
+		parent_id: INT(255)
+    - version: INT(11) <<DEFAULT 1>>
+		- is_active: BOOLEAN <<DEFAULT true>>
+		--
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class payments {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - payment_id: VARCHAR(255) <<UNIQUE>>
+    --
+    - org_id: VARCHAR(255)
+    customer_id: VARCHAR(255)
+    payment_group_id: VARCHAR(255)
+    - status_id: VARCHAR(255)
+    message: TEXT
+    is_anonymized: BOOLEAN <<DEFAULT false>>
+    is_cancelled: BOOLEAN <<DEFAULT false>>
+    purge_date: TIMESTAMP
+    --
+    actions: JSONB
+    processing_mode: JSONB
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class payment_methods {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - payment_id: VARCHAR(255) <<INDEX>>
+    - payment_method_id: VARCHAR(255) <<UNIQUE>>
+    --
+    messages: TEXT
+		- currency_code: VARCHAR(255)
+    alternate_currency_amount: VARCHAR(255)
+    account_number: VARCHAR(255)
+    account_display_number: VARCHAR(255)
+    name_on_card: VARCHAR(255)
+    swipe_data: VARCHAR(255)
+    card_expiry_month: VARCHAR(255)
+    card_expiry_year: VARCHAR(255)
+    gift_card_pin: VARCHAR(25)
+    customer_signature: VARCHAR(255)
+    customer_pay_signature: VARCHAR(255)
+    charge_sequence: VARCHAR(255)
+    routing_number: VARCHAR(255)
+    routing_display_number: VARCHAR(255)
+    check_number: VARCHAR(255)
+    drivers_license_number: VARCHAR(255)
+    drivers_license_state: VARCHAR(255)
+    drivers_license_country: VARCHAR(255)
+    business_name: VARCHAR(255)
+    business_tax_id: VARCHAR(255)
+    check_quantity: VARCHAR(255)
+    original_amount: VARCHAR(255)
+    parent_order_id: VARCHAR(255)
+    parent_payment_group_id: VARCHAR(255)
+    parent_payment_method_id: VARCHAR(255)
+    gateway_account_id: VARCHAR(255)
+    location_id: VARCHAR(255)
+    transaction_reference_id: VARCHAR(255)
+    - org_id: VARCHAR(255)
+    entry_type_id: VARCHAR(255)
+    gateway_id: VARCHAR(255)
+    captured_source: VARCHAR(255)
+    shopper_reference: VARCHAR(255)
+    suggested_amount: VARCHAR(255)
+    purge_date: VARCHAR(255)
+    account_type: VARCHAR(255)
+    payment_category: VARCHAR(255)
+    amount: DECIMAL(18,4)
+    current_auth_amount: DECIMAL(18,4)
+    current_settled_amount: DECIMAL(18,4)
+    current_refund_amount: DECIMAL(18,4)
+    current_failed_amount: DECIMAL(18,4)
+    merchandise_amount: DECIMAL(18,4)
+    change_amount: DECIMAL(18,4)
+    conversion_rate: DECIMAL(18,4)
+    captured_in_edge_mode: BOOLEAN <<DEFAULT false>>
+    is_suspended: BOOLEAN <<DEFAULT false>>
+    is_voided: BOOLEAN <<DEFAULT false>>
+    is_copied: BOOLEAN <<DEFAULT false>>
+    is_modifiable: BOOLEAN <<DEFAULT false>>
+    --
+    actions: JSONB
+    billing_address: JSONB
+    payment_method_attribute: JSONB
+    payment_method_encr_attribute: JSONB
+    payment_type: JSONB
+    card_type: JSONB
+    extended: JSONB
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class payment_transactions {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - payment_method_id: VARCHAR(255) <<INDEX>>
+    - payment_transaction_id: VARCHAR(255) <<UNIQUE>>
+    --
+    is_activation: BOOLEAN <<DEFAULT false>>
+    is_active: BOOLEAN <<DEFAULT false>>
+    is_copied: BOOLEAN <<DEFAULT false>>
+    is_valid_for_refund: BOOLEAN <<DEFAULT false>>
+    - org_id: VARCHAR(255)
+    reconciliation_id: VARCHAR(255)
+    request_id: VARCHAR(255)
+    request_token: VARCHAR(255)
+    processed_amount: DECIMAL(18,4)
+    requested_amount: DECIMAL(18,4)
+    transaction_date: TIMESTAMP
+    --
+    payment_response_status: JSONB
+    status: JSONB
+    transmission_status: JSONB
+    transaction_type: JSONB
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class quantity_details {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - order_line_id: VARCHAR(255) <<INDEX>>
+    - quantity_detail_id: VARCHAR(255) <<UNIQUE>>
+    --
+    - status_id: VARCHAR(255)
+    - org_id: VARCHAR(255)
+    - item_id: VARCHAR(255)
+    - quantity: DECIMAL(18,4)
+    - uom: VARCHAR(255)
+    process: VARCHAR(255)
+    reason: VARCHAR(255)
+    reason_type: VARCHAR(255)
+    substitution_ratio: DECIMAL(18,4)
+    substitution_type: VARCHAR(255)
+    web_url: VARCHAR(500)
+    --
+    change_log: JSONB
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class allocations {
+  - id: SERIAL <<PRIMARY KEY>>
+  - order_id: VARCHAR(255) <<INDEX>>
+  - order_line_id: VARCHAR(255) <<INDEX>>
+  - allocation_id: VARCHAR(255) <<INDEX>>
+  --
+  - allocation_type: VARCHAR(255) 
+  - status_id: VARCHAR(255)
+  reservation_request_id: VARCHAR(255)
+  reservation_request_detail_id: VARCHAR(255)
+  - ship_from_location_id: VARCHAR(255)
+  ship_to_location_id: VARCHAR(255)
+  - org_id: VARCHAR(255)
+  country_of_origin: VARCHAR(255)
+  inventory_segment_id: VARCHAR(255)
+  inventory_type_id: VARCHAR(255)
+  substitution_type_id: VARCHAR(255)
+  allocation_dependency_id: VARCHAR(255)
+  group_id: VARCHAR(255)
+  product_status_id: VARCHAR(255)
+  ship_via_id: VARCHAR(255)
+  asn_id: VARCHAR(255)
+  asn_detail_id: VARCHAR(255)
+  - item_id: VARCHAR(255)
+  - quantity: DECIMAL(18,4)
+  - uom: VARCHAR(255)
+  - carrier_code: VARCHAR(255)
+  service_level_code: VARCHAR(255)
+  process: VARCHAR(255)
+  batch_number: VARCHAR(255)
+  is_virtual: BOOLEAN <<DEFAULT false>>
+  earliest_delivery_date: TIMESTAMP
+  earliest_ship_date: TIMESTAMP
+  committed_delivery_date: TIMESTAMP
+  committed_ship_date: TIMESTAMP
+  latest_ship_date: TIMESTAMP
+  latest_release_date: TIMESTAMP
+  - allocated_on: TIMESTAMP  
+  --
+  extended: JSONB
+  --
+  - created_at: TIMESTAMP
+  - updated_at: TIMESTAMP
+  - created_by: VARCHAR(255)
+  - updated_by: VARCHAR(255)
+  }
+
+  class releases {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - release_id: VARCHAR(255) <<UNIQUE>>
+    --
+    - org_id: VARCHAR(255)
+    delivery_method_id: VARCHAR(255)
+    - ship_from_location_id: VARCHAR(255)
+    ship_to_location_id: VARCHAR(255)
+    ship_via_id: VARCHAR(255)
+    release_type: VARCHAR(255)
+    process: VARCHAR(255)
+    service_level_code: VARCHAR(255)
+    - carrier_code: VARCHAR(255)
+    destination_action: VARCHAR(255)
+    - release_total: DECIMAL(18,4)
+    effective_rank: INTEGER
+    --
+    release_extension_1: JSONB
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class release_lines {
+    - id: SERIAL <<PRIMARY KEY>>
+    - order_id: VARCHAR(255) <<INDEX>>
+    - order_line_id: VARCHAR(255) <<INDEX>>
+    - release_id: VARCHAR(255) <<INDEX>>
+    - release_line_id: VARCHAR(255) <<INDEX>>
+    - allocation_id: VARCHAR(255) <<INDEX>>
+    --
+    - org_id: VARCHAR(255)
+    - item_id: VARCHAR(255)
+    small_image_uri: TEXT
+    - quantity: DECIMAL(18,4)
+    - release_line_total: DECIMAL(18,4) <<Default 0.0000>>
+    fulfilled_quantity: DECIMAL(18,4)
+    cancelled_quantity: DECIMAL(18,4)
+    effective_rank: INTEGER
+    process: VARCHAR(255)
+    - uom: VARCHAR(255)
+    cancelled_date: TIMESTAMP
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  class fulfillment_details {
+    - id: SERIAL <<PRIMARY KEY>>
+    order_id: VARCHAR(255) <<INDEX>>
+    order_line_id: VARCHAR(255) <<INDEX>>
+    release_id: VARCHAR(255) <<INDEX>>
+    release_line_id: VARCHAR(255) <<INDEX>>
+    fulfillment_id: VARCHAR(255) <<INDEX>>
+    --
+    fulfillment_group_id: VARCHAR(255)
+    event_type_id: VARCHAR(255)
+    - item_id: VARCHAR(255)
+    - quantity: DECIMAL(18,4)
+    - uom: VARCHAR(255)
+    - status_id: VARCHAR(255)
+    short_reason_id: VARCHAR(255)
+    --
+    fulfillment_info: JSONB
+    --
+    - created_at: TIMESTAMP
+    - updated_at: TIMESTAMP
+    - created_by: VARCHAR(255)
+    - updated_by: VARCHAR(255)
+  }
+
+  orders ||--o{ order_lines : "order_id"
+  orders ||--o{ payments : "order_id"
+  orders ||--o{ releases : "order_id"
+  payments ||--o{ payment_methods : "payment_id"
+  payment_methods ||--o{ payment_transactions : "payment_method_id - order_id"
+  order_lines ||--o{ quantity_details : "order_line_id - order_id"
+  order_lines ||--o{ allocations : "order_line_id - order_id"
+  releases ||--o{ release_lines : "release_id - order_id"
+  releases ||--o{ fulfillment_details : "release_id - order_id"
+
+}
+
+package "Database Indexes" {
+  class indexes {
+    - orders.order_id - orders.parent_id - orders.org_id (UNIQUE)
+    - order_lines.order_id - orders.parent_id (UNIQUE)
+    - order_lines.item_id (BTREE)
+    - payment_methods.order_id (BTREE)
+    - payment_methods.payment_method_id (UNIQUE)
+    - payment_transactions.order_id (BTREE)
+    - payment_transactions.payment_transaction_id (UNIQUE)
+    - quantity_details.order_id (BTREE)
+    - quantity_details.order_line_id (BTREE)
+    - quantity_details.quantity_detail_id (UNIQUE)
+    - allocations.order_id (BTREE)
+    - allocations.order_line_id (BTREE)
+    - allocations.allocation_id (BTREE)
+    - releases.order_id (BTREE)
+    - releases.release_id (UNIQUE)
+    - release_lines.order_id (BTREE)
+    - release_lines.order_line_id (BTREE)
+    - release_lines.release_id (BTREE)
+    - release_lines.release_line_id (BTREE)
+    - release_lines.allocation_id (BTREE)
+    - fulfillment_details.fulfillment_id (BTREE)
+  }
+}
+
+@enduml

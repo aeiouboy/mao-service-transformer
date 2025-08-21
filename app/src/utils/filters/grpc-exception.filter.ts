@@ -4,7 +4,7 @@ import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { Observable, throwError } from 'rxjs';
 
-import { GRPC_EXCEPTION_ERROR_CODES } from 'src/common/constants/grpc-exception-mapping';
+import { GRPC_EXCEPTION_ERROR_CODES } from 'src/shared/constants/grpc-exception-mapping';
 
 import { getResponseStatus } from '../helpers';
 

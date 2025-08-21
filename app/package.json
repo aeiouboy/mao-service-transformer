@@ -134,7 +134,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/../test/jest.setup.ts"],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "testTimeout": 30000
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",

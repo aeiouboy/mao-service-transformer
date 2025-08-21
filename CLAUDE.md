@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## File Creation Reference
+
+**IMPORTANT**: Before creating any new file, always consult `/Users/chongraktanaka/Projects/mao-service-transformer/PROJECT_STRUCTURE.md` to understand:
+- Proper directory structure and organization
+- Existing service patterns and conventions
+- File naming conventions and placement
+- Architecture guidelines and best practices
+
+This ensures all new files follow established project patterns and maintain consistency with the existing codebase structure.
+
 ## Project Overview
 
 This is a **Manhattan Active® Omni (MAO) Service Transformer** - a NestJS-based microservice that transforms PMP (Pricing & Merchandising Platform) order creation payloads into Release message format for the Order Management System (OMS).

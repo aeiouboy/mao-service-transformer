@@ -96,3 +96,7 @@ coverage/
 # Local configuration overrides
 config/local.json
 config/local.js
+.claude/
+pyproject.toml/
+temp/
+tasks/

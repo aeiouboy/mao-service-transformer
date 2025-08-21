@@ -1,0 +1,27 @@
+@startjson
+{
+  "path": "/order/cancel",
+  "httpMethod": "POST", 
+	"requestHeaders": {
+		"Authorization": "Bearer <ACCESS_TOKEN>",
+		"Organization": "<ORG_ID>",
+		"basicAuth": "<BASIC_AUTH>"
+	},
+  "requestBody": {
+		"OrderId": "<ORDER_ID>",
+		"CancelReason": {
+			"ReasonId": "OthReason"
+		},
+		"CancelComments": "<CANCEL_COMMENTS>",
+		"OrgId": "<ORG_ID>"
+	},
+  "response": {
+		"success": {
+			"success": "boolean"
+		},
+  	"error": {
+			"success": "boolean"
+		}
+	}
+}
+@endjson

@@ -1,0 +1,16 @@
+[project]
+name = "claude-hooks-project"
+version = "0.1.0"
+dependencies = [
+    "requests>=2.32.0",
+    "pydantic>=2.11.0",
+    "openai>=1.100.0",
+]
+requires-python = ">=3.9"
+
+[tool.setuptools]
+packages = []
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

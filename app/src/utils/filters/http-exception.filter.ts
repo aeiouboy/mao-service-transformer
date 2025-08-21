@@ -10,8 +10,8 @@ import { GqlExceptionFilter } from '@nestjs/graphql';
 
 import { GraphQLError } from 'graphql';
 
-import { HTTP_EXCEPTION_ERROR_CODES } from 'src/common/constants';
-import { ResponseDto } from 'src/common/dtos';
+import { HTTP_EXCEPTION_ERROR_CODES } from 'src/shared/constants';
+import { ResponseDto } from 'src/shared/dtos';
 
 import { ErrorException } from '../exceptions';
 import { getResponseStatus } from '../helpers';
