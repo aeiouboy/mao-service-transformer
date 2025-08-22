@@ -4,7 +4,7 @@ import { OrdersModule } from '../modules/orders/orders.module';
 import { ReleasesModule } from '../modules/releases/releases.module';
 import { TransformationsModule } from '../modules/transformations/transformations.module';
 import { PaymentsModule } from '../modules/payments/payments.module';
-import { SimpleTransformController } from './controllers/simple-transform.controller';
+// import { SimpleTransformController } from './controllers/simple-transform.controller';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { SimpleTransformController } from './controllers/simple-transform.contro
     PaymentsModule,
   ],
   controllers: [
-    SimpleTransformController,
+    // SimpleTransformController,
   ],
   providers: [],
   exports: [

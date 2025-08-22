@@ -4,7 +4,10 @@ import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-g
 import { CalculationService } from '../services/calculation.service';
 import { Allocation } from '../../orders/entities/allocation.entity';
 import { OrderLine } from '../../orders/entities/order-line.entity';
-import { ReleaseLineDTO } from '../../releases/services/release-message.dto';
+import { DatabaseReleaseLineDTO } from '../../releases/dtos/database-compatible-release.dto';
+
+// Type alias for backward compatibility
+type ReleaseLineDTO = DatabaseReleaseLineDTO;
 
 import { AllocationMapper } from './allocation.mapper';
 
@@ -26,7 +29,7 @@ export class ReleaseLineMapper {
     orderLine: OrderLine,
     allocations: Allocation[],
   ): ReleaseLineDTO {
-    const releaseLineDto = new ReleaseLineDTO();
+    const releaseLineDto = new DatabaseReleaseLineDTO();
 
     // Generate unique release line ID
     releaseLineDto.releaseLineId = this.generateReleaseLineId(
@@ -34,8 +37,7 @@ export class ReleaseLineMapper {
     );
 
     // Basic product information
-    releaseLineDto.productId = orderLine.itemId;
-    releaseLineDto.sku = orderLine.itemId; // Using itemId for both
+    releaseLineDto.itemId = orderLine.itemId;
     releaseLineDto.productName = orderLine.itemId; // Default, can be enriched from product service
     releaseLineDto.quantity = orderLine.quantity;
     releaseLineDto.unitPrice = orderLine.unitPrice;
@@ -44,20 +46,14 @@ export class ReleaseLineMapper {
     releaseLineDto.lineTotal =
       this.calculationService.calculateLineTotal(orderLine);
 
-    // Tax calculations
-    const taxDetails =
-      this.calculationService.calculateLineTaxDetails(orderLine);
+    // Tax calculations (optional fields)
+    // const taxDetails = this.calculationService.calculateLineTaxDetails(orderLine);
+    // releaseLineDto.taxAmount = taxDetails.taxAmount;
+    // releaseLineDto.taxableAmount = taxDetails.taxableAmount;
 
-    releaseLineDto.taxAmount = taxDetails.taxAmount;
-    releaseLineDto.taxableAmount = taxDetails.taxableAmount;
-
-    // Financial amounts - calculated from JSONB fields
-    releaseLineDto.discountAmount =
-      this.extractChargeAmount(orderLine.orderLineChargeDetail, 'discount') ||
-      0;
-    releaseLineDto.shippingAmount =
-      this.extractChargeAmount(orderLine.orderLineChargeDetail, 'shipping') ||
-      0;
+    // Financial amounts - calculated from JSONB fields (optional)
+    // releaseLineDto.discountAmount = this.extractChargeAmount(orderLine.orderLineChargeDetail, 'discount') || 0;
+    // releaseLineDto.shippingAmount = this.extractChargeAmount(orderLine.orderLineChargeDetail, 'shipping') || 0;
 
     // Fulfillment information
     releaseLineDto.fulfillmentType = orderLine.fulfillmentStatus;
@@ -158,9 +154,9 @@ export class ReleaseLineMapper {
         summary.totalLines += 1;
         summary.totalQuantity += line.quantity;
         summary.totalAmount += line.lineTotal;
-        summary.totalTax += line.taxAmount || 0;
-        summary.totalDiscount += line.discountAmount || 0;
-        summary.totalShipping += line.shippingAmount || 0;
+        // summary.totalTax += line.taxAmount || 0;
+        // summary.totalDiscount += line.discountAmount || 0;
+        // summary.totalShipping += line.shippingAmount || 0;
 
         return summary;
       },

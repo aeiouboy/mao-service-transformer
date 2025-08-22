@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Allocation } from '../../orders/entities/allocation.entity';
-import { AllocationDTO } from '../../releases/services/release-message.dto';
+import { DatabaseAllocationDTO } from '../../releases/dtos/database-compatible-release.dto';
 
 @Injectable()
 export class AllocationMapper {
@@ -10,8 +10,8 @@ export class AllocationMapper {
    * @param allocation Allocation entity
    * @returns AllocationDTO
    */
-  mapToAllocationDTO(allocation: Allocation): AllocationDTO {
-    const allocationDto = new AllocationDTO();
+  mapToAllocationDTO(allocation: Allocation): DatabaseAllocationDTO {
+    const allocationDto = new DatabaseAllocationDTO();
 
     allocationDto.allocationId = allocation.allocationId;
     allocationDto.facilityId = allocation.shipFromLocationId || 'UNKNOWN';
@@ -35,7 +35,7 @@ export class AllocationMapper {
    * @param allocations Array of allocation entities
    * @returns Array of AllocationDTO
    */
-  mapMultipleAllocations(allocations: Allocation[]): AllocationDTO[] {
+  mapMultipleAllocations(allocations: Allocation[]): DatabaseAllocationDTO[] {
     if (!allocations || allocations.length === 0) {
       return [];
     }

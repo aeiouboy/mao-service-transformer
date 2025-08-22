@@ -221,4 +221,17 @@ export class DynamicIdGeneratorService {
     // Generate consistent process ID for release orders
     return Math.floor(10000000 + Math.random() * 90000000).toString();
   }
+
+  /**
+   * Generate Fulfillment Group ID for release lines
+   * Format: FG{timestamp}{random}
+   */
+  generateFulfillmentGroupId(): string {
+    const timestamp = (Date.now() + this.idCounter++).toString().slice(-8);
+    const random = Math.floor(Math.random() * 999999)
+      .toString()
+      .padStart(6, '0');
+
+    return `FG${timestamp}${random}`;
+  }
 }

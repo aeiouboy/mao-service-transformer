@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Payment } from '../../payments/entities/payment.entity';
-import { PaymentMethodDTO } from '../../releases/services/release-message.dto';
+import { DatabasePaymentMethodDTO } from '../../releases/dtos/database-compatible-release.dto';
 
 @Injectable()
 export class PaymentMapper {
@@ -10,10 +10,10 @@ export class PaymentMapper {
    * @param payment Payment entity
    * @returns PaymentMethodDTO
    */
-  mapToPaymentMethodDTO(payment: Payment): PaymentMethodDTO {
-    const paymentDto = new PaymentMethodDTO();
+  mapToPaymentMethodDTO(payment: Payment): DatabasePaymentMethodDTO {
+    const paymentDto = new DatabasePaymentMethodDTO();
 
-    paymentDto.paymentId = payment.paymentTransactionId;
+    paymentDto.paymentMethodId = payment.paymentTransactionId;
     paymentDto.paymentType =
       this.extractPaymentType(payment.transactionType) || 'UNKNOWN';
     paymentDto.amount = this.roundToTwoDecimals(payment.processedAmount);
@@ -38,7 +38,7 @@ export class PaymentMapper {
    * @param payments Array of payment entities
    * @returns Array of PaymentMethodDTO
    */
-  mapMultiplePayments(payments: Payment[]): PaymentMethodDTO[] {
+  mapMultiplePayments(payments: Payment[]): DatabasePaymentMethodDTO[] {
     if (!payments || payments.length === 0) {
       return [];
     }

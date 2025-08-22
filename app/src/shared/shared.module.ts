@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DynamicIdGeneratorService } from './services/dynamic-id-generator.service';
 import { TimestampService } from './services/timestamp.service';
 import { FileOutputService } from './services/file-output.service';
+import { DatabaseTransformationService } from './services/database-transformation.service';
 
 @Module({
   imports: [],
@@ -10,11 +11,13 @@ import { FileOutputService } from './services/file-output.service';
     DynamicIdGeneratorService,
     TimestampService,
     FileOutputService,
+    DatabaseTransformationService,
   ],
   exports: [
     DynamicIdGeneratorService,
     TimestampService,
     FileOutputService,
+    DatabaseTransformationService,
   ],
 })
 export class SharedModule {}

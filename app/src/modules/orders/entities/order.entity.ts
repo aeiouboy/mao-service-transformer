@@ -35,7 +35,7 @@ export class Order extends Model<Order> {
   })
   @IsNotEmpty()
   @IsString()
-  orderId: string;
+  declare orderId: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -44,7 +44,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  orderNumber: string;
+  declare orderNumber: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -53,7 +53,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  bu: string;
+  declare bu: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -62,7 +62,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  orgId: string;
+  declare orgId: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -71,7 +71,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  customerId: string;
+  declare customerId: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -80,7 +80,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  customerEmail: string;
+  declare customerEmail: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -89,7 +89,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  customerFirstName: string;
+  declare customerFirstName: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -98,7 +98,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  customerLastName: string;
+  declare customerLastName: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -107,7 +107,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  customerPhone: string;
+  declare customerPhone: string;
 
   @Column({
     type: DataType.DATE,
@@ -116,7 +116,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsDate()
-  capturedDate: Date;
+  declare capturedDate: Date;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -125,7 +125,7 @@ export class Order extends Model<Order> {
     defaultValue: false,
   })
   @IsBoolean()
-  isOnHold: boolean;
+  declare isOnHold: boolean;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -134,7 +134,7 @@ export class Order extends Model<Order> {
     defaultValue: true,
   })
   @IsBoolean()
-  cancelAllowed: boolean;
+  declare cancelAllowed: boolean;
 
   @Column({
     type: DataType.STRING(10),
@@ -143,7 +143,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  currencyCode: string;
+  declare currencyCode: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -152,7 +152,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  orderStatus: string;
+  declare orderStatus: string;
 
   @Column({
     type: DataType.STRING(10),
@@ -161,7 +161,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  fulfillmentStatus: string;
+  declare fulfillmentStatus: string;
 
   @Column({
     type: DataType.STRING(10),
@@ -170,7 +170,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  paymentStatus: string;
+  declare paymentStatus: string;
 
   @Column({
     type: DataType.JSONB,
@@ -179,7 +179,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsObject()
-  orderChargeDetail: any;
+  declare orderChargeDetail: any;
 
   @Column({
     type: DataType.JSONB,
@@ -188,7 +188,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsObject()
-  orderTaxDetail: any;
+  declare orderTaxDetail: any;
 
   @Column({
     type: DataType.JSONB,
@@ -197,7 +197,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsObject()
-  orderType: any;
+  declare orderType: any;
 
   @Column({
     type: DataType.JSONB,
@@ -206,7 +206,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsObject()
-  orderExtension1: any;
+  declare orderExtension1: any;
 
   // Financial fields from migration files
   @Column({
@@ -216,7 +216,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsNumber()
-  orderSubTotal?: number;
+  declare orderSubTotal?: number;
 
   @Column({
     type: DataType.DECIMAL(18, 4),
@@ -225,7 +225,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsNumber()
-  orderTotal?: number;
+  declare orderTotal?: number;
 
   @Column({
     type: DataType.DECIMAL(18, 4),
@@ -234,7 +234,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsNumber()
-  totalCharges?: number;
+  declare totalCharges?: number;
 
   @Column({
     type: DataType.DECIMAL(18, 4),
@@ -243,7 +243,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsNumber()
-  totalDiscounts?: number;
+  declare totalDiscounts?: number;
 
   @Column({
     type: DataType.DECIMAL(18, 4),
@@ -252,7 +252,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsNumber()
-  totalTaxes?: number;
+  declare totalTaxes?: number;
 
   @Column({
     type: DataType.STRING(255),
@@ -261,7 +261,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  maxFulfillmentStatusId?: string;
+  declare maxFulfillmentStatusId?: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -270,7 +270,7 @@ export class Order extends Model<Order> {
   })
   @IsOptional()
   @IsString()
-  sellingChannel?: string;
+  declare sellingChannel?: string;
 
   @Column({
     type: DataType.DATE,
@@ -294,12 +294,12 @@ export class Order extends Model<Order> {
     sourceKey: 'orderId',
     as: 'orderLines',
   })
-  orderLines: OrderLine[];
+  declare orderLines: OrderLine[];
 
   @HasMany(() => Payment, {
     foreignKey: 'orderId',
     sourceKey: 'orderId',
     as: 'payments',
   })
-  payments: Payment[];
+  declare payments: Payment[];
 }

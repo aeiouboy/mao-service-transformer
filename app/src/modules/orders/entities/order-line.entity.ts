@@ -44,7 +44,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsString()
-  orderLineId: string;
+  declare orderLineId: string;
 
   @ForeignKey(() => Order)
   @Column({
@@ -54,7 +54,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsNotEmpty()
   @IsString()
-  orderId: string;
+  declare orderId: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -63,7 +63,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsNotEmpty()
   @IsString()
-  itemId: string;
+  declare itemId: string;
 
   @Column({
     type: DataType.DECIMAL(10, 2),
@@ -73,7 +73,7 @@ export class OrderLine extends Model<OrderLine> {
   @IsNotEmpty()
   @IsNumber()
   @Min(0, { message: 'Quantity cannot be negative' })
-  quantity: number;
+  declare quantity: number;
 
   @Column({
     type: DataType.DECIMAL(10, 2),
@@ -84,7 +84,7 @@ export class OrderLine extends Model<OrderLine> {
   @IsNotEmpty()
   @IsNumber()
   @Min(0, { message: 'Unit price cannot be negative' })
-  unitPrice: number;
+  declare unitPrice: number;
 
   @Column({
     type: DataType.DECIMAL(10, 2),
@@ -93,7 +93,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsNumber()
-  originalUnitPrice?: number;
+  declare originalUnitPrice?: number;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -102,7 +102,7 @@ export class OrderLine extends Model<OrderLine> {
     defaultValue: false,
   })
   @IsBoolean()
-  isGift: boolean;
+  declare isGift: boolean;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -111,7 +111,7 @@ export class OrderLine extends Model<OrderLine> {
     defaultValue: false,
   })
   @IsBoolean()
-  isTaxIncluded: boolean;
+  declare isTaxIncluded: boolean;
 
   @Column({
     type: DataType.STRING(255),
@@ -119,7 +119,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsString()
-  uom?: string;
+  declare uom?: string;
 
   @Column({
     type: DataType.DATE,
@@ -128,7 +128,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsDate()
-  promisedDeliveryDate?: Date;
+  declare promisedDeliveryDate?: Date;
 
   @Column({
     type: DataType.STRING(255),
@@ -137,7 +137,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsString()
-  shippingMethodId?: string;
+  declare shippingMethodId?: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -146,7 +146,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsString()
-  fulfillmentStatus?: string;
+  declare fulfillmentStatus?: string;
 
   @Column({
     type: DataType.STRING(255),
@@ -155,7 +155,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsString()
-  orderLineStatus?: string;
+  declare orderLineStatus?: string;
 
   @Column({
     type: DataType.JSONB,
@@ -164,7 +164,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsObject()
-  deliveryMethod?: any;
+  declare deliveryMethod?: any;
 
   @Column({
     type: DataType.JSONB,
@@ -173,7 +173,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsObject()
-  orderLineChargeDetail?: any;
+  declare orderLineChargeDetail?: any;
 
   @Column({
     type: DataType.JSONB,
@@ -182,7 +182,7 @@ export class OrderLine extends Model<OrderLine> {
   })
   @IsOptional()
   @IsObject()
-  orderLineTaxDetail?: any;
+  declare orderLineTaxDetail?: any;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -191,7 +191,7 @@ export class OrderLine extends Model<OrderLine> {
     defaultValue: true,
   })
   @IsBoolean()
-  isActive: boolean;
+  declare isActive: boolean;
 
   @Column({
     type: DataType.DATE,
@@ -214,12 +214,12 @@ export class OrderLine extends Model<OrderLine> {
     foreignKey: 'orderId',
     targetKey: 'orderId',
   })
-  order?: Order;
+  declare order?: Order;
 
   @HasMany(() => Allocation, {
     foreignKey: 'orderLineId',
     sourceKey: 'id',
     as: 'allocations',
   })
-  allocations?: Allocation[];
+  declare allocations?: Allocation[];
 }

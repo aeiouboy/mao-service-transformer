@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 
 import { Injectable } from '@nestjs/common';
 
-import { AddressDTO } from '../../releases/services/release-message.dto';
+import { DatabaseAddressDTO } from '../../releases/dtos/database-compatible-release.dto';
 
 @Injectable()
 export class AddressMapper {
@@ -11,27 +11,27 @@ export class AddressMapper {
    * @param addressData Raw address data from order
    * @returns AddressDTO with generated hash
    */
-  mapToAddressDTO(addressData: any): AddressDTO {
+  mapToAddressDTO(addressData: any): DatabaseAddressDTO {
     if (!addressData) {
       throw new Error('Address data is required');
     }
 
-    const addressDto = new AddressDTO();
+    const addressDto = new DatabaseAddressDTO();
 
     // Map address fields with trimming and normalization
-    addressDto.address1 = this.normalizeString(
+    addressDto.addressLine1 = this.normalizeString(
       addressData.street || addressData.address1 || '',
     );
-    addressDto.address2 = this.normalizeString(addressData.address2);
-    addressDto.address3 = this.normalizeString(addressData.address3);
+    addressDto.addressLine2 = this.normalizeString(addressData.address2);
+    addressDto.addressLine3 = this.normalizeString(addressData.address3);
     addressDto.city = this.normalizeString(addressData.city || '');
     addressDto.state = this.normalizeString(addressData.state);
-    addressDto.postalCode = this.normalizeString(addressData.postalCode || '');
+    addressDto.zipCode = this.normalizeString(addressData.postalCode || '');
     addressDto.country = this.normalizeCountryCode(addressData.country || '');
     addressDto.county = this.normalizeString(addressData.county);
 
-    // Generate MD5 hash for address deduplication
-    addressDto.hash = this.generateAddressHash(addressData);
+    // Generate address ID hash for deduplication
+    addressDto.addressId = this.generateAddressHash(addressData);
 
     return addressDto;
   }
