@@ -212,7 +212,7 @@ export class ReleaseOrderTransformerService {
       // Top-level fields matching sample payload structure - using REAL database fields
       ServiceLevelCode: order.maxFulfillmentStatusId || 'STD',
       Email: order.customerEmail || 'undefined',
-      MaxFulfillmentStatusId: order.maxFulfillmentStatusId || '3500', // ✅ ใช้ maxFulfillmentStatusId จาก database
+      MaxFulfillmentStatusId: order.maxFulfillmentStatusId || '3000', // ✅ ใช้ maxFulfillmentStatusId จาก database
       IsOnHold: order.isOnHold || false,
       IsConfirmed: true, // Default value as not in DB
       OrderSubtotal: order.orderSubTotal || 0,
@@ -1194,7 +1194,7 @@ export class ReleaseOrderTransformerService {
     payload.currencyCode = order.currencyCode || 'THB';
     payload.customerPhone = order.customerPhone;
     payload.customerFirstName = order.customerFirstName;
-    payload.releaseTotal = financialTotals.subTotal + financialTotals.totalCharges + financialTotals.totalTax;
+    payload.releaseTotal = financialTotals.subTotal + financialTotals.totalCharges + financialTotals.totalTax - financialTotals.totalDiscount;
     payload.extendedFields = {
       cancelAllowed: order.cancelAllowed || true
     };
@@ -1978,11 +1978,41 @@ export class ReleaseOrderTransformerService {
       return sum + (line.quantity || 0) * (line.unitPrice || 0);
     }, 0);
     
-    // Use stored totals from database if available, otherwise calculate
-    const totalTax = order.totalTaxes || 0;
-    const totalCharges = order.totalCharges || 0;
-    const totalDiscount = Math.abs(order.totalDiscounts || 0);
+    // Calculate totals from JSONB fields in database
+    let totalTax = 0;
+    let totalCharges = 0;
+    let totalDiscount = 0;
+    
+    // Calculate tax from orderTaxDetail JSONB field
+    if (order.orderTaxDetail && Array.isArray(order.orderTaxDetail)) {
+      totalTax = order.orderTaxDetail.reduce((sum, tax) => sum + (tax.TaxAmount || 0), 0);
+    }
+    
+    // Calculate charges and discounts from orderChargeDetail JSONB field  
+    if (order.orderChargeDetail && Array.isArray(order.orderChargeDetail)) {
+      for (const charge of order.orderChargeDetail) {
+        const chargeAmount = charge.ChargeTotal || 0;
+        const chargeType = charge.ChargeType?.ChargeTypeId;
+        
+        if (chargeType === 'Discount') {
+          // Discounts are negative values, convert to positive for totalDiscount
+          totalDiscount += Math.abs(chargeAmount);
+        } else {
+          // All other charges (Shipping, etc.) count as totalCharges
+          totalCharges += Math.max(0, chargeAmount); // Only positive charges
+        }
+      }
+    }
+    
     const totalAmount = subTotal + totalTax + totalCharges - totalDiscount;
+
+    this.logger.debug(`Financial calculation results:`, {
+      subTotal,
+      totalTax, 
+      totalCharges,
+      totalDiscount,
+      totalAmount
+    });
 
     return {
       subTotal,

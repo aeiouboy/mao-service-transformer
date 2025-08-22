@@ -99,6 +99,48 @@ export class ReleaseOrderController {
         message: `Order ${request.orderId} transformed to release format successfully`,
       };
     } catch (error: any) {
+      this.logger.error(`Failed to transform order to release format: ${request.orderId}`, error);
+
+      return {
+        success: false,
+        error: error.message || 'Failed to transform order to release format',
+        message: `Failed to transform order ${request.orderId} to release format`,
+      };
+    }
+  }
+
+  /**
+   * Transform order to PascalCase format matching sample payload
+   * POST /api/order/release-transform-pascal
+   * @param request Order ID to transform
+   * @returns Release data in PascalCase format matching sample payload
+   */
+  @Post('release-transform-pascal')
+  async transformOrderToPascalCaseFormat(
+    @Body() request: ReleaseTransformRequestDTO,
+  ): Promise<ReleaseTransformResponseDTO> {
+    this.logger.log(`Received PascalCase transform request for order: ${request.orderId}`);
+
+    try {
+      // Validate request
+      if (!request.orderId?.trim()) {
+        throw new HttpException('Order ID is required', HttpStatus.BAD_REQUEST);
+      }
+
+      // Transform order to PascalCase format
+      const releaseData =
+        await this.releaseTransformerService.transformOrderToPascalCaseFormat(
+          request.orderId.trim(),
+        );
+
+      this.logger.log(`Successfully transformed order to PascalCase format: ${request.orderId}`);
+
+      return {
+        success: true,
+        data: releaseData,
+        message: `Order ${request.orderId} transformed to PascalCase format successfully`,
+      };
+    } catch (error: any) {
       this.logger.error(
         `Transform failed for order ${request.orderId}:`,
         error,

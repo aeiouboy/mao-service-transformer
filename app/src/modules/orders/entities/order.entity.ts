@@ -272,6 +272,70 @@ export class Order extends Model<Order> {
   @IsString()
   declare sellingChannel?: string;
 
+  // Additional fields for release transformation
+  @Column({
+    type: DataType.STRING(255),
+    field: 'ship_from_location_id',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare shipFromLocationId?: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    field: 'facility_code',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare facilityCode?: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    field: 'created_by',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare createdBy?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    field: 'is_cancelled',
+    allowNull: false,
+    defaultValue: false,
+  })
+  @IsBoolean()
+  declare isCancelled?: boolean;
+
+  @Column({
+    type: DataType.JSONB,
+    field: 'order_note',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsObject()
+  declare orderNote?: any;
+
+  @Column({
+    type: DataType.STRING(10),
+    field: 'order_locale',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare orderLocale?: string;
+
+  @Column({
+    type: DataType.JSONB,
+    field: 'doc_type',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsObject()
+  declare docType?: any;
+
   @Column({
     type: DataType.DATE,
     field: 'created_at',
