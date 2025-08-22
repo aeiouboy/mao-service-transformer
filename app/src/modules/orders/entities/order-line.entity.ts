@@ -121,6 +121,39 @@ export class OrderLine extends Model<OrderLine> {
   @IsString()
   declare uom?: string;
 
+  // Additional fields for release transformation
+  @Column({
+    type: DataType.STRING(255),
+    field: 'item_description',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare itemDescription?: string;
+
+  // Calculated fields - not stored in database
+  // orderLineSubtotal = quantity * unitPrice (calculated in service)
+  // orderLineTotal = orderLineSubtotal + taxes + charges (calculated in service)  
+  // orderLineTaxTotal = sum of all taxes for this line (calculated in service)
+
+  @Column({
+    type: DataType.STRING(255),
+    field: 'min_fulfillment_status_id',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare minFulfillmentStatusId?: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    field: 'fulfillment_group_id',
+    allowNull: true,
+  })
+  @IsOptional()
+  @IsString()
+  declare fulfillmentGroupId?: string;
+
   @Column({
     type: DataType.DATE,
     field: 'promised_delivery_date',
