@@ -94,9 +94,11 @@ node tests/scripts/detailed-missing-fields-analysis.js
 ## Critical Business Logic
 
 ### Field Mapping System
-- **Source**: `data/mappings/corrected_field_mapping.csv`
+- **Database Schema**: `/migrations/order.sql` - Contains complete database structure and sample data
+- **Field Mappings**: Available in task analysis files and database entity definitions
 - **Sample Data**: `data/samples/sample_input.json` → transformation → `release/orderid{XXXXX}.json`
 - **Validation**: Compare outputs against `data/samples/sample_order.json` for accuracy
+- **Important**: Always check database structure before hardcoding values - use actual database fields and business logic
 
 ### Financial Calculations
 1. **Order Subtotal**: SUM(OrderLine[].Quantity * OrderLine[].UnitPrice) OR bundle calculations

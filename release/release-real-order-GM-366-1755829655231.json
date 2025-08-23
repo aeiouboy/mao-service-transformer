@@ -1,0 +1,71 @@
+{
+  "ReleaseId": "REL-1755829655229",
+  "ReleaseNumber": "REL-GM-366",
+  "ReleaseType": "Standard",
+  "ReleaseStatus": "Open",
+  "Priority": "Normal",
+  "CreatedDate": "2025-08-22T02:27:35.229Z",
+  "ModifiedDate": "2025-08-22T02:27:35.229Z",
+  "OrderId": "SAN6-423924816-C7EJNB23JAUDN2",
+  "AlternateOrderId": "SAN6-423924816-C7EJNB23JAUDN2",
+  "OrgId": "CFR",
+  "EstimatedReleaseDate": null,
+  "ActualReleaseDate": null,
+  "CustomerInfo": {
+    "CustomerId": null,
+    "CustomerEmail": null,
+    "FirstName": "Grab Customer",
+    "LastName": "-",
+    "Phone": "0101010122",
+    "CustomerType": "Regular"
+  },
+  "Lines": [
+    {
+      "ReleaseLineId": "LINE-REL-1755829655229-1",
+      "OrderLineId": 1,
+      "ProductId": "GRAB-FOOD-001",
+      "ProductName": "Sample Food Item",
+      "Quantity": 2,
+      "UnitPrice": 150,
+      "LineTotal": 300,
+      "Currency": "THB",
+      "FulfillmentType": "DELIVERY",
+      "LineStatus": "Open"
+    }
+  ],
+  "PaymentMethods": [],
+  "FinancialTotals": {
+    "OrderSubtotal": 300,
+    "TotalCharges": 0,
+    "TotalTaxes": 0,
+    "TotalDiscounts": 0,
+    "ReleaseTotal": 300
+  },
+  "SystemFields": {
+    "TenantId": "crcpopr11o",
+    "MSG_TYPE": "OB_XINT_PublishReleaseToStoreMSGType_GCPMT",
+    "MSG_ID_PK": "MSG-REL-1755829655229",
+    "OUTBOUND_CONDITION_EVALUATION": true,
+    "Location": "CFR"
+  },
+  "Metadata": {
+    "OriginalOrderData": {
+      "DatabaseId": 2,
+      "SellingChannel": "Grab",
+      "OrderLocale": "th",
+      "BusinessUnit": "CFR",
+      "CapturedDate": "2025-06-02T10:38:39.000Z",
+      "OrderStatus": "Released",
+      "FulfillmentStatus": "3000",
+      "PaymentStatus": "5000"
+    },
+    "TransformationInfo": {
+      "TransformedAt": "2025-08-22T02:27:35.229Z",
+      "TransformationVersion": "1.0.0",
+      "DataSource": "Omnia-DEV Database",
+      "OrderLinesFound": 1,
+      "PaymentsFound": 0,
+      "AllocationsFound": 0
+    }
+  }
+}

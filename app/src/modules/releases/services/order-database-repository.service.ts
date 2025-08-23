@@ -63,6 +63,13 @@ export class OrderDatabaseRepositoryService {
           'orderType',
           'orderExtension1',
           'sellingChannel',
+          'orderLocale', // Exists in database schema
+          // Financial fields that exist in database schema
+          'orderSubTotal',
+          'orderTotal', 
+          'totalCharges',
+          'totalDiscounts',
+          'totalTaxes',
           'createdAt',
           'updatedAt'
         ]

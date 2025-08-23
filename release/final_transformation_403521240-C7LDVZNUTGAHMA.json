@@ -1,0 +1,282 @@
+{
+  "ordersTableData": {
+    "order_id": "403521240-C7LDVZNUTGAHMA",
+    "short_order_number": "403521240-C7LDVZNUTGAHMA",
+    "alternate_order_id": "403521240-C7LDVZNUTGAHMA",
+    "customer_id": "GUEST_CUSTOMER",
+    "customer_type_id": "",
+    "customer_email": "test@example.com",
+    "customer_first_name": "John",
+    "customer_last_name": "Doe",
+    "currency_code": "USD",
+    "org_id": "CFR",
+    "selling_channel": "WEB",
+    "order_sub_total": 150,
+    "order_total": 175,
+    "total_charges": 25,
+    "total_discounts": 0,
+    "total_taxes": 0,
+    "is_on_hold": false,
+    "cancel_allowed": false,
+    "is_cancelled": false,
+    "order_status": "Open",
+    "fulfillment_status": "Released",
+    "payment_status": "Paid",
+    "created_at": "2025-08-22T03:08:53.709Z",
+    "updated_at": "2025-08-22T03:08:53.709Z",
+    "doc_type": {
+      "DocTypeId": "CustomerOrder"
+    },
+    "order_hold": [
+      {
+        "HoldTypeId": "AwaitingPayment",
+        "StatusId": "2000",
+        "ResolveReasonId": "AcceptPayment"
+      }
+    ],
+    "order_actions": [],
+    "change_log": {
+      "ModTypes": {}
+    },
+    "version": 1,
+    "is_active": true,
+    "created_by": "system",
+    "updated_by": "system"
+  },
+  "orderLinesTableData": [
+    {
+      "order_id": "403521240-C7LDVZNUTGAHMA",
+      "order_line_id": "000-0-0",
+      "item_id": "8853474090594",
+      "quantity": 12,
+      "unit_price": 3.25,
+      "original_unit_price": 3.25,
+      "line_total": 39,
+      "uom": "SBTL",
+      "is_gift": false,
+      "is_cancelled": false,
+      "fulfillment_status": "Open",
+      "order_line_status": "Open",
+      "order_line_sub_total": 0,
+      "total_discounts": 0,
+      "total_charges": 0,
+      "ship_to_address": {
+        "Address": {
+          "Address1": "Grab Address1",
+          "Address2": "Grab Address2",
+          "Address3": "",
+          "City": "-",
+          "County": "-",
+          "Email": "undefined",
+          "Country": "TH",
+          "FirstName": "Grab Customer",
+          "LastName": "-",
+          "Phone": "0101010122",
+          "PostalCode": "99999",
+          "State": "-",
+          "BranchNo": "",
+          "TaxId": "",
+          "CompanyName": "Grab Customer"
+        },
+        "Extended": {
+          "AddressRef": "|||4016|TH"
+        },
+        "IsAddressVerified": true
+      },
+      "delivery_method": {
+        "DeliveryMethodId": "ShipToAddress"
+      },
+      "change_log": {
+        "ModTypes": {}
+      },
+      "created_at": "2025-08-22T03:08:53.710Z",
+      "updated_at": "2025-08-22T03:08:53.710Z",
+      "version": 1,
+      "is_active": true,
+      "created_by": "system",
+      "updated_by": "system"
+    },
+    {
+      "order_id": "403521240-C7LDVZNUTGAHMA",
+      "order_line_id": "001-1-1",
+      "item_id": "8853474091232",
+      "quantity": 12,
+      "unit_price": 4.91,
+      "original_unit_price": 4.91,
+      "line_total": 58.92,
+      "uom": "SBTL",
+      "is_gift": false,
+      "is_cancelled": false,
+      "fulfillment_status": "Open",
+      "order_line_status": "Open",
+      "order_line_sub_total": 0,
+      "total_discounts": 0,
+      "total_charges": 0,
+      "ship_to_address": {
+        "Address": {
+          "Address1": "Grab Address1",
+          "Address2": "Grab Address2",
+          "Address3": "",
+          "City": "-",
+          "County": "-",
+          "Email": "undefined",
+          "Country": "TH",
+          "FirstName": "Grab Customer",
+          "LastName": "-",
+          "Phone": "0101010122",
+          "PostalCode": "99999",
+          "State": "-",
+          "BranchNo": "",
+          "TaxId": "",
+          "CompanyName": "Grab Customer"
+        },
+        "Extended": {
+          "AddressRef": "|||4016|TH"
+        },
+        "IsAddressVerified": true
+      },
+      "delivery_method": {
+        "DeliveryMethodId": "ShipToAddress"
+      },
+      "change_log": {
+        "ModTypes": {}
+      },
+      "created_at": "2025-08-22T03:08:53.710Z",
+      "updated_at": "2025-08-22T03:08:53.710Z",
+      "version": 1,
+      "is_active": true,
+      "created_by": "system",
+      "updated_by": "system"
+    },
+    {
+      "order_id": "403521240-C7LDVZNUTGAHMA",
+      "order_line_id": "002-2-2",
+      "item_id": "8853474091256",
+      "quantity": 6,
+      "unit_price": 9.83,
+      "original_unit_price": 9.83,
+      "line_total": 58.980000000000004,
+      "uom": "SBTL",
+      "is_gift": false,
+      "is_cancelled": false,
+      "fulfillment_status": "Open",
+      "order_line_status": "Open",
+      "order_line_sub_total": 0,
+      "total_discounts": 0,
+      "total_charges": 0,
+      "ship_to_address": {
+        "Address": {
+          "Address1": "Grab Address1",
+          "Address2": "Grab Address2",
+          "Address3": "",
+          "City": "-",
+          "County": "-",
+          "Email": "undefined",
+          "Country": "TH",
+          "FirstName": "Grab Customer",
+          "LastName": "-",
+          "Phone": "0101010122",
+          "PostalCode": "99999",
+          "State": "-",
+          "BranchNo": "",
+          "TaxId": "",
+          "CompanyName": "Grab Customer"
+        },
+        "Extended": {
+          "AddressRef": "|||4016|TH"
+        },
+        "IsAddressVerified": true
+      },
+      "delivery_method": {
+        "DeliveryMethodId": "ShipToAddress"
+      },
+      "change_log": {
+        "ModTypes": {}
+      },
+      "created_at": "2025-08-22T03:08:53.710Z",
+      "updated_at": "2025-08-22T03:08:53.710Z",
+      "version": 1,
+      "is_active": true,
+      "created_by": "system",
+      "updated_by": "system"
+    }
+  ],
+  "releaseLinesTableData": [
+    {
+      "order_id": "403521240-C7LDVZNUTGAHMA",
+      "order_line_id": "000-0-0",
+      "release_id": "403521240-C7LDVZNUTGAHMA1",
+      "release_line_id": "403521240-C7LDVZNUTGAHMA1-1",
+      "allocation_id": "ALLOxxxxx1755832133710",
+      "org_id": "CFR",
+      "item_id": "8853474090594",
+      "quantity": 12,
+      "uom": "SBTL",
+      "fulfilled_quantity": null,
+      "cancelled_quantity": null,
+      "effective_rank": 1,
+      "process": "releaseOrder::PROCxxxxx1755832133710",
+      "cancelled_date": null,
+      "created_at": "2025-08-22T03:08:53.710Z",
+      "updated_at": "2025-08-22T03:08:53.710Z",
+      "created_by": "system",
+      "updated_by": "system"
+    },
+    {
+      "order_id": "403521240-C7LDVZNUTGAHMA",
+      "order_line_id": "001-1-1",
+      "release_id": "403521240-C7LDVZNUTGAHMA1",
+      "release_line_id": "403521240-C7LDVZNUTGAHMA1-2",
+      "allocation_id": "ALLOxxxxx1755832133710",
+      "org_id": "CFR",
+      "item_id": "8853474091232",
+      "quantity": 12,
+      "uom": "SBTL",
+      "fulfilled_quantity": null,
+      "cancelled_quantity": null,
+      "effective_rank": 1,
+      "process": "releaseOrder::PROCxxxxx1755832133710",
+      "cancelled_date": null,
+      "created_at": "2025-08-22T03:08:53.710Z",
+      "updated_at": "2025-08-22T03:08:53.710Z",
+      "created_by": "system",
+      "updated_by": "system"
+    },
+    {
+      "order_id": "403521240-C7LDVZNUTGAHMA",
+      "order_line_id": "002-2-2",
+      "release_id": "403521240-C7LDVZNUTGAHMA1",
+      "release_line_id": "403521240-C7LDVZNUTGAHMA1-3",
+      "allocation_id": "ALLOxxxxx1755832133710",
+      "org_id": "CFR",
+      "item_id": "8853474091256",
+      "quantity": 6,
+      "uom": "SBTL",
+      "fulfilled_quantity": null,
+      "cancelled_quantity": null,
+      "effective_rank": 1,
+      "process": "releaseOrder::PROCxxxxx1755832133710",
+      "cancelled_date": null,
+      "created_at": "2025-08-22T03:08:53.710Z",
+      "updated_at": "2025-08-22T03:08:53.710Z",
+      "created_by": "system",
+      "updated_by": "system"
+    }
+  ],
+  "warnings": [],
+  "errors": [],
+  "validationResults": {
+    "ordersValidation": {
+      "isValid": true,
+      "missingFields": []
+    },
+    "orderLinesValidation": {
+      "isValid": true,
+      "missingFields": []
+    },
+    "releaseLinesValidation": {
+      "isValid": true,
+      "missingFields": []
+    }
+  }
+}

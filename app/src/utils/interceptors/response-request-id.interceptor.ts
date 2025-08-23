@@ -18,11 +18,9 @@ export class ResponseRequestIdInterceptor implements NestInterceptor {
 
     if (ctxType === 'http') {
       const req = context.switchToHttp().getRequest();
-
       requestId = req.headers['x-request-id'] ?? null;
     } else if (ctxType === 'graphql') {
       const gqlCtx = context.getArgByIndex(2);
-
       requestId = gqlCtx?.req?.headers?.['x-request-id'] ?? null;
     }
 
@@ -31,7 +29,6 @@ export class ResponseRequestIdInterceptor implements NestInterceptor {
         if (typeof data === 'object' && data !== null) {
           return { ...data, requestId };
         }
-
         return data;
       }),
     );

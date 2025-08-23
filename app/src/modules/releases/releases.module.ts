@@ -7,12 +7,12 @@ import { PaymentsModule } from '../payments/payments.module';
 import { DatabaseModule } from '../../core/database/database.module';
 import { ReleaseOrderController } from './controllers/release-order.controller';
 import { OrderDatabaseRepositoryService } from './services/order-database-repository.service';
-import { ReleaseOrderTransformerService } from './services/release-order-transformer.service';
 import { DatabaseConstraintValidator } from './validators/database-constraint.validator';
 import { Allocation } from '../orders/entities/allocation.entity';
 import { Order } from '../orders/entities/order.entity';
 import { OrderLine } from '../orders/entities/order-line.entity';
 import { Payment } from '../payments/entities/payment.entity';
+import { OrderReleaseTemplateTransformerService } from './services/order-release-transformer.service';
 
 @Module({
   imports: [
@@ -33,13 +33,13 @@ import { Payment } from '../payments/entities/payment.entity';
   ],
   providers: [
     OrderDatabaseRepositoryService,
-    ReleaseOrderTransformerService,
     DatabaseConstraintValidator,
+    OrderReleaseTemplateTransformerService,
   ],
   exports: [
     OrderDatabaseRepositoryService,
-    ReleaseOrderTransformerService,
     DatabaseConstraintValidator,
+    OrderReleaseTemplateTransformerService,
   ],
 })
 export class ReleasesModule {}

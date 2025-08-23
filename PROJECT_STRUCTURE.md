@@ -1,7 +1,8 @@
 # MAO Service Transformer - Project Structure
 
 ## Overview
-NestJS-based microservice for transforming PMP (Pricing & Merchandising Platform) order creation payloads into Release message format for the Order Management System (OMS). Features production-ready MAO Cancel Service with 100% template precision.
+
+NestJS-based microservice for transforming PMP (Pricing & Merchandising Platform) order creation payloads into Release message format for the Order Management System (OMS). Features enterprise-grade modular architecture with feature-based modules following NestJS best practices.
 
 ## Project Directory Structure
 
@@ -9,29 +10,84 @@ NestJS-based microservice for transforming PMP (Pricing & Merchandising Platform
 mao-service-transformer/
 ├── README.md                    # Main project documentation
 ├── CLAUDE.md                   # Claude Code assistant instructions
-├── PROJECT_STRUCTURE.md       # This file - project organization guide
-├── VERIFICATION_COMPLETE.md   # Final verification of MAO Cancel Service completion
+├── PROJECT_STRUCTURE.md       # Project organization guide
 │
 ├── app/                        # Main NestJS application
 │   ├── src/                   # Source code
-│   │   ├── common/           # Shared components
-│   │   │   ├── controllers/  # REST/GraphQL controllers
-│   │   │   │   ├── cancel-order.controller.ts      # Cancel order endpoint
-│   │   │   │   └── simple-transform.controller.ts  # Transform controller
-│   │   │   ├── dtos/         # Data Transfer Objects
-│   │   │   │   ├── cancel-order.dto.ts            # Cancel request DTO
-│   │   │   │   └── release-create-order.dto.ts    # Release order DTO
-│   │   │   └── services/     # Business logic services
-│   │   │       ├── domain/   # Domain-specific services
-│   │   │       │   ├── cancel-field-mapping.service.ts      # ✅ MAO Cancel Service (COMPLETE)
-│   │   │       │   ├── file-based-order-repository.service.ts # File-based order access
-│   │   │       │   ├── order-cancellation.service.ts        # Order cancellation orchestration
-│   │   │       │   └── [other transformation services]
-│   │   │       ├── shared/   # Shared utility services
-│   │   │       │   ├── timestamp.service.ts      # Timestamp generation
-│   │   │       │   ├── business-rules.service.ts # Business logic rules
-│   │   │       │   └── [other shared services]
-│   │   │       └── orchestration/  # Orchestration services
+│   │   ├── modules/          # Feature-based modules
+│   │   │   ├── orders/       # Order management domain
+│   │   │   │   ├── controllers/
+│   │   │   │   │   └── cancel-order.controller.ts           # Cancel order endpoint
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── order-transformation.service.ts      # Order transformation logic
+│   │   │   │   │   ├── order-line-transformation.service.ts # Order line processing
+│   │   │   │   │   ├── order-cancellation.service.ts       # MAO Cancel Service
+│   │   │   │   │   ├── file-based-order-repository.service.ts # File-based order access
+│   │   │   │   │   └── order-transformation-orchestrator.service.ts # Order orchestration
+│   │   │   │   ├── entities/
+│   │   │   │   │   ├── order.entity.ts                      # Order database entity
+│   │   │   │   │   ├── order-line.entity.ts                 # Order line entity
+│   │   │   │   │   └── allocation.entity.ts                 # Allocation entity
+│   │   │   │   ├── dtos/
+│   │   │   │   │   └── cancel-order.dto.ts                  # Cancel request DTO
+│   │   │   │   └── orders.module.ts                         # Orders module configuration
+│   │   │   │
+│   │   │   ├── releases/     # Release transformation domain
+│   │   │   │   ├── controllers/
+│   │   │   │   │   └── release-order.controller.ts          # Release transformation endpoint
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── release-order-transformer.service.ts # Database-based release transformation
+│   │   │   │   │   ├── release-transformation.service.ts    # Release logic
+│   │   │   │   │   ├── release-line-transformation.service.ts # Release line processing
+│   │   │   │   │   └── order-database-repository.service.ts # Database repository
+│   │   │   │   ├── entities/
+│   │   │   │   │   └── payment.entity.ts                    # Payment entity
+│   │   │   │   ├── dtos/
+│   │   │   │   │   ├── release-create-order.dto.ts          # Release order DTO
+│   │   │   │   │   └── release-message.dto.ts               # Release message structure
+│   │   │   │   ├── mappers/
+│   │   │   │   │   ├── release-line.mapper.ts               # Release line mapping
+│   │   │   │   │   ├── payment.mapper.ts                    # Payment mapping
+│   │   │   │   │   ├── allocation.mapper.ts                 # Allocation mapping
+│   │   │   │   │   └── address.mapper.ts                    # Address mapping
+│   │   │   │   └── releases.module.ts                       # Releases module configuration
+│   │   │   │
+│   │   │   ├── transformations/ # Shared transformation utilities
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── business-rules.service.ts            # Business logic rules
+│   │   │   │   │   ├── calculation.service.ts               # Mathematical calculations
+│   │   │   │   │   └── cancel-field-mapping.service.ts      # Field mapping utilities
+│   │   │   │   └── transformations.module.ts                # Transformations module
+│   │   │   │
+│   │   │   └── payments/     # Payment processing domain
+│   │   │       ├── services/
+│   │   │       │   ├── payment-transformation.service.ts    # Payment transformation
+│   │   │       │   ├── payment-method-transformation.service.ts # Payment method processing
+│   │   │       │   └── payment-transaction-transformation.service.ts # Transaction processing
+│   │   │       └── payments.module.ts                       # Payments module configuration
+│   │   │
+│   │   ├── shared/           # Cross-module utilities
+│   │   │   ├── services/
+│   │   │   │   ├── dynamic-id-generator.service.ts          # ID generation utilities
+│   │   │   │   ├── timestamp.service.ts                     # Timestamp generation
+│   │   │   │   ├── file-output.service.ts                   # File writing utilities
+│   │   │   │   └── database-transformation.service.ts       # Database transformation utilities
+│   │   │   ├── validators/
+│   │   │   │   └── database-constraint.validator.ts         # Database validation
+│   │   │   └── shared.module.ts                             # Shared module configuration
+│   │   │
+│   │   ├── common/           # Common application components
+│   │   │   ├── controllers/
+│   │   │   │   └── simple-transform.controller.ts           # Simple transformation endpoint
+│   │   │   ├── dtos/         # Common DTOs
+│   │   │   │   ├── pagination.dto.ts                        # Pagination utilities
+│   │   │   │   ├── response.dto.ts                          # Standard response format
+│   │   │   │   └── coordinate.dto.ts                        # Coordinate data structure
+│   │   │   ├── constants/    # Application constants
+│   │   │   │   ├── error-codes.ts                           # Error code definitions
+│   │   │   │   └── http-status-mapping.ts                   # HTTP status mappings
+│   │   │   └── common.module.ts                             # Common module configuration
+│   │   │
 │   │   ├── core/            # Core infrastructure
 │   │   │   ├── config/      # Configuration management
 │   │   │   ├── database/    # Database configuration
@@ -44,206 +100,245 @@ mao-service-transformer/
 │   ├── package.json        # Node.js dependencies
 │   └── tsconfig.json       # TypeScript configuration
 │
-├── tests/                   # Test suites and analysis tools
-│   ├── cancel/             # Cancel service specific tests
-│   │   ├── actual_cancel_response.json          # 3,735-line precision template
-│   │   ├── test-complete-fixed-service.js       # Complete service validation
-│   │   ├── test-final-cancel-output.js          # Final output validation
-│   │   ├── test-noteid-output.js                # NoteId generation testing
-│   │   └── [other cancel test files]
-│   ├── transformation/     # Transformation logic tests
-│   ├── dto/                # DTO validation tests
-│   ├── scripts/            # Analysis and comparison scripts
-│   ├── utilities/          # Test utilities and generators
-│   │   ├── generate-3735-line-fixed-result.js   # Complete result generator
-│   │   ├── test-actual-service-output.js        # Service validation test
-│   │   └── fix-noteids-preserve-lines.js        # NoteId fix utility
-│   └── outputs/            # Test output files
-│       └── real-order-cancel-result-311647613-C7LXT7KBTPA3TN.json
+├── tests/                   # Organized test suites and validation scripts
+│   ├── integration/         # Integration tests
+│   │   ├── test-implementation.js              # Service implementation tests
+│   │   ├── test-real-service.js                # NestJS service endpoint tests
+│   │   └── test-service-direct.js              # Direct service method tests
+│   ├── validation/          # Validation and verification scripts
+│   │   ├── compare-outputs.js                  # Output comparison utility
+│   │   ├── order-release-validation.js         # Order release validation
+│   │   ├── validation-framework.js             # Comprehensive validation
+│   │   └── validation-report.js                # Validation reporting
+│   ├── utilities/           # Analysis and debugging tools
+│   │   ├── analyze-expected.js                 # Output structure analysis
+│   │   ├── debug-template.js                   # Template debugging
+│   │   ├── field-analysis.js                   # Field mapping analysis
+│   │   ├── field-validation.js                 # Field transformation validation
+│   │   └── additional-tests.sh                 # Additional utilities
+│   ├── outputs/             # Test results and generated files
+│   │   ├── test-output*.json                   # Test output files
+│   │   ├── validation-summary.txt              # Validation summaries
+│   │   └── TASK_4_IMPLEMENTATION_COMPLETE.json # Task completion records
+│   ├── run-all-tests.sh     # Complete test suite runner
+│   ├── run-integration-tests.sh # Integration test runner
+│   ├── run-validation-tests.sh  # Validation test runner
+│   ├── run-utilities.sh     # Utilities runner
+│   ├── README.md           # Test organization documentation
+│   └── TEST_INDEX.md       # Complete test index and guide
 │
 ├── data/                   # Static data and configurations
 │   ├── mappings/           # Field mapping configurations
 │   ├── samples/            # Sample input/output files
-│   │   ├── cancel_fully.json                    # Cancel service template (3,735 lines)
-│   │   ├── cancel_byline.MD                     # Cancel by line documentation
-│   │   └── [other sample files]
+│   │   ├── cancel_fully.json                    # Cancel service template
+│   │   ├── cancel_byline.MD                     # Cancel documentation
+│   │   └── sample_input.json                    # Sample transformation input
 │   └── models/             # Data models and diagrams
 │
 ├── docs/                   # Documentation
 │   ├── implement-guide.MD  # Implementation guide
-│   ├── sequence-diagram.md # Service interaction diagrams
-│   └── [other documentation]
+│   └── sequence-diagram.md # Service interaction diagrams
 │
-├── analysis/               # Analysis artifacts and precision tools
-│   └── precision-tools/    # Precision analysis and visualization tools
+├── analysis/               # Analysis and development tools
+│   └── precision-tools/    # Analysis and visualization tools
 │       ├── mapping-visualization.js             # Data flow visualization
-│       ├── cancel-service-dependencies.js       # Service dependency analysis
-│       └── [other analysis tools]
-│
-├── tasks/                  # Project planning and tracking
-│   └── planning/           # Implementation plans
-│       └── cancel-plan.MD  # Cancel service implementation plan
+│       └── cancel-service-dependencies.js       # Service dependency analysis
 │
 ├── release/                # Transformation output files
 │   ├── 311647613-C7LXT7KBTPA3TN-Rel.json       # Source release file
-│   ├── complete-3735-line-cancel-with-fixed-noteids.json # ✅ Final cancel output (VERIFIED)
-│   └── [other output files]
+│   └── complete-3735-line-cancel-with-fixed-noteids.json # Cancel output
 │
 ├── migrations/            # Database migration files
-│   └── 20250818000001-add-cancel-fields.js    # Cancel service fields
+│   └── 20250818000001-add-cancel-fields.js
 │
-├── .claude/               # Claude Code agent configurations
-│   └── agents/
-│       └── manhattan-omni-cancel-service-specialist.md
-│
-└── [project documentation]    # Project-level documentation
-    ├── VERIFICATION_COMPLETE.md               # Final verification report
-    ├── CANCEL_SERVICE_STATUS_REPORT.md        # Cancel service achievement status
-    └── PROJECT_STRUCTURE.md                   # This file
+└── [configuration files]       # Project configuration
+    ├── package.json                            # Project dependencies
+    └── tsconfig.json                           # TypeScript configuration
 ```
 
 ## Key Components
 
-### MAO Cancel Service (✅ PRODUCTION READY)
-**Primary Service**: `app/src/common/services/domain/cancel-field-mapping.service.ts`
-- **Status**: ✅ 100% Complete with 3,735-line template precision
-- **Features**: Item-specific NoteId generation, user consistency, complete template compliance
-- **Output**: `release/complete-3735-line-cancel-with-fixed-noteids.json`
+### Modular Architecture
+
+#### Feature Modules
+1. **OrdersModule** (`app/src/modules/orders/`)
+   - **Controllers**: Cancel order endpoint
+   - **Services**: Order transformation, cancellation, line processing, orchestration
+   - **Entities**: Order, OrderLine, Allocation (Sequelize)
+   - **DTOs**: Cancel request structures
+
+2. **ReleasesModule** (`app/src/modules/releases/`)
+   - **Controllers**: Release transformation endpoint
+   - **Services**: Database-based release transformation, release logic
+   - **Mappers**: Release line, payment, allocation, address mapping
+   - **DTOs**: Release order and message structures
+
+3. **TransformationsModule** (`app/src/modules/transformations/`)
+   - **Services**: Business rules, calculations, field mapping utilities
+   - **Purpose**: Shared transformation logic across domains
+
+4. **PaymentsModule** (`app/src/modules/payments/`)
+   - **Services**: Payment transformation, method processing, transaction handling
+   - **Purpose**: Payment-specific business logic
+
+5. **SharedModule** (`app/src/shared/`)
+   - **Services**: ID generation, timestamps, file output, database utilities
+   - **Validators**: Database constraint validation
+   - **Purpose**: Cross-cutting utilities
+
+### MAO Cancel Service
+
+**Primary Service**: `app/src/modules/orders/services/order-cancellation.service.ts`
+- Complete order cancellation service with template precision
+- Located in OrdersModule following domain-driven design
+- Features item-specific NoteId generation and user consistency
+- Output: `release/complete-3735-line-cancel-with-fixed-noteids.json`
 
 **Supporting Services**:
-- `file-based-order-repository.service.ts` - File-based order data access
-- `order-cancellation.service.ts` - Cancel orchestration logic
-- `timestamp.service.ts` - Timestamp generation utilities
+- `modules/orders/services/file-based-order-repository.service.ts` - Order data access
+- `modules/transformations/services/cancel-field-mapping.service.ts` - Field mapping
+- `shared/services/timestamp.service.ts` - Timestamp utilities
 
-### Core Architecture Services
-- **OrderTransformationOrchestratorService**: Main orchestration service
-- **Domain Services**: Business logic for specific domains (orders, payments, allocations)
-- **Shared Services**: Utility services (calculations, timestamps, business rules)
+### Architecture Features
+- **Modular Design**: Feature-based modules with clear boundaries
+- **Domain-Driven Organization**: Services grouped by business domain
+- **Clean Dependencies**: Clear module boundaries and imports
+- **Scalability**: Independent feature development capability
 
 ### Data Flows
 
-#### Cancel Service Flow
+#### Data Flows
+
+**Cancel Service Flow**:
 ```
-Release File → File Repository → Cancel Field Mapping → 3,735-line Cancel Response
-     ↓              ↓                    ↓                         ↓
-Source Order → Extract Data → Transform Fields → Complete Cancel Structure
+Release File → File Repository → Field Mapping → Cancel Response
 ```
 
-#### Standard Transform Flow  
+**Standard Transform Flow**:
 ```
-PMP Input → Validation → Domain Services → Orchestration → Release Output
+PMP Input → Validation → Domain Services → Release Output
 ```
 
 ### Configuration
-- Environment-specific configs in `app/src/core/config/`
-- Field mappings in `data/mappings/`
-- Sample data in `data/samples/`
-- Cancel templates in `data/samples/cancel_fully.json`
+- Environment configs: `app/src/core/config/`
+- Field mappings: `data/mappings/`
+- Sample data: `data/samples/`
+- Templates: `data/samples/cancel_fully.json`
 
-## ✅ MAO Cancel Service - ACHIEVEMENT COMPLETE
 
-### 🏆 100% Template Precision Achieved
-**Final Status**: **PRODUCTION READY** with perfect template matching
-
-| Achievement | Target | Result | Status |
-|-------------|---------|--------|---------|
-| **Line Count** | 3,735 lines | 3,735 lines | ✅ 100.000% |
-| **NoteId Fix** | Item-specific R0x | R02-R07 sequential | ✅ Fixed |
-| **User Consistency** | Context-aware users | pubsubuser@pmp vs apiuser4pmp | ✅ Fixed |
-| **Service Compilation** | Zero TypeScript errors | Clean build | ✅ Ready |
-| **Template Compliance** | Complete field matching | All fields present | ✅ Perfect |
-
-### Critical Fixes Applied
-1. **Item-Specific NoteIds**: Each OrderLine gets unique sequential NoteId (R02, R03, R04, R05, R06, R07) based on actual purchased items
-2. **User Context Consistency**: Setup operations use `pubsubuser@pmp`, cancel operations use `apiuser4pmp`  
-3. **Complete Template Structure**: All 3,735 lines match template exactly
-4. **Business Logic Integration**: Full NestJS service with dependency injection
-
-### Verification
-- **Service Location**: `app/src/common/services/domain/cancel-field-mapping.service.ts` (977 lines)
-- **Output Location**: `release/complete-3735-line-cancel-with-fixed-noteids.json` (3,735 lines)
-- **Verification Report**: `VERIFICATION_COMPLETE.md`
-- **Compilation Status**: ✅ Zero TypeScript errors
 
 ## Development Guidelines
 
-1. **Service Organization**: Follow domain-driven design principles
-2. **Testing**: Place tests in appropriate `/tests` subdirectories  
-3. **Documentation**: Update relevant docs in `/docs` when making changes
-4. **Configuration**: Use the centralized config system
-5. **Clean Code**: Follow NestJS best practices and TypeScript standards
-6. **Template Precision**: Use precision tools for template matching validation
-7. **Cancel Service**: Reference complete implementation for similar services
+### Module-Based Development
+1. **Feature Modules**: Add new functionality to appropriate domain modules
+   - **Orders**: Order-related logic → `modules/orders/`
+   - **Releases**: Release transformation → `modules/releases/`
+   - **Payments**: Payment processing → `modules/payments/`
+   - **Transformations**: Shared utilities → `modules/transformations/`
+   - **Cross-cutting**: Utilities → `shared/`
+
+2. **Service Organization**: Follow domain-driven design principles
+   - Keep services within their business domain
+   - Use SharedModule for cross-cutting utilities
+   - Avoid circular dependencies between modules
+
+3. **Module Structure**: Follow established patterns
+   ```
+   module-name/
+   ├── controllers/          # REST endpoints
+   ├── services/            # Business logic
+   ├── entities/           # Database models (if needed)
+   ├── dtos/               # Data transfer objects
+   ├── mappers/            # Data mapping (if needed)
+   └── module-name.module.ts # Module configuration
+   ```
+
+4. **Testing**: Place tests in `/tests` subdirectories
+5. **Documentation**: Update docs when making changes  
+6. **Clean Code**: Follow NestJS and TypeScript standards
+7. **Dependencies**: Import modules, not individual services
 
 ## Quick Start
+
 ```bash
-# Main application
 cd app/
 pnpm install
 pnpm run start:dev
-
-# TypeScript compilation check
-cd app/ && npx tsc --noEmit
 ```
+
+**Development Commands:**
+- `pnpm run start:dev` - Development server with hot reload
+- `pnpm run build` - Production build
+- `pnpm run test` - Run unit tests
+- `pnpm run lint` - Code quality check
 
 ## Testing & Validation
 
-### NestJS Application Tests
+### Application Tests
 ```bash
+cd app/
+
 # Unit tests
-cd app/ && pnpm run test
+pnpm run test
 
 # E2E tests  
-cd app/ && pnpm run test:e2e
+pnpm run test:e2e
 
 # Code quality
-cd app/ && pnpm run lint
+pnpm run lint
 ```
 
-### Cancel Service Testing
+### Organized Test Suite
+**Complete Test Suite:**
 ```bash
-# Generate complete 3,735-line cancel response
-node tests/utilities/generate-3735-line-fixed-result.js
-
-# Test actual service output (comprehensive validation)
-node tests/utilities/test-actual-service-output.js
-
-# Additional cancel service tests
-node tests/cancel/test-complete-fixed-service.js
-node tests/cancel/test-final-cancel-output.js
-node tests/cancel/test-noteid-output.js
-
-# Verify service compilation
-cd app && npx tsc --noEmit src/common/services/domain/cancel-field-mapping.service.ts
+# Run all tests
+bash tests/run-all-tests.sh
 ```
 
-### Analysis & Development Tools
+**Individual Test Categories:**
 ```bash
-# Service dependency analysis
-node analysis/precision-tools/cancel-service-dependencies.js
+# Integration tests (service functionality)
+bash tests/run-integration-tests.sh
 
-# Data flow visualization
-node analysis/precision-tools/mapping-visualization.js
+# Validation tests (output verification)
+bash tests/run-validation-tests.sh
 
-# Structure comparison
-node tests/scripts/compare-cancel-structures.js
-
-# Legacy transformation tests (reference)
-node tests/transformation/simple-test.js
-node tests/transformation/test-transformation-comprehensive.js
+# Analysis utilities (debugging & analysis)
+bash tests/run-utilities.sh
 ```
+
+**Specific Test Scripts:**
+```bash
+# Integration testing
+node tests/integration/test-real-service.js
+node tests/integration/test-implementation.js
+
+# Output validation
+node tests/validation/compare-outputs.js
+node tests/validation/validation-framework.js
+
+# Field analysis
+node tests/utilities/field-analysis.js
+node tests/utilities/debug-template.js
+```
+
+### Test Documentation
+- `tests/README.md` - Test organization guide
+- `tests/TEST_INDEX.md` - Complete test index
+- Results stored in `tests/outputs/`
 
 ### Development Workflow
-1. **Service Development**: Follow `cancel-field-mapping.service.ts` patterns
-2. **Template Precision**: Always validate against expected output files
-3. **Type Safety**: Ensure zero TypeScript compilation errors
-4. **Testing**: Use both unit tests and integration validation
-5. **Documentation**: Update PROJECT_STRUCTURE.md when adding new services
+
+1. **Create/Modify Services**: Follow modular patterns in appropriate domain
+2. **Type Safety**: Ensure TypeScript compilation passes
+3. **Testing**: Write unit tests and validate integration
+4. **Code Quality**: Run linting and formatting
+5. **Documentation**: Update relevant documentation
 
 ## Production Readiness Checklist
-- ✅ Service compiles without TypeScript errors
-- ✅ Generates expected output format (template precision)
-- ✅ Passes all validation tests
-- ✅ Follows NestJS best practices
-- ✅ Has comprehensive error handling
-- ✅ Documentation updated
+- [ ] Service compiles without TypeScript errors
+- [ ] Generates expected output format
+- [ ] Passes all validation tests
+- [ ] Follows NestJS best practices
+- [ ] Has comprehensive error handling
+- [ ] Documentation updated

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type, Expose } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -1949,13 +1949,15 @@ export class NoteDTO {
 
 // Main OriginalPayload structure
 export class OriginalPayloadDTO {
-  // Header-level fields from template
+  // Header-level fields from template with PascalCase serialization
   @IsOptional()
   @IsString()
+  @Expose({ name: 'ServiceLevelCode' })
   serviceLevelCode?: string;
 
   @IsOptional()
   @IsString()
+  @Expose({ name: 'Email' })
   email?: string;
 
   @IsOptional()
@@ -1972,6 +1974,7 @@ export class OriginalPayloadDTO {
 
   @IsOptional()
   @IsNumber()
+  @Expose({ name: 'OrderSubtotal' })
   orderSubtotal?: number;
 
   @IsOptional()
@@ -1996,6 +1999,7 @@ export class OriginalPayloadDTO {
 
   @IsOptional()
   @IsNumber()
+  @Expose({ name: 'ReleaseTotal' })
   releaseTotal?: number;
 
   @IsOptional()
@@ -2019,6 +2023,12 @@ export class OriginalPayloadDTO {
   @IsOptional()
   @IsString()
   addressId?: string;
+
+  // Missing top-level fields from expected template
+  @IsOptional()
+  @IsString()
+  @Expose({ name: 'DocTypeId' })
+  docTypeId?: string;
 
   // Address fields
   @IsOptional()

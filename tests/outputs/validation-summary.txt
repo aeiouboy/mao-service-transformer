@@ -1,0 +1,88 @@
+🧪 Starting OrderReleaseTemplateTransformerService Validation
+======================================================================
+📄 Output file size: 8.7KB
+✅ Loaded actual output: 5.4KB
+📋 Identified 294 expected template fields
+
+📊 Performing Field Coverage Analysis
+--------------------------------------------------
+📋 Expected fields: 294
+✅ Found fields: 181
+❌ Missing fields: 274
+➕ Extra fields: 161
+
+🚨 Missing Fields (274):
+   - accountDisplayNumber
+   - accountNumber
+   - accountReceivableAccountNumber
+   - accountReceivableCode
+   - address1
+   - address2
+   - address3
+   - addressType
+   - addressTypeId
+   - advertisingCode
+   ... and 264 more
+
+⚠️  Critical Missing Fields (5):
+   - minFulfillmentStatusId
+   - orderTotal
+   - processInfo
+   - totalDiscounts
+   - totalTaxes
+📈 Field Coverage: 6.8%
+
+💰 Validating Financial Calculations
+--------------------------------------------------
+📊 Calculated order subtotal from 0 lines: $0.00
+❌ orderSubtotal: $128.00 (expected: $0.00, diff: $128.00)
+✅ totalCharges: $0.00 (expected: $0.00)
+❌ totalTaxes: MISSING in output
+❌ totalDiscounts: MISSING in output
+❌ releaseTotal: $128.00 (expected: $0.00, diff: $128.00)
+❌ orderTotal: MISSING in output
+🧮 Financial Calculation Accuracy: 16.7%
+
+🏗️  Validating Structure and Formats
+--------------------------------------------------
+📅 Date Formats: 1/18 valid
+   Invalid dates:
+     - order.payment[0].CreatedBy: pubstestuser@twd
+     - order.payment[0].CreatedTimestamp: 2025-08-22T08:34:27.852
+     - order.payment[0].UpdatedBy: pubstestuser@twd
+✅ order.payment: 1 items
+❌ order.orderLine: Missing or empty
+❌ releaseLine: Missing or empty
+✅ Structure order: Present
+✅ Structure order.payment[0]: Present
+❌ Structure order.orderLine[0]: Missing
+❌ Structure releaseLine[0]: Missing
+✅ Structure extendedFields: Present
+
+🚨 Testing Error Handling Scenarios
+--------------------------------------------------
+🧪 Testing: Non-existent Order ID
+   ⚠️  Simulated (requires live API testing)
+🧪 Testing: Invalid Order ID Format
+   ⚠️  Simulated (requires live API testing)
+🧪 Testing: Empty Order ID
+   ⚠️  Simulated (requires live API testing)
+
+📄 Detailed report saved to: /Users/chongraktanaka/Projects/mao-service-transformer/OrderReleaseTemplateTransformerService_Validation_Report.md
+📊 JSON results saved to: /Users/chongraktanaka/Projects/mao-service-transformer/validation-report-1755938228818.json
+
+======================================================================
+🎯 VALIDATION SUMMARY
+======================================================================
+
+❌ Overall Status: FAIL
+📊 Success Rate: 8.1%
+🔍 Issues Found: 3
+📋 Field Coverage: 6.8% (181/294)
+💰 Financial Calculations: 16.7% (1/6)
+
+🚨 High Priority Actions (2):
+   🟡 Implement 274 missing template fields
+   🔴 Implement financial aggregation logic
+
+======================================================================

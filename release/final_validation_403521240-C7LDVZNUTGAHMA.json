@@ -1,0 +1,38 @@
+{
+  "isValid": true,
+  "results": [
+    {
+      "tableName": "orders",
+      "isValid": true,
+      "errors": [],
+      "warnings": [],
+      "summary": {
+        "totalRecords": 1,
+        "validRecords": 1
+      }
+    },
+    {
+      "tableName": "order_lines",
+      "isValid": true,
+      "errors": [],
+      "warnings": [],
+      "summary": {
+        "totalRecords": 3,
+        "validRecords": 3
+      }
+    },
+    {
+      "tableName": "release_lines",
+      "isValid": true,
+      "errors": [],
+      "warnings": [],
+      "summary": {
+        "totalRecords": 3,
+        "validRecords": 3
+      }
+    }
+  ],
+  "criticalErrors": [],
+  "totalErrors": 0,
+  "totalWarnings": 0
+}

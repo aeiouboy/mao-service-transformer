@@ -1906,7 +1906,7 @@
                 "GroupId": null,
                 "ProductStatusId": null,
                 "HeuristicShipDate": "2025-08-18T03:50:00",
-                "LatestReleaseDate": null
+                "LatestReleaseDate": nullmaxFulfillmentStatusId
             },
             "ProductClass": null,
             "MinFulfillmentStatusId": "3000",

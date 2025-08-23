@@ -9,17 +9,21 @@ import {
   Post,
 } from '@nestjs/common';
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { DatabaseCompatibleReleaseOutputDTO, ReleaseOutputDTO } from '../dtos/database-compatible-release.dto';
 import { PMPOrderInputDTO } from '../dtos/release-create-order.dto';
-import { ReleaseOrderTransformerService } from '../services/release-order-transformer.service';
 import { OrderDatabaseRepositoryService } from '../services/order-database-repository.service';
+import { OrderReleaseTemplateTransformerService } from '../services/order-release-transformer.service';
 
 export class ReleaseTransformRequestDTO {
   @IsString()
   @IsNotEmpty()
   orderId: string;
+
+  @IsBoolean()
+  @IsOptional()
+  saveOrder?: boolean;
 }
 
 export class ReleaseTransformResponseDTO {
@@ -35,8 +39,8 @@ export class ReleaseOrderController {
   private readonly logger = new Logger(ReleaseOrderController.name);
 
   constructor(
-    private readonly releaseTransformerService: ReleaseOrderTransformerService,
     private readonly repository: OrderDatabaseRepositoryService,
+    private readonly templateTransformer: OrderReleaseTemplateTransformerService,
   ) {}
 
   /**
@@ -86,10 +90,9 @@ export class ReleaseOrderController {
       }
 
       // Transform order to release format
-      const releaseData =
-        await this.releaseTransformerService.transformOrderToSampleFormat(
-          request.orderId.trim(),
-        );
+      const releaseData = await this.templateTransformer.transformToTemplate(
+        request.orderId.trim(),
+      );
 
       this.logger.log(`Successfully transformed order to release format: ${request.orderId}`);
 
@@ -128,10 +131,9 @@ export class ReleaseOrderController {
       }
 
       // Transform order to PascalCase format
-      const releaseData =
-        await this.releaseTransformerService.transformOrderToPascalCaseFormat(
-          request.orderId.trim(),
-        );
+      const releaseData = await this.templateTransformer.transformOrderToPascalCaseFormat(
+        request.orderId.trim(),
+      );
 
       this.logger.log(`Successfully transformed order to PascalCase format: ${request.orderId}`);
 
@@ -169,16 +171,16 @@ export class ReleaseOrderController {
   }
 
   /**
-   * Transform order to release format
+   * Transform order to release format with optional save
    * POST /api/order/release-transform
-   * @param request Order ID to transform
-   * @returns Release data in sample-compatible JSON format
+   * @param request Order ID to transform and optional save flag
+   * @returns Release data in sample-compatible JSON format with optional file path
    */
   @Post('release-transform')
   async transformOrderToRelease(
     @Body() request: ReleaseTransformRequestDTO,
   ): Promise<ReleaseTransformResponseDTO> {
-    this.logger.log(`Received transform request for order: ${request.orderId}`);
+    this.logger.log(`Received transform request for order: ${request.orderId} (save: ${request.saveOrder || false})`);
 
     try {
       // Validate request
@@ -187,17 +189,28 @@ export class ReleaseOrderController {
       }
 
       // Transform order 
-      const releaseData =
-        await this.releaseTransformerService.transformOrderToRelease(
-          request.orderId.trim(),
-        );
+      const releaseData = await this.templateTransformer.transformToRelease(
+        request.orderId.trim(),
+      );
+
+      let filePath: string | undefined;
+
+      // Save to file if requested
+      if (request.saveOrder) {
+        this.logger.log(`Saving release data to file for order: ${request.orderId}`);
+        filePath = await this.templateTransformer.saveToFile(request.orderId.trim());
+        this.logger.log(`Saved release data to file: ${filePath}`);
+      } else {
+        this.logger.log(`Save not requested for order: ${request.orderId}`);
+      }
 
       this.logger.log(`Successfully transformed order: ${request.orderId}`);
 
       return {
         success: true,
         data: releaseData,
-        message: `Order ${request.orderId} transformed successfully`,
+        filePath,
+        message: `Order ${request.orderId} transformed successfully${request.saveOrder ? ' and saved to file' : ''}`,
       };
     } catch (error: any) {
       this.logger.error(
@@ -217,6 +230,13 @@ export class ReleaseOrderController {
         throw new HttpException(
           'Database connection error',
           HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
+
+      if (error.message?.includes('Failed to save')) {
+        throw new HttpException(
+          'File system error - unable to save release output',
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
 
@@ -248,7 +268,7 @@ export class ReleaseOrderController {
       }
 
       // Transform and save order
-      const filePath = await this.releaseTransformerService.transformAndSave(
+      const filePath = await this.templateTransformer.transformAndSave(
         request.orderId.trim(),
       );
 
@@ -307,7 +327,7 @@ export class ReleaseOrderController {
     timestamp: string;
     database: boolean;
   }> {
-    const isHealthy = await this.releaseTransformerService.healthCheck();
+    const isHealthy = await this.repository.healthCheck();
 
     return {
       status: isHealthy ? 'healthy' : 'unhealthy',
@@ -329,16 +349,11 @@ export class ReleaseOrderController {
     this.logger.log(`Received direct payload transform request for order: ${orderData.OrderId}`);
 
     try {
-      // Transform the payload directly
-      const releaseData = await this.releaseTransformerService.transformFromInputDTO(orderData);
-
-      this.logger.log(`Successfully transformed payload for order: ${orderData.OrderId}`);
-
-      return {
-        success: true,
-        data: releaseData,
-        message: `Order ${orderData.OrderId} payload transformed successfully`,
-      };
+      // For direct payload transformation, we'll throw an error since this should use database data
+      throw new HttpException(
+        'Direct payload transformation not supported. Use database-based transformation instead.',
+        HttpStatus.NOT_IMPLEMENTED
+      );
     } catch (error: any) {
       this.logger.error(
         `Payload transform failed for order ${orderData.OrderId}:`,
@@ -366,16 +381,16 @@ export class ReleaseOrderController {
     message: string;
   }> {
     try {
-      // Check if order exists in database using health check
-      const isHealthy = await this.releaseTransformerService.healthCheck();
+      // Check if order exists in database
+      const order = await this.repository.findOrderById(orderId);
 
       return {
         orderId,
-        exists: isHealthy,
-        canTransform: isHealthy,
-        message: isHealthy
-          ? 'Service healthy and ready for transformation'
-          : 'Service not ready for transformation',
+        exists: !!order,
+        canTransform: !!order,
+        message: order
+          ? 'Order found and ready for transformation'
+          : 'Order not found in database',
       };
     } catch (error: any) {
       this.logger.error(`Status check failed for order ${orderId}:`, error);
@@ -386,6 +401,69 @@ export class ReleaseOrderController {
         canTransform: false,
         message: 'Error checking order status',
       };
+    }
+  }
+
+  /**
+   * Generate template-based release JSON and save to app/release/rel-{OrderId}.json
+   * POST /api/order/release-template-save
+   */
+  @Post('release-template-save')
+  async saveTemplateRelease(
+    @Body() request: { orderId: string },
+  ): Promise<{ success: boolean; filePath?: string; message: string }> {
+    if (!request.orderId?.trim()) {
+      throw new HttpException('Order ID is required', HttpStatus.BAD_REQUEST);
+    }
+    
+    // Additional validation at controller level
+    if (request.orderId.length > 100) {
+      throw new HttpException('OrderId cannot exceed 100 characters', HttpStatus.BAD_REQUEST);
+    }
+
+    // Check for potentially malicious patterns
+    if (!/^[a-zA-Z0-9\-_]+$/.test(request.orderId)) {
+      throw new HttpException('OrderId can only contain alphanumeric characters, hyphens, and underscores', HttpStatus.BAD_REQUEST);
+    }
+    
+    try {
+      const filePath = await this.templateTransformer.saveToFile(
+        request.orderId.trim(),
+      );
+      return {
+        success: true,
+        filePath,
+        message: `Template release saved to ${filePath}`,
+      };
+    } catch (error: any) {
+      this.logger.error('Template release save failed', error);
+      
+      // Enhanced error handling
+      if (error.message?.includes('Order with ID') && error.message?.includes('not found')) {
+        throw new HttpException(
+          `Order not found: ${request.orderId}`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      
+      if (error.message?.includes('Invalid orderId format')) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      
+      if (error.message?.includes('Database') || error.message?.includes('connection')) {
+        throw new HttpException(
+          'Database connection error',
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
+      
+      throw new HttpException(
+        error.message || 'Internal transformation error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

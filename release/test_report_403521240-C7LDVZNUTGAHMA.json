@@ -1,0 +1,28 @@
+{
+  "testTimestamp": "2025-08-22T03:08:53.710Z",
+  "testType": "Real Order Database Transformation",
+  "sourceOrder": {
+    "orderId": "403521240-C7LDVZNUTGAHMA",
+    "customerId": null,
+    "orgId": "CFR",
+    "orderLines": 3
+  },
+  "transformationResults": {
+    "success": true,
+    "ordersFields": 32,
+    "orderLinesRecords": 3,
+    "releaseLinesRecords": 3,
+    "warnings": 0,
+    "errors": 0
+  },
+  "validationResults": {
+    "isValid": true,
+    "databaseReady": true,
+    "criticalErrors": 0,
+    "totalErrors": 0,
+    "totalWarnings": 0,
+    "tablesValidated": 3
+  },
+  "criticalFieldsPresent": true,
+  "finalAssessment": "READY_FOR_DATABASE"
+}
