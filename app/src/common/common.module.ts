@@ -4,6 +4,7 @@ import { OrdersModule } from '../modules/orders/orders.module';
 import { ReleasesModule } from '../modules/releases/releases.module';
 import { TransformationsModule } from '../modules/transformations/transformations.module';
 import { PaymentsModule } from '../modules/payments/payments.module';
+import { ReleaseOrderTransformationService } from './services/release-order-transformation.service';
 // import { SimpleTransformController } from './controllers/simple-transform.controller';
 
 @Module({
@@ -17,13 +18,14 @@ import { PaymentsModule } from '../modules/payments/payments.module';
   controllers: [
     // SimpleTransformController,
   ],
-  providers: [],
+  providers: [ReleaseOrderTransformationService],
   exports: [
     SharedModule,
     OrdersModule,
     ReleasesModule,
     TransformationsModule,
     PaymentsModule,
+    ReleaseOrderTransformationService,
   ],
 })
 export class CommonModule {}
