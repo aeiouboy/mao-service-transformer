@@ -582,29 +582,6 @@ Body: { "orderId": "string" }
 - Returns file path and success confirmation
 - Saves to `release/rel-{orderId}.json`
 
-#### Transform to Sample Format
-```bash
-POST /api/order/release-transform-sample
-Content-Type: application/json
-Body: { "orderId": "string" }
-```
-
-**Functionality**:
-- Transform to sample-compatible JSON format
-- Legacy endpoint for backward compatibility
-- Returns release data without file operations
-
-#### Transform to PascalCase Format
-```bash
-POST /api/order/release-transform-pascal
-Content-Type: application/json
-Body: { "orderId": "string" }
-```
-
-**Functionality**:
-- Transform to PascalCase format matching sample payload
-- Specialized formatting endpoint
-- Returns release data in PascalCase field naming
 
 ### Cancel Transformation
 ```bash
