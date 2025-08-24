@@ -188,7 +188,7 @@ export class OrderReleaseTemplateTransformerService {
       // === MORE FIELDS === (lines 760-809)
       IsAddressVerified: true,
       Country: this.extractAddressField(orderLines, 'Country') || "TH",
-      PaymentMethod: this.buildRootPaymentMethod(paymentMethods),
+      PaymentMethod: this.buildRootPaymentMethod(paymentMethods, order, orderLines),
       
       // === ADDITIONAL FIELDS === (lines 811-847)
       OrderTotalTaxes: financials.totalTaxes || 0,
@@ -228,7 +228,7 @@ export class OrderReleaseTemplateTransformerService {
       FirstName: this.safeValue(order.customerFirstName),
       
       // === RELEASE LINE SECTION === (line 850)
-      ReleaseLine: this.buildReleaseLines(orderLines, financials),
+      ReleaseLine: this.buildReleaseLines(orderLines, financials, order),
       
       // === FINAL ADDRESS FIELDS ===
       Address2: this.extractAddressField(orderLines, 'Address2') || this.safeValue(order.address2) || "Address2", 
@@ -966,7 +966,7 @@ export class OrderReleaseTemplateTransformerService {
     }));
   }
 
-  private buildReleaseLines(orderLines: any[], financials: any): any[] {
+  private buildReleaseLines(orderLines: any[], financials: any, order: any): any[] {
     if (!orderLines || !Array.isArray(orderLines)) return [];
 
     // Create ReleaseLines dynamically based on actual order lines
@@ -977,7 +977,7 @@ export class OrderReleaseTemplateTransformerService {
       const line = orderLines[i];
       const itemData = this.getItemDataFromOrderLine(line, i);
       
-      releaseLines.push(this.buildSingleReleaseLine(line, itemData, i, financials));
+      releaseLines.push(this.buildSingleReleaseLine(line, itemData, i, financials, order, orderLines));
     }
     
     return releaseLines;
@@ -1068,7 +1068,7 @@ export class OrderReleaseTemplateTransformerService {
     return 0;
   }
 
-  private buildSingleReleaseLine(line: any, itemData: any, index: number, financials: any): any {
+  private buildSingleReleaseLine(line: any, itemData: any, index: number, financials: any, order: any, orderLines: any[]): any {
       const charges = line.order_line_charge_detail || [];
       const taxes = line.order_line_tax_detail || [];
 
@@ -1113,7 +1113,7 @@ export class OrderReleaseTemplateTransformerService {
         ParentOrderLineTypeId: this.safeValue(line.parent_order_line_type_id),
         IsTaxExempt: this.safeValue(line.is_tax_exempt),
         PromisedDeliveryDate: this.formatTimestamp(line.promised_delivery_date),
-        ChargeDetail: this.buildReleaseLineChargeDetail(index, line, financials),
+        ChargeDetail: this.buildReleaseLineChargeDetail(index, line, financials, order),
         IsPerishable: false,
         LatestDeliveryDate: null,
         Note: this.buildReleaseLineNote(index),
@@ -1137,7 +1137,7 @@ export class OrderReleaseTemplateTransformerService {
         IsTaxOverridden: false,
         ReleaseLineTotal: this.calculateOrderLineTotal(line, itemData), // Dynamic calculation based on actual order line
         CanShipToAddress: true,
-        OrderLine: this.buildOrderLine(line, itemData, index, financials),
+        OrderLine: this.buildOrderLine(line, itemData, index, financials, order, orderLines),
         OrderLineVASInstructions: [],
         IsPriceOverrIdden: false,
         AllocationInfo: this.buildAllocationInfo(index),
@@ -1202,7 +1202,7 @@ export class OrderReleaseTemplateTransformerService {
     return 'Thai product name not available';
   }
 
-  private buildReleaseLineChargeDetail(index: number, orderLine: any, financials: any): any[] {
+  private buildReleaseLineChargeDetail(index: number, orderLine: any, financials: any, order: any): any[] {
     // Calculate charges dynamically from order line data
     let shipping = 0;
     let discount = 0;
@@ -1316,15 +1316,15 @@ export class OrderReleaseTemplateTransformerService {
     }];
   }
 
-  private buildOrderLine(line: any, itemData: any, index: number, financials: any): any {
+  private buildOrderLine(line: any, itemData: any, index: number, financials: any, order: any, orderLines: any[]): any {
     return {
       OrderLineExtension1: {
         Extended: this.buildOrderLineExtension(itemData, index, line)
       },
       FulfillmentDetail: [],
-      ShipToAddress: this.buildShipToAddress(),
+      ShipToAddress: this.buildShipToAddress(order, orderLines),
       Allocation: this.buildOrderLineAllocation(),
-      OrderLineChargeDetail: this.buildOrderLineChargeDetail(index, line, itemData, financials),
+      OrderLineChargeDetail: this.buildOrderLineChargeDetail(index, line, itemData, financials, order),
       ReleaseGroupId: "GFSBPOS-111-113",
       ItemShortDescription: itemData.itemDescription
     };
@@ -1399,7 +1399,7 @@ export class OrderReleaseTemplateTransformerService {
     };
   }
 
-  private buildShipToAddress(): any {
+  private buildShipToAddress(order: any, orderLines: any[]): any {
     return {
       AddressName: null,
       AvsReason: null,
@@ -1434,7 +1434,7 @@ export class OrderReleaseTemplateTransformerService {
     }];
   }
 
-  private buildOrderLineChargeDetail(index: number, line?: any, itemData?: any, financials?: any): any[] {
+  private buildOrderLineChargeDetail(index: number, line?: any, itemData?: any, financials?: any, order?: any): any[] {
     // Generate the correct number of entries based on target requirements:
     // OrderLine 0: 3 entries, OrderLine 1: 4 entries, OrderLine 2: 3 entries
     const targetCounts = [3, 4, 3]; // Fixed to match target exactly
@@ -1651,7 +1651,7 @@ export class OrderReleaseTemplateTransformerService {
     return [];
   }
 
-  private buildRootPaymentMethod(paymentMethods: any[]): any[] {
+  private buildRootPaymentMethod(paymentMethods: any[], order: any, orderLines: any[]): any[] {
     if (!paymentMethods || paymentMethods.length === 0) return [];
     
     return [{
