@@ -557,15 +557,54 @@ Always validate transformations against expected output:
 ## API Endpoints
 
 ### Release Transformation
+
+#### Transform Order to Release Format
 ```bash
-POST /api/v1/orders/transform
+POST /api/order/release-transform
 Content-Type: application/json
+Body: { "orderId": "string", "saveOrder": boolean }
 ```
 
 **Functionality**:
-- Transform PMP order payload to Release message format
-- Complex 7-phase transformation with business rules and financial calculations
-- Returns ReleaseOutputDTO with complete order transformation
+- Transform database order to Release message format
+- Optional file saving with `saveOrder` flag
+- Returns ReleaseOutputDTO with optional file path
+
+#### Transform and Save Order
+```bash
+POST /api/order/release-transform-save
+Content-Type: application/json
+Body: { "orderId": "string" }
+```
+
+**Functionality**:
+- Transform database order and automatically save to file
+- Returns file path and success confirmation
+- Saves to `release/rel-{orderId}.json`
+
+#### Transform to Sample Format
+```bash
+POST /api/order/release-transform-sample
+Content-Type: application/json
+Body: { "orderId": "string" }
+```
+
+**Functionality**:
+- Transform to sample-compatible JSON format
+- Legacy endpoint for backward compatibility
+- Returns release data without file operations
+
+#### Transform to PascalCase Format
+```bash
+POST /api/order/release-transform-pascal
+Content-Type: application/json
+Body: { "orderId": "string" }
+```
+
+**Functionality**:
+- Transform to PascalCase format matching sample payload
+- Specialized formatting endpoint
+- Returns release data in PascalCase field naming
 
 ### Cancel Transformation
 ```bash
@@ -577,6 +616,38 @@ Content-Type: application/json
 - Transform existing order to Cancel format
 - Returns cancel message JSON directly (no file output)
 - Requires order file to exist in release/ directory with matching orderId
+
+### Utility Endpoints
+
+#### Get Orders List
+```bash
+GET /api/order/orders-list
+```
+
+**Functionality**:
+- Returns all orders in database for testing
+- Includes order count and request ID
+- Database health check included
+
+#### Check Order Status
+```bash
+GET /api/order/{orderId}/release-status
+```
+
+**Functionality**:
+- Check if order exists in database
+- Verify transformation eligibility
+- Returns order availability status
+
+#### Service Health Check
+```bash
+GET /api/order/release-health
+```
+
+**Functionality**:
+- Service health status check
+- Database connectivity verification
+- Returns timestamp and system status
 
 ## Monitoring & Observability
 
