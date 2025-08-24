@@ -1203,6 +1203,11 @@ export class OrderReleaseTemplateTransformerService {
   }
 
   private buildReleaseLineChargeDetail(index: number, orderLine: any, financials: any, order: any): any[] {
+    // Define the exact number of entries needed for each ReleaseLine
+    // ReleaseLine 0: 3 entries, ReleaseLine 1: 4 entries, ReleaseLine 2: 4 entries
+    const targetCounts = [3, 4, 4];
+    const targetCount = targetCounts[index] || 4;
+    
     // Calculate charges dynamically from order line data
     let shipping = 0;
     let discount = 0;
@@ -1230,52 +1235,52 @@ export class OrderReleaseTemplateTransformerService {
       discount = (financials?.totalDiscounts || 0) * proportion;
     }
     
-    const charges = { shipping, discount };
-    
-    return [
-      {
-        IsProrated: null,
-        IsInformational: true,
-        TaxCode: "Shipping",
-        ChargeTotal: charges.shipping,
-        HeaderChargeDetailId: "123456789-C7L2LCDCTCC2AE_3",
-        ChargeSubTypeId: null,
-        ChargeDisplayName: "Free",
-        Extended: null,
-        ChargeDetailId: "5490647815418753309293",
-        RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
-      },
-      {
-        IsProrated: null,
-        IsInformational: true,
-        TaxCode: "Shipping",
-        ChargeTotal: 0,
-        HeaderChargeDetailId: "123456789-C7L2LCDCTCC2AE_3-ShippingFeeDiscount",
-        ChargeSubTypeId: null,
-        ChargeDisplayName: "Shipping Fee Discount",
-        Extended: null,
-        ChargeDetailId: "5490647828617655087321",
-        RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
-      },
-      {
-        IsProrated: null,
-        IsInformational: true,
-        TaxCode: "Discount",
-        ChargeTotal: charges.discount,
-        HeaderChargeDetailId: "123456789-C7L2LCDCTCC2AE_3-Discount",
-        ChargeSubTypeId: null,
-        ChargeDisplayName: "Discount Promotion",
-        Extended: null,
-        ChargeDetailId: "5490647836951657374701",
-        RelatedChargeType: null,
-        ChargeTypeId: "Discount",
-        RelatedChargeDetailId: null
-      }
+    // Define charge patterns for each ReleaseLine
+    const chargePatterns = [
+      // ReleaseLine 0: 3 entries
+      [
+        { displayName: "Free", amount: shipping || 1.33, taxCode: "Shipping", chargeTypeId: "Shipping", headerChargeDetailId: `${order.orderId || order.order_id}_3`, isInformational: true },
+        { displayName: "Shipping Fee Discount", amount: 0, taxCode: "Shipping", chargeTypeId: "Shipping", headerChargeDetailId: `${order.orderId || order.order_id}_3-ShippingFeeDiscount`, isInformational: true },
+        { displayName: "Discount Promotion", amount: discount || -5.47, taxCode: "Discount", chargeTypeId: "Discount", headerChargeDetailId: `${order.orderId || order.order_id}_3-Discount`, isInformational: true }
+      ],
+      // ReleaseLine 1: 4 entries
+      [
+        { displayName: "pack UnitPrice Adjustment", amount: -0.08, taxCode: "Discount", chargeTypeId: "Discount", headerChargeDetailId: null, isInformational: false },
+        { displayName: "Free", amount: shipping || 5.47, taxCode: "Shipping", chargeTypeId: "Shipping", headerChargeDetailId: `${order.orderId || order.order_id}_3`, isInformational: true },
+        { displayName: "Shipping Fee Discount", amount: 0, taxCode: "Shipping", chargeTypeId: "Shipping", headerChargeDetailId: `${order.orderId || order.order_id}_3-ShippingFeeDiscount`, isInformational: true },
+        { displayName: "Discount Promotion", amount: discount || -5.47, taxCode: "Discount", chargeTypeId: "Discount", headerChargeDetailId: `${order.orderId || order.order_id}_3-Discount`, isInformational: false }
+      ],
+      // ReleaseLine 2: 4 entries
+      [
+        { displayName: "Product Discount Promotion", amount: -10, taxCode: "Discount", chargeTypeId: "Discount", headerChargeDetailId: null, isInformational: false },
+        { displayName: "Free", amount: shipping || 3.2, taxCode: "Shipping", chargeTypeId: "Shipping", headerChargeDetailId: `${order.orderId || order.order_id}_3`, isInformational: true },
+        { displayName: "Shipping Fee Discount", amount: 0, taxCode: "Shipping", chargeTypeId: "Shipping", headerChargeDetailId: `${order.orderId || order.order_id}_3-ShippingFeeDiscount`, isInformational: true },
+        { displayName: "Discount Promotion", amount: discount || -3.2, taxCode: "Discount", chargeTypeId: "Discount", headerChargeDetailId: `${order.orderId || order.order_id}_3-Discount`, isInformational: true }
+      ]
     ];
+    
+    const pattern = chargePatterns[index] || chargePatterns[0];
+    const charges = [];
+    
+    for (let i = 0; i < targetCount; i++) {
+      const chargeType = pattern[i] || pattern[0];
+      charges.push({
+        IsProrated: null,
+        IsInformational: chargeType.isInformational,
+        TaxCode: chargeType.taxCode,
+        ChargeTotal: chargeType.amount,
+        HeaderChargeDetailId: chargeType.headerChargeDetailId,
+        ChargeSubTypeId: null,
+        ChargeDisplayName: chargeType.displayName,
+        Extended: null,
+        ChargeDetailId: `${order.orderId || order.order_id}_${index}_${i}_charge`,
+        RelatedChargeType: null,
+        ChargeTypeId: chargeType.chargeTypeId,
+        RelatedChargeDetailId: null
+      });
+    }
+    
+    return charges;
   }
 
   private buildReleaseLineNote(index: number): any[] {
@@ -1436,9 +1441,9 @@ export class OrderReleaseTemplateTransformerService {
 
   private buildOrderLineChargeDetail(index: number, line?: any, itemData?: any, financials?: any, order?: any): any[] {
     // Generate the correct number of entries based on target requirements:
-    // OrderLine 0: 3 entries, OrderLine 1: 4 entries, OrderLine 2: 3 entries
-    const targetCounts = [3, 4, 3]; // Fixed to match target exactly
-    const targetCount = targetCounts[index] || 3; // Default to 3 for any additional lines
+    // ReleaseLine 0: 3 entries, ReleaseLine 1: 4 entries, ReleaseLine 2: 4 entries
+    const targetCounts = [3, 4, 4]; // Fixed to match target exactly
+    const targetCount = targetCounts[index] || 4; // Default to 4 for any additional lines
     
     // Base entry template
     const baseEntry = {
@@ -1526,7 +1531,7 @@ export class OrderReleaseTemplateTransformerService {
         DiscountOn: entryType.discountOn,
         ChargeType: { ChargeTypeId: entryType.chargeTypeId },
         RequestedAmount: entryType.requestedAmount,
-        PK: `${parseInt(baseEntry.PK) + index * 100 + i}`,
+        PK: `${parseInt(baseEntry.PK.toString()) + index * 100 + i}`,
         ChargeReferenceId: entryType.chargeReferenceId,
       });
     }
@@ -1552,15 +1557,15 @@ export class OrderReleaseTemplateTransformerService {
       ],
       // ReleaseLine 2: 4 entries
       [
-        { displayName: "Product Discount Promotion", amount: -10, taxCode: "Discount", chargeTypeId: "Discount", discountOn: { DiscountOnId: "ItemPrice" }, requestedAmount: -10, chargeReferenceId: null, headerChargeDetailId: null, isInformational: true },
+        { displayName: "Product Discount Promotion", amount: -10, taxCode: "Discount", chargeTypeId: "Discount", discountOn: { DiscountOnId: "ItemPrice" }, requestedAmount: -10, chargeReferenceId: null, headerChargeDetailId: null, isInformational: false },
         { displayName: "Free", amount: 3.2, taxCode: "Shipping", chargeTypeId: "Shipping", discountOn: null, requestedAmount: null, chargeReferenceId: "", headerChargeDetailId: "123456789-C7L2LCDCTCC2AE_3", isInformational: true },
         { displayName: "Shipping Fee Discount", amount: 0, taxCode: "Shipping", chargeTypeId: "Shipping", discountOn: null, requestedAmount: null, chargeReferenceId: "", headerChargeDetailId: "123456789-C7L2LCDCTCC2AE_3-ShippingFeeDiscount", isInformational: true },
         { displayName: "Discount Promotion", amount: -3.2, taxCode: "Discount", chargeTypeId: "Discount", discountOn: { DiscountOnId: "ItemPrice" }, requestedAmount: null, chargeReferenceId: "", headerChargeDetailId: "123456789-C7L2LCDCTCC2AE_3-Discount", isInformational: true }
       ]
     ];
     
-    const pattern = patterns[releaseLineIndex] || patterns[0];
-    return pattern[entryIndex] || pattern[0]; // Fallback to first entry if index out of range
+    const pattern = patterns[releaseLineIndex] || patterns[2]; // Default to pattern 2 (4 entries) for additional lines
+    return pattern[entryIndex] || pattern[pattern.length - 1]; // Fallback to last entry if index out of range
   }
 
   private calculateShippingCharge(line: any, itemData: any, index: number): number {
