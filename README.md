@@ -53,10 +53,12 @@ This is a production-grade transformation engine that handles complex business l
 - Complex business rules for shipping methods, tax calculations, and financial totals
 - 1,700+ lines of business logic with precise field mappings
 
-**Cancel Service**: `app/src/common/services/domain/order-cancellation.service.ts`
+**Cancel Service**: `app/src/modules/orders/services/order-cancellation.service.ts`
+- ✅ **Status**: Fully functional and production-ready
 - Transforms existing orders into standardized cancel message format
 - Data-driven transformation with business rules and field mappings
-- Production-ready with comprehensive error handling
+- File-based order repository with multiple naming pattern support
+- Comprehensive error handling and validation
 
 **DTO Layer**: `app/src/common/dtos/release-create-order.dto.ts`
 - Comprehensive TypeScript DTOs for input/output validation
@@ -558,17 +560,23 @@ Always validate transformations against expected output:
 ```bash
 POST /api/v1/orders/transform
 Content-Type: application/json
-
-# Transform PMP order to Release format
 ```
+
+**Functionality**:
+- Transform PMP order payload to Release message format
+- Complex 7-phase transformation with business rules and financial calculations
+- Returns ReleaseOutputDTO with complete order transformation
 
 ### Cancel Transformation
 ```bash
-POST /api/v1/orders/cancel/{orderId}
+POST /omnia/api/ext/order/{orderId}/cancel
 Content-Type: application/json
-
-# Transform order to Cancel format
 ```
+
+**Functionality**:
+- Transform existing order to Cancel format
+- Returns cancel message JSON directly (no file output)
+- Requires order file to exist in release/ directory with matching orderId
 
 ## Monitoring & Observability
 
