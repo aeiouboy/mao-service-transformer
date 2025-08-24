@@ -135,17 +135,17 @@ export class OrderReleaseTemplateTransformerService {
     // This must match EXACTLY lines 422-1297 in task-7.MD
     const template: any = {
       // === TOP LEVEL FIELDS === (lines 422-443)
-      ServiceLevelCode: 'STD',
-      Email: this.safeValue(order.customerEmail) || "undefined",
-      MaxFulfillmentStatusId: "3000",
-      IsOnHold: this.safeValue(order.isOnHold) || false,
+      ServiceLevelCode: this.safeValue(order.service_level_code) || 'STD',
+      Email: this.safeValue(order.customerEmail) || this.safeValue(order.customer_email) || "undefined",
+      MaxFulfillmentStatusId: this.safeValue(order.max_fulfillment_status_id) || "3000",
+      IsOnHold: this.safeValue(order.isOnHold) || this.safeValue(order.is_on_hold) || false,
       IsConfirmed: this.getExtendedValue(order, 'orderExtension1.Extended.IsPSConfirmed') || true,
       OrderSubtotal: financials.orderSubtotal,
       ModeId: null,
-      SellingLocationId: this.safeValue(order.sellingLocationId),
-      CurrencyCode: this.safeValue(order.currencyCode) || "THB",
-      CustomerPhone: this.safeValue(order.customerPhone),
-      CustomerFirstName: this.safeValue(order.customerFirstName),
+      SellingLocationId: this.safeValue(order.sellingLocationId) || this.safeValue(order.selling_location_id),
+      CurrencyCode: this.safeValue(order.currencyCode) || this.safeValue(order.currency_code) || "THB",
+      CustomerPhone: this.safeValue(order.customerPhone) || this.safeValue(order.customer_phone),
+      CustomerFirstName: this.safeValue(order.customerFirstName) || this.safeValue(order.customer_first_name),
       ReleaseTotal: financials.releaseTotal,
       
       ExtendedFields: {
@@ -161,21 +161,21 @@ export class OrderReleaseTemplateTransformerService {
       Order: this.buildOrder(order, orderLines, payments, paymentMethods, paymentTransactions),
       
       // === ROOT LEVEL CONTINUED === (lines 710-724)  
-      DocTypeId: "CustomerOrder",
-      CreatedBy: "pubstestuser@twd",
+      DocTypeId: this.safeValue(order.doc_type_id) || "CustomerOrder",
+      CreatedBy: this.safeValue(order.created_by) || "system",
       OrderTotalDiscounts: financials.totalDiscounts || -0.08,
       Priority: this.safeValue(order.priority),
-      IsCancelled: this.safeValue(order.isCancelled) || false,
-      IsPublished: this.safeValue(order.isPublished),
+      IsCancelled: this.safeValue(order.isCancelled) || this.safeValue(order.is_cancelled) || false,
+      IsPublished: this.safeValue(order.isPublished) || this.safeValue(order.is_published),
       HasNotes: true,
-      ReleaseId: `${order.orderId}_31`,
-      CustomerId: this.safeValue(order.customerId),
-      City: this.extractAddressField(orderLines, 'City') || "-",
-      OrderId: `${order.orderId}_3`,
+      ReleaseId: `${order.orderId || order.order_id}_31`,
+      CustomerId: this.safeValue(order.customerId) || this.safeValue(order.customer_id),
+      City: this.extractAddressField(orderLines, 'City') || this.safeValue(order.city) || "-",
+      OrderId: `${order.orderId || order.order_id}_3`,
       AVSReasonId: null,
-      CustomerType: this.safeValue(order.customerType) || "",
-      IsTaxExempt: this.safeValue(order.isTaxExempt) || false,
-      AddressName: this.extractAddressField(orderLines, 'AddressName'),
+      CustomerType: this.safeValue(order.customerType) || this.safeValue(order.customer_type_id) || "",
+      IsTaxExempt: this.safeValue(order.isTaxExempt) || this.safeValue(order.is_tax_exempt) || false,
+      AddressName: this.extractAddressField(orderLines, 'AddressName') || this.safeValue(order.address_name),
       
       // === CHARGE DETAIL SECTION === (lines 726-738)
       ChargeDetail: this.buildChargeDetail(order),
@@ -203,21 +203,21 @@ export class OrderReleaseTemplateTransformerService {
       PickupExpiryDate: null,
       CreateReleaseTimeStamp: this.formatTimestamp(new Date()),
       TaxExemptReasonId: null,
-      ShipFromLocationId: "CFM6470",
-      NoOfStoreSaleLines: 0,
-      PostalCode: this.extractAddressField(orderLines, 'PostalCode') || "99999",
-      OrganizationId: "CFM-SIT",
-      InvoiceId: this.safeValue(order.invoiceId),
-      County: this.extractAddressField(orderLines, 'County') || "-",
+      ShipFromLocationId: this.safeValue(order.ship_from_location_id) || "CFM6470",
+      NoOfStoreSaleLines: this.calculateStoreSaleLines(orderLines) || 0,
+      PostalCode: this.extractAddressField(orderLines, 'PostalCode') || this.safeValue(order.postal_code) || "99999",
+      OrganizationId: this.safeValue(order.org_id) || "CFM-SIT",
+      InvoiceId: this.safeValue(order.invoiceId) || this.safeValue(order.invoice_id),
+      County: this.extractAddressField(orderLines, 'County') || this.safeValue(order.county) || "-",
       IsPostVoided: null,
-      AlternateOrderId: `${order.orderId}_3`,
-      CustomerEmail: this.safeValue(order.customerEmail) || "undefined",
-      Phone: this.safeValue(order.customerPhone),
-      OrderTypeId: this.safeValue(order.orderTypeId) || "MKP-HD-STD",
-      PaymentStatusId: "5000.000",
-      CustomerCommPref: this.safeValue(order.customerCommPref),
-      SellingChannelId: this.safeValue(order.sellingChannel) || "Grab",
-      MinFulfillmentStatusId: "3000",
+      AlternateOrderId: this.safeValue(order.alternate_order_id) || `${order.orderId || order.order_id}_3`,
+      CustomerEmail: this.safeValue(order.customerEmail) || this.safeValue(order.customer_email) || "undefined",
+      Phone: this.safeValue(order.customerPhone) || this.safeValue(order.customer_phone),
+      OrderTypeId: this.safeValue(order.orderTypeId) || this.safeValue(order.order_type_id) || "MKP-HD-STD",
+      PaymentStatusId: this.mapPaymentStatus(order.payment_status) || "5000.000",
+      CustomerCommPref: this.safeValue(order.customerCommPref) || this.safeValue(order.customer_comm_pref),
+      SellingChannelId: this.safeValue(order.sellingChannel) || this.safeValue(order.selling_channel) || "Online",
+      MinFulfillmentStatusId: this.safeValue(order.min_fulfillment_status_id) || "3000",
       ReleaseType: this.safeValue(order.releaseType),
       CreateOrderTimeStamp: this.formatTimestamp(order.createdAt || order.created_at),
       ExternalOrganizationId: this.safeValue(order.externalOrganizationId),
@@ -231,10 +231,10 @@ export class OrderReleaseTemplateTransformerService {
       ReleaseLine: this.buildReleaseLines(orderLines, financials),
       
       // === FINAL ADDRESS FIELDS ===
-      Address2: "Grab Address2", 
-      ShipViaId: "InStore_STD",
-      Address3: null,
-      Address1: "Grab Address1",
+      Address2: this.extractAddressField(orderLines, 'Address2') || this.safeValue(order.address2) || "Address2", 
+      ShipViaId: this.safeValue(order.ship_via_id) || "InStore_STD",
+      Address3: this.extractAddressField(orderLines, 'Address3') || this.safeValue(order.address3),
+      Address1: this.extractAddressField(orderLines, 'Address1') || this.safeValue(order.address1) || "Address1",
       
       // === PROCESS INFO SECTION === (lines 1200-1284)
       ProcessInfo: {
@@ -295,15 +295,15 @@ export class OrderReleaseTemplateTransformerService {
       
       // === ROOT LEVEL FINAL FIELDS === (lines 1286-1297 in task-7.MD)
       // These MUST appear at the very end in this exact sequence
-      CancelReasonId: null, // keep as null since field doesn't exist in DB schema
-      PostVoIdReasonId: null, // keep as null since field doesn't exist in DB schema  
-      OrderLocale: this.safeValue(order.orderLocale) || "th", // maps to order_locale in DB
+      CancelReasonId: this.safeValue(order.cancel_reason_id), // from DB if available
+      PostVoIdReasonId: this.safeValue(order.post_void_reason_id), // from DB if available  
+      OrderLocale: this.safeValue(order.orderLocale) || this.safeValue(order.order_locale) || "th", // maps to order_locale in DB
       OrderTotalCharges: financials.totalCharges || 0, // calculated financial value
       TotalTaxes: financials.totalTaxes || 0, // calculated financial value
-      CustomerLastName: this.safeValue(order.customerLastName) || "-", // maps to customer_last_name in DB
-      CapturedDate: this.formatTimestamp(order.capturedDate), // maps to captured_date in DB
-      CarrierCode: "InStore", // fixed value per MAO spec
-      AddressType: "CustomerShipToAddress", // fixed value per MAO spec
+      CustomerLastName: this.safeValue(order.customerLastName) || this.safeValue(order.customer_last_name) || "-", // maps to customer_last_name in DB
+      CapturedDate: this.formatTimestamp(order.capturedDate || order.captured_date), // maps to captured_date in DB
+      CarrierCode: this.extractCarrierCode(order) || "InStore", // dynamic carrier code extraction
+      AddressType: this.safeValue(order.address_type) || "CustomerShipToAddress", // from DB if available
       OrderTotal: financials.orderTotal || 0, // calculated financial value
       TotalDiscounts: financials.totalDiscounts || 0 // calculated financial value
     };
@@ -483,12 +483,12 @@ export class OrderReleaseTemplateTransformerService {
     return payments.map(payment => ({
       Actions: {},
       PK: "7558516678512824366",
-      CreatedBy: "pubstestuser@twd",
-      CreatedTimestamp: "2025-08-22T08:34:27.852",
-      UpdatedBy: "pubstestuser@twd",
-      UpdatedTimestamp: "2025-08-22T08:34:27.972",
+      CreatedBy: this.safeValue(order.created_by) || "system",
+      CreatedTimestamp: this.formatTimestamp(order.created_at) || this.formatTimestamp(new Date()),
+      UpdatedBy: this.safeValue(order.updated_by) || "system",
+      UpdatedTimestamp: this.formatTimestamp(order.updated_at) || this.formatTimestamp(new Date()),
       Messages: null,
-      OrgId: "CFR-UAT",
+      OrgId: this.safeValue(order.org_id) || "CFR-UAT",
       PurgeDate: null,
       OrderId: `${payment.order_id || order.orderId}_3`,
       PaymentGroupId: null,
@@ -510,12 +510,12 @@ export class OrderReleaseTemplateTransformerService {
     return paymentMethods.map(pm => ({
       Actions: {},
       PK: "7558516679372851602",
-      CreatedBy: "pubstestuser@twd",
-      CreatedTimestamp: "2025-08-22T08:34:27.937",
-      UpdatedBy: "pubstestuser@twd",
-      UpdatedTimestamp: "2025-08-22T08:34:45.248",
+      CreatedBy: this.safeValue(order.created_by) || "system",
+      CreatedTimestamp: this.formatTimestamp(order.created_at) || this.formatTimestamp(new Date()),
+      UpdatedBy: this.safeValue(order.updated_by) || "system",
+      UpdatedTimestamp: this.formatTimestamp(order.updated_at) || this.formatTimestamp(new Date()),
       Messages: null,
-      OrgId: "CFR-UAT",
+      OrgId: this.safeValue(order.org_id) || "CFR-UAT",
       PaymentMethodId: "7991a525-e6c8-4086-b739-73ca3bfca903",
       CurrencyCode: "THB",
       AlternateCurrencyCode: null,
@@ -565,7 +565,7 @@ export class OrderReleaseTemplateTransformerService {
       ShopperReference: null,
       SuggestedAmount: null,
       PurgeDate: null,
-      BillingAddress: this.buildBillingAddress(pm.billing_address),
+      BillingAddress: this.buildBillingAddress(pm.billing_address, order, []),
       PaymentMethodAttribute: [],
       PaymentMethodEncrAttribute: [],
       PaymentTransaction: this.buildPaymentTransactions(paymentTransactions.get(pm.payment_method_id) || [], pm, order),
@@ -577,39 +577,39 @@ export class OrderReleaseTemplateTransformerService {
       AccountType: null,
       PaymentCategory: null,
       Extended: {
-        BillingNameString: "Grab Customer -",
-        BillingAddressString: "Grab Address1,Grab Address2,",
+        BillingNameString: `${this.safeValue(order.customer_first_name) || 'Customer'} ${this.safeValue(order.customer_last_name) || '-'}`,
+        BillingAddressString: `${this.safeValue(order.address1) || 'Address1'},${this.safeValue(order.address2) || 'Address2'},`,
         InstallmentRate: null,
         EncryptedAddress1: null,
         InstallmentPlan: null,
-        BillingAddressString2: "-,-,-,TH,99999"
+        BillingAddressString2: `${this.safeValue(order.city) || '-'},${this.safeValue(order.state) || '-'},${this.safeValue(order.county) || '-'},${this.safeValue(order.country) || 'TH'},${this.safeValue(order.postal_code) || '99999'}`
       }
     }));
   }
 
-  private buildBillingAddress(billingAddress: any): any {
+  private buildBillingAddress(_billingAddress: any, order: any, orderLines: any[]): any {
     return {
       Actions: {},
       PK: "7558516679402864954",
-      CreatedBy: "pubstestuser@twd",
-      CreatedTimestamp: "2025-08-22T08:34:27.94",
-      UpdatedBy: "pubstestuser@twd",
-      UpdatedTimestamp: "2025-08-22T08:34:28.026",
+      CreatedBy: this.safeValue(order.created_by) || "system",
+      CreatedTimestamp: this.formatTimestamp(order.created_at) || this.formatTimestamp(new Date()),
+      UpdatedBy: this.safeValue(order.updated_by) || "system",
+      UpdatedTimestamp: this.formatTimestamp(order.updated_at) || this.formatTimestamp(new Date()),
       Messages: null,
-      OrgId: "CFR-UAT",
+      OrgId: this.safeValue(order.org_id) || "CFR-UAT",
       Address: {
-        FirstName: "Grab Customer",
-        LastName: "-",
-        Address1: "Grab Address1",
-        Address2: "Grab Address2",
-        Address3: null,
-        City: "-",
-        State: "-",
-        PostalCode: "99999",
-        County: "-",
-        Country: "TH",
-        Phone: "0101010122",
-        Email: "undefined"
+        FirstName: this.safeValue(order.customer_first_name) || this.safeValue(order.customerFirstName) || "Customer",
+        LastName: this.safeValue(order.customer_last_name) || this.safeValue(order.customerLastName) || "-",
+        Address1: this.extractAddressField(orderLines, 'Address1') || this.safeValue(order.address1) || "Address1",
+        Address2: this.extractAddressField(orderLines, 'Address2') || this.safeValue(order.address2) || "Address2",
+        Address3: this.extractAddressField(orderLines, 'Address3') || this.safeValue(order.address3),
+        City: this.extractAddressField(orderLines, 'City') || this.safeValue(order.city) || "-",
+        State: this.extractAddressField(orderLines, 'State') || this.safeValue(order.state) || "-",
+        PostalCode: this.extractAddressField(orderLines, 'PostalCode') || this.safeValue(order.postal_code) || "99999",
+        County: this.extractAddressField(orderLines, 'County') || this.safeValue(order.county) || "-",
+        Country: this.extractAddressField(orderLines, 'Country') || this.safeValue(order.country) || "TH",
+        Phone: this.safeValue(order.customer_phone) || this.safeValue(order.customerPhone) || "0000000000",
+        Email: this.safeValue(order.customer_email) || this.safeValue(order.customerEmail) || "undefined"
       },
       PurgeDate: null,
       Extended: {
@@ -630,18 +630,18 @@ export class OrderReleaseTemplateTransformerService {
     };
   }
 
-  private buildPaymentTransactions(transactions: any[], paymentMethod: any, order: any): any[] {
+  private buildPaymentTransactions(transactions: any[], _paymentMethod: any, order: any): any[] {
     if (!transactions || transactions.length === 0) return [];
 
-    return transactions.map(txn => ({
+    return transactions.map(_txn => ({
       Actions: {},
       PK: "7558516679412872345",
-      CreatedBy: "pubstestuser@twd",
-      CreatedTimestamp: "2025-08-22T08:34:27.941",
-      UpdatedBy: "pubstestuser@twd",
-      UpdatedTimestamp: "2025-08-22T08:34:27.941",
+      CreatedBy: this.safeValue(order.created_by) || "system",
+      CreatedTimestamp: this.formatTimestamp(order.created_at) || this.formatTimestamp(new Date()),
+      UpdatedBy: this.safeValue(order.updated_by) || "system",
+      UpdatedTimestamp: this.formatTimestamp(order.updated_at) || this.formatTimestamp(new Date()),
       Messages: null,
-      OrgId: "CFR-UAT",
+      OrgId: this.safeValue(order.org_id) || "CFR-UAT",
       PaymentTransactionId: "7991a525-e6c8-4086-b739-73ca3bfca903",
       RequestedAmount: 128,
       RequestId: `${order.orderId}_3`,
@@ -705,7 +705,7 @@ export class OrderReleaseTemplateTransformerService {
     }));
   }
 
-  private buildOrderChargeDetail(order: any): any[] {
+  private buildOrderChargeDetail(_order: any): any[] {
     // OrderChargeDetail should have simple Extended objects only (not full detail objects)
     return [
       {
@@ -738,7 +738,7 @@ export class OrderReleaseTemplateTransformerService {
     ];
   }
 
-  private buildOrderExtension1(order: any): any {
+  private buildOrderExtension1(_order: any): any {
     return {
       Extended: {
         IsPSConfirmed: true,
@@ -766,7 +766,7 @@ export class OrderReleaseTemplateTransformerService {
 
 
 
-  private buildAllocations(line: any): any[] {
+  private buildAllocations(_line: any): any[] {
     // TODO: Load allocations from allocations table by order_line_id
     return [];
   }
@@ -895,7 +895,7 @@ export class OrderReleaseTemplateTransformerService {
     ];
   }
 
-  private buildNotes(order: any): any[] {
+  private buildNotes(_order: any): any[] {
     // Return expected Note structure to match output format
     return [
       {
@@ -1006,7 +1006,7 @@ export class OrderReleaseTemplateTransformerService {
     return this.round2(total - discount);
   }
 
-  private calculateOrderLineDiscounts(line: any, itemData: any): number {
+  private calculateOrderLineDiscounts(line: any, _itemData: any): number {
     // Calculate discounts from order line data
     const discountAmount = line.discount_amount || 0;
     const promoDiscount = line.promotion_discount || 0;
@@ -1016,14 +1016,56 @@ export class OrderReleaseTemplateTransformerService {
     return totalDiscounts !== 0 ? -Math.abs(totalDiscounts) : 0; // Ensure discounts are negative
   }
 
-  // Keep original method for fallback compatibility
-  private getItemDataForIndex(index: number): any {
-    const items = [
-      { itemId: "4901133618567", itemBrand: "CIAO/ เชาว์", itemDescription: "Ciao Tuna Katsuo And Chicken Fillet Topping Dried", quantity: 1, uom: "SPCS" },
-      { itemId: "8850124003850", itemBrand: "Pure Life", itemDescription: "Pure Life Drinking Water", quantity: 1, uom: "SPCS" },
-      { itemId: "0000093362986", itemBrand: "Caesar", itemDescription: "Caesar Beef and Liver", quantity: 12, uom: "SBTL" }
-    ];
-    return items[index] || items[0];
+  /**
+   * Calculate order line subtotal from database values
+   */
+  private calculateOrderLineSubtotal(line: any, itemData: any): number {
+    // Use database value first, then calculate
+    if (line.order_line_sub_total !== undefined && line.order_line_sub_total !== null) {
+      return parseFloat(line.order_line_sub_total) || 0;
+    }
+    
+    // Calculate from unit price and quantity
+    const unitPrice = parseFloat(line.unit_price || line.price || 0);
+    const quantity = parseFloat(itemData.quantity || 1);
+    return this.round2(unitPrice * quantity);
+  }
+
+  /**
+   * Calculate line total charges from database
+   */
+  private calculateLineTotalCharges(line: any): number {
+    if (line.total_charges !== undefined && line.total_charges !== null) {
+      return parseFloat(line.total_charges) || 0;
+    }
+    
+    // Calculate from line charge details
+    if (line.order_line_charge_detail && Array.isArray(line.order_line_charge_detail)) {
+      return line.order_line_charge_detail.reduce((total, charge) => {
+        const chargeAmount = parseFloat(charge.charge_total || 0);
+        return total + (charge.charge_type_id !== 'Discount' ? chargeAmount : 0);
+      }, 0);
+    }
+    
+    return 0;
+  }
+
+  /**
+   * Calculate line total taxes from database
+   */
+  private calculateLineTotalTaxes(line: any): number {
+    if (line.order_line_tax_total !== undefined && line.order_line_tax_total !== null) {
+      return parseFloat(line.order_line_tax_total) || 0;
+    }
+    
+    // Calculate from line tax details
+    if (line.order_line_tax_detail && Array.isArray(line.order_line_tax_detail)) {
+      return line.order_line_tax_detail.reduce((total, tax) => {
+        return total + parseFloat(tax.tax_amount || 0);
+      }, 0);
+    }
+    
+    return 0;
   }
 
   private buildSingleReleaseLine(line: any, itemData: any, index: number, financials: any): any {
@@ -1047,30 +1089,30 @@ export class OrderReleaseTemplateTransformerService {
         IsHazmat: false,
         RefundPrice: null,
         TaxOverrideValue: null,
-        MaxFulfillmentStatusId: "3000",
-        IsOnHold: false,
-        ItemWebURL: null,
+        MaxFulfillmentStatusId: this.safeValue(line.max_fulfillment_status_id) || "3000",
+        IsOnHold: this.safeValue(line.is_on_hold) || false,
+        ItemWebURL: this.safeValue(line.item_web_url),
         ItemId: itemData.itemId,
-        ShippingMethodId: "Standard Delivery",
-        SellingLocationId: null,
-        IsGift: false,
-        ParentOrderLineId: null,
-        TotalCharges: 0,
-        ParentOrderId: null,
-        ItemStyle: "",
-        TaxExemptId: null,
-        Priority: null,
-        SmallImageURI: "",
-        DeliveryMethodId: "ShipToAddress",
-        IsDiscountable: true,
-        IsCancelled: false,
-        TaxOverrideTypeId: null,
+        ShippingMethodId: this.safeValue(line.shipping_method_id) || "Standard Delivery",
+        SellingLocationId: this.safeValue(line.selling_location_id),
+        IsGift: this.safeValue(line.is_gift) || false,
+        ParentOrderLineId: this.safeValue(line.parent_order_line_id),
+        TotalCharges: this.calculateLineTotalCharges(line),
+        ParentOrderId: this.safeValue(line.parent_order_id),
+        ItemStyle: this.safeValue(line.item_style) || "",
+        TaxExemptId: this.safeValue(line.tax_exempt_id),
+        Priority: this.safeValue(line.priority),
+        SmallImageURI: this.safeValue(line.small_image_uri) || "",
+        DeliveryMethodId: this.safeValue(line.delivery_method_id) || "ShipToAddress",
+        IsDiscountable: this.safeValue(line.is_discountable) !== false,
+        IsCancelled: this.safeValue(line.is_cancelled) || false,
+        TaxOverrideTypeId: this.safeValue(line.tax_override_type_id),
         ItemBrand: itemData.itemBrand,
-        IsPreOrder: false,
+        IsPreOrder: this.safeValue(line.is_pre_order) || false,
         OrderLineTotalDiscounts: this.calculateOrderLineDiscounts(line, itemData), // Dynamic discount calculation
-        ParentOrderLineTypeId: null,
-        IsTaxExempt: null,
-        PromisedDeliveryDate: null,
+        ParentOrderLineTypeId: this.safeValue(line.parent_order_line_type_id),
+        IsTaxExempt: this.safeValue(line.is_tax_exempt),
+        PromisedDeliveryDate: this.formatTimestamp(line.promised_delivery_date),
         ChargeDetail: this.buildReleaseLineChargeDetail(index, line, financials),
         IsPerishable: false,
         LatestDeliveryDate: null,
@@ -1099,38 +1141,38 @@ export class OrderReleaseTemplateTransformerService {
         OrderLineVASInstructions: [],
         IsPriceOverrIdden: false,
         AllocationInfo: this.buildAllocationInfo(index),
-        ProductClass: "Pet Care",
-        MinFulfillmentStatusId: "3000",
-        ItemSize: "",
-        AsnId: null,
-        PaymentGroupId: null,
-        ShipToLocationId: null,
+        ProductClass: this.safeValue(line.product_class) || this.safeValue(line.category) || "General",
+        MinFulfillmentStatusId: this.safeValue(line.min_fulfillment_status_id) || "3000",
+        ItemSize: this.safeValue(line.item_size) || "",
+        AsnId: this.safeValue(line.asn_id),
+        PaymentGroupId: this.safeValue(line.payment_group_id),
+        ShipToLocationId: this.safeValue(line.ship_to_location_id),
         EffectiveRank: this.generateEffectiveRank(line.createdAt || line.created_at),
-        ExtendedLineFields: {},
-        LineShortCount: 0,
-        Mode: null,
-        ReleaseLineExtendedFields: {},
+        ExtendedLineFields: line.extended_line_fields || {},
+        LineShortCount: this.safeValue(line.line_short_count) || 0,
+        Mode: this.safeValue(line.mode),
+        ReleaseLineExtendedFields: line.release_line_extended_fields || {},
         Quantity: itemData.quantity,
-        ShipViaId: null,
-        IsItemNotOnFile: false,
-        IsGiftCard: false,
-        IsPackAndHold: false,
+        ShipViaId: this.safeValue(line.ship_via_id),
+        IsItemNotOnFile: this.safeValue(line.is_item_not_on_file) || false,
+        IsGiftCard: this.safeValue(line.is_gift_card) || false,
+        IsPackAndHold: this.safeValue(line.is_pack_and_hold) || false,
         ProcessInfo: this.buildReleaseLineProcessInfo(),
-        CancelReasonId: null,
-        ReleaseLineId: (index + 1).toString(),
-        ParentItemId: null,
-        IsReturnableAtStore: false,
-        FulfillmentGroupId: "eefee1242da4a01b901aad5fb27ac4",
+        CancelReasonId: this.safeValue(line.cancel_reason_id),
+        ReleaseLineId: this.safeValue(line.release_line_id) || (index + 1).toString(),
+        ParentItemId: this.safeValue(line.parent_item_id),
+        IsReturnableAtStore: this.safeValue(line.is_returnable_at_store) || false,
+        FulfillmentGroupId: this.safeValue(line.fulfillment_group_id) || "eefee1242da4a01b901aad5fb27ac4",
         UOM: itemData.uom,
-        OrderLineSubtotal: 17,
-        UnitPrice: 17,
-        OrderLineId: index === 0 ? "001-1-1" : index === 1 ? "002-2-2" : "000-0-0",
-        TotalTaxes: 0,
-        OrderLineTotalTaxes: 0,
-        RequestedDeliveryDate: null,
-        CarrierCode: null,
-        OriginalUnitPrice: 17,
-        TotalDiscounts: 0
+        OrderLineSubtotal: this.calculateOrderLineSubtotal(line, itemData),
+        UnitPrice: parseFloat(line.unit_price || line.price || 0),
+        OrderLineId: this.safeValue(line.order_line_id) || `${index.toString().padStart(3, '0')}-${index}-${index}`,
+        TotalTaxes: this.calculateLineTotalTaxes(line),
+        OrderLineTotalTaxes: this.calculateLineTotalTaxes(line),
+        RequestedDeliveryDate: this.formatTimestamp(line.requested_delivery_date),
+        CarrierCode: this.safeValue(line.carrier_code),
+        OriginalUnitPrice: parseFloat(line.original_unit_price || line.unit_price || line.price || 0),
+        TotalDiscounts: this.calculateOrderLineDiscounts(line, itemData)
       };
 
       this.logger.debug(`Final releaseLineData[${index}] ItemId:`, releaseLineData.ItemId);
@@ -1362,18 +1404,18 @@ export class OrderReleaseTemplateTransformerService {
       AddressName: null,
       AvsReason: null,
       Address: {
-        Email: "undefined",
-        FirstName: "Grab Customer",
-        State: "-",
-        Phone: "0101010122",
-        Address2: "Grab Address2",
-        Address3: null,
-        Country: "TH",
-        PostalCode: "99999",
-        LastName: "-",
-        Address1: "Grab Address1",
-        City: "-",
-        County: "-"
+        Email: this.safeValue(order.customer_email) || this.safeValue(order.customerEmail) || "undefined",
+        FirstName: this.safeValue(order.customer_first_name) || this.safeValue(order.customerFirstName) || "Customer",
+        State: this.extractAddressField(orderLines, 'State') || this.safeValue(order.state) || "-",
+        Phone: this.safeValue(order.customer_phone) || this.safeValue(order.customerPhone) || "0000000000",
+        Address2: this.extractAddressField(orderLines, 'Address2') || this.safeValue(order.address2) || "Address2",
+        Address3: this.extractAddressField(orderLines, 'Address3') || this.safeValue(order.address3),
+        Country: this.extractAddressField(orderLines, 'Country') || this.safeValue(order.country) || "TH",
+        PostalCode: this.extractAddressField(orderLines, 'PostalCode') || this.safeValue(order.postal_code) || "99999",
+        LastName: this.safeValue(order.customer_last_name) || this.safeValue(order.customerLastName) || "-",
+        Address1: this.extractAddressField(orderLines, 'Address1') || this.safeValue(order.address1) || "Address1",
+        City: this.extractAddressField(orderLines, 'City') || this.safeValue(order.city) || "-",
+        County: this.extractAddressField(orderLines, 'County') || this.safeValue(order.county) || "-"
       },
       IsAddressVerified: true,
       Extended: {
@@ -1421,11 +1463,11 @@ export class OrderReleaseTemplateTransformerService {
       Reason: null,
       FailedPaymentTransactionId: null,
       OriginalChargeAmount: null,
-      UpdatedBy: "pubstestuser@twd",
-      HeaderChargeDetailId: "123456789-C7L2LCDCTCC2AE_3",
+      UpdatedBy: this.safeValue(order.updated_by) || "system",
+      HeaderChargeDetailId: `${order.orderId || order.order_id}_3`,
       TaxCode: "Shipping",
       IsReturnCharge: false,
-      ChargeDetailId: "5490647815418753309293",
+      ChargeDetailId: `${order.orderId || order.order_id}_${index}_charge`,
       ParentChargeDetailId: null,
       FailedPaymentMethodId: null,
       PurgeDate: null,
@@ -1434,7 +1476,7 @@ export class OrderReleaseTemplateTransformerService {
       IsProratedAtSameLevel: false,
       UpdatedTimestamp: this.formatTimestamp(new Date()),
       ChargePercent: null,
-      CreatedBy: "pubstestuser@twd",
+      CreatedBy: this.safeValue(order.created_by) || "system",
       ChargeTotal: 1.33,
       Comments: null,
       RequestedAmount: null,
@@ -1444,7 +1486,7 @@ export class OrderReleaseTemplateTransformerService {
       IsPostReturn: false,
       ChargeSubType: null,
       FulfillmentGroupId: null,
-      OrgId: "CFR-UAT",
+      OrgId: this.safeValue(order.org_id) || "CFR-UAT",
       ChargeSequence: 0,
       IsCopiedHeaderCharge: false,
       IsInformational: true,
@@ -1618,19 +1660,19 @@ export class OrderReleaseTemplateTransformerService {
       AlternateCurrencyAmount: null,
       CurrencyCode: "THB",
       BillingAddress: {
-        Email: "undefined",
-        BillingAddressId: "7558516679402864954",
-        FirstName: "Grab Customer",
-        Address2: "Grab Address2",
-        Address3: null,
-        PostalCode: "99999",
-        Address1: "Grab Address1",
-        City: "-",
-        County: "-",
-        State: "-",
-        Phone: "0101010122",
-        LastName: "-",
-        CountryCode: "TH"
+        Email: this.safeValue(order.customer_email) || this.safeValue(order.customerEmail) || "undefined",
+        BillingAddressId: this.safeValue(order.billing_address_id) || "7558516679402864954",
+        FirstName: this.safeValue(order.customer_first_name) || this.safeValue(order.customerFirstName) || "Customer",
+        Address2: this.extractAddressField(orderLines, 'Address2') || this.safeValue(order.address2) || "Address2",
+        Address3: this.extractAddressField(orderLines, 'Address3') || this.safeValue(order.address3),
+        PostalCode: this.extractAddressField(orderLines, 'PostalCode') || this.safeValue(order.postal_code) || "99999",
+        Address1: this.extractAddressField(orderLines, 'Address1') || this.safeValue(order.address1) || "Address1",
+        City: this.extractAddressField(orderLines, 'City') || this.safeValue(order.city) || "-",
+        County: this.extractAddressField(orderLines, 'County') || this.safeValue(order.county) || "-",
+        State: this.extractAddressField(orderLines, 'State') || this.safeValue(order.state) || "-",
+        Phone: this.safeValue(order.customer_phone) || this.safeValue(order.customerPhone) || "0000000000",
+        LastName: this.safeValue(order.customer_last_name) || this.safeValue(order.customerLastName) || "-",
+        CountryCode: this.extractAddressField(orderLines, 'Country') || this.safeValue(order.country) || "TH"
       },
       CardTypeId: null,
       CurrentSettleAmount: 128,
