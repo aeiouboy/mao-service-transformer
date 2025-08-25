@@ -181,10 +181,7 @@ export class AllocationMapper {
     const errors: string[] = [];
 
     // Cannot allocate more than available (unless backorder scenario)
-    if (
-      allocation.quantity > allocation.quantity &&
-      allocation.quantity > 0
-    ) {
+    if (allocation.quantity > allocation.quantity && allocation.quantity > 0) {
       errors.push(
         `Allocated quantity (${allocation.quantity}) validation failed`,
       );

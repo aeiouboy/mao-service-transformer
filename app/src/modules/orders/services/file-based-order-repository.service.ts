@@ -95,7 +95,7 @@ export class FileBasedOrderRepositoryService {
    * @throws HttpException - When file not found or invalid
    */
   private loadReleaseFile(orderId: string): any {
-    const releaseDir = path.join(process.cwd(), 'release');
+    const releaseDir = path.join(process.cwd(), '..', 'release');
     // Check multiple possible file naming patterns
     const possibleFiles = [
       `${orderId}-Rel.json`,
@@ -226,7 +226,7 @@ export class FileBasedOrderRepositoryService {
    */
   public getAvailableOrders(): string[] {
     try {
-      const releaseDir = path.join(process.cwd(), 'release');
+      const releaseDir = path.join(process.cwd(), '..', 'release');
 
       if (!fs.existsSync(releaseDir)) {
         return [];

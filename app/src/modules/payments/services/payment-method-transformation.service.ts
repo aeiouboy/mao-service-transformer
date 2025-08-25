@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-generator.service';
 import { TimestampService } from '../../../shared/services/timestamp.service';
+import { TransformationContext } from '../../payments/services/payment-transformation.service';
 
 import { PaymentTransactionTransformationService } from './payment-transaction-transformation.service';
-import { TransformationContext } from '../../payments/services/payment-transformation.service';
 
 @Injectable()
 export class PaymentMethodTransformationService {

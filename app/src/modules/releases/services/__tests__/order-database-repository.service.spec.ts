@@ -1,11 +1,12 @@
 import { getModelToken } from '@nestjs/sequelize';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { OrderDatabaseRepositoryService } from '../order-database-repository.service';
+
 import { Allocation } from '.../../orders/entities/allocation.entity';
 import { OrderLine } from '.../../orders/entities/order-line.entity';
 import { Order } from '.../../orders/entities/order.entity';
 import { Payment } from '.../../payments/entities/payment.entity';
-import { OrderDatabaseRepositoryService } from '../order-database-repository.service';
 
 describe('OrderDatabaseRepositoryService', () => {
   let service: OrderDatabaseRepositoryService;

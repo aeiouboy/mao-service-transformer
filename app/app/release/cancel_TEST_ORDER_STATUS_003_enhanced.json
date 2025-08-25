@@ -1,0 +1,1052 @@
+{
+  "success": true,
+  "data": {
+      "OrderId": "TEST_ORDER_STATUS_003",
+      "AlternateOrderId": "TEST_ORDER_STATUS_003",
+      "IsCancelled": true,
+      "FulfillmentStatus": "Canceled",
+      "MaxFulfillmentStatusId": "9000",
+      "MinFulfillmentStatusId": "9000",
+      "Process": "postReleaseCancellation",
+      "CancelLineCount": 1,
+      "OrderLineCount": 1,
+      "MerchSaleLineCount": 0,
+      "OrderSubTotal": 0,
+      "CancelledOrderSubTotal": 0,
+      "TotalCharges": 0,
+      "TotalTaxes": 0,
+      "TotalInformationalTaxes": 0,
+      "CustomerFirstName": null,
+      "CustomerLastName": "-",
+      "CustomerEmail": null,
+      "CustomerId": null,
+      "CustomerTypeId": "",
+      "CurrencyCode": "THB",
+      "OrgId": "CFM-UAT",
+      "OrderLocale": "th",
+      "CreatedTimestamp": "2025-08-25 04:52:19",
+      "UpdatedTimestamp": "2025-08-25 05:03:07",
+      "CapturedDate": "2025-08-17 20:25:22",
+      "CountedDate": "2025-08-25 05:03:07",
+      "ConfirmedDate": "2025-08-25 04:52:19",
+      "EventSubmitTime": "2038-01-18 16:59:00",
+      "CreatedBy": "pubsubuser@pmp",
+      "UpdatedBy": "apiuser4pmp",
+      "IsOnHold": false,
+      "IsConfirmed": true,
+      "IsArchiveInProgress": false,
+      "IsOrderCountable": true,
+      "OrderType": {
+          "OrderTypeId": "MKP-HD-STD"
+      },
+      "DocType": {
+          "DocTypeId": "CustomerOrder"
+      },
+      "SellingChannel": {
+          "SellingChannelId": "Grab"
+      },
+      "CancelReason": {
+          "ReasonId": "OthReason"
+      },
+      "ChangeLog": {
+          "ModTypes": {
+              "Order": [
+                  "Order::ChargeDetail::Discount::Remove",
+                  "Order::Cancel",
+                  "Order::ChargeDetail::Shipping::Remove"
+              ],
+              "OrderLine": [
+                  "OrderLine::ChargeDetail::Discount::Remove",
+                  "OrderLine::Cancel",
+                  "OrderLine::Cancel::Customer"
+              ],
+              "QuantityDetail": [
+                  "QuantityDetail::QuantityStatus::Increase::1500"
+              ]
+          },
+          "ChangeSet": [
+              {
+                  "Properties": [
+                      {
+                          "New": "true",
+                          "Old": "false",
+                          "Property": "IsCancelled"
+                      }
+                  ],
+                  "ModType": "Order::Cancel"
+              }
+          ]
+      },
+      "OrderExtension1": {
+          "UpdatedBy": "system",
+          "UpdatedTimestamp": "2025-08-25 05:03:07",
+          "OrgId": "CFM-UAT",
+          "CreatedTimestamp": "2025-08-25 04:52:19",
+          "CreatedBy": "system",
+          "Extended": {
+              "IsPSConfirmed": true,
+              "CancelAllowed": false,
+              "FullTaxInvoice": false,
+              "SourceOrderShippingTotal": null,
+              "AutoSettlement": {},
+              "TaxId": "0000000000000",
+              "SourceOrderTotal": null,
+              "T1ConversionRate": null,
+              "Extended1": {},
+              "AllowSubstitution": false,
+              "T1RedemptionPoint": null,
+              "CompanyName": "Central Food Retail Co., Ltd.",
+              "CustRef": {},
+              "SourceOrderTotalDiscount": null,
+              "BranchNo": "001",
+              "ConfirmPaymentId": "",
+              "T1Number": null,
+              "T1PhoneNo": null,
+              "SourceOrderSubTotal": null,
+              "ExternalMPSellerId": null,
+              "IsPreprocessed": true,
+              "IsValidated": true,
+              "IsEnriched": true,
+              "IsTransformed": true,
+              "IsProcessingComplete": true,
+              "CancellationReason": "USER_REQUESTED",
+              "CancellationCode": "CANCEL_01",
+              "CancellationSource": "CUSTOMER",
+              "CancellationMethod": "ONLINE",
+              "CancellationTimestamp": "2025-08-25 06:51:14",
+              "CancelledBy": "customer_service",
+              "RefundRequired": true,
+              "RefundStatus": "PENDING",
+              "RefundAmount": 0,
+              "PolicyOverride": false,
+              "PolicyOverrideReason": null,
+              "PolicyOverrideApprovedBy": null,
+              "ComplianceCheck": "PASSED",
+              "RegulatoryStatus": "COMPLIANT",
+              "AccountingStatus": "PROCESSED",
+              "RevenueRecognitionStatus": "REVERSED",
+              "TaxAdjustmentRequired": true,
+              "TaxAdjustmentStatus": "PENDING",
+              "InventoryAdjustmentRequired": true,
+              "InventoryAdjustmentStatus": "COMPLETED",
+              "FraudScore": 0,
+              "FraudStatus": "CLEARED",
+              "RiskLevel": "LOW",
+              "RiskScore": 0,
+              "SecurityFlag": false,
+              "CustomerNotified": true,
+              "CustomerNotificationMethod": "EMAIL",
+              "CustomerNotificationStatus": "DELIVERED",
+              "CustomerNotificationTimestamp": "2025-08-25 06:51:14",
+              "ERPStatus": "SYNCHRONIZED",
+              "ERPTransactionId": "ERP_1756104674328",
+              "WMSStatus": "UPDATED",
+              "WMSTransactionId": "WMS_1756104674328",
+              "CRMStatus": "UPDATED",
+              "CRMContactId": null,
+              "WorkflowId": "WF_CANCEL_1756104674328",
+              "WorkflowStatus": "COMPLETED",
+              "WorkflowStage": "CANCELLATION_COMPLETE",
+              "ProcessInstanceId": "PROC_1756104674328",
+              "ProcessStatus": "COMPLETED",
+              "QualityScore": 100,
+              "QualityStatus": "PASSED",
+              "AuditStatus": "COMPLIANT",
+              "ComplianceScore": 100,
+              "ProcessingTime": 0,
+              "QueueTime": 0,
+              "CompletionTime": 0,
+              "EfficiencyScore": 100
+          },
+          "ContextId": "CTX_TEST_ORDER_STATUS_003",
+          "Process": "postReleaseCancellation",
+          "PK": "EXT1_TEST_ORDER_STATUS_003_1756104674328",
+          "PurgeDate": null,
+          "Unique_Identifier": "UI_TEST_ORDER_STATUS_003_1756104674328"
+      },
+      "OrderLine": [
+          {
+              "ParentLineCreatedTimestamp": null,
+              "CreatedTimestamp": "2025-08-25 06:51:14",
+              "BusinessDate": null,
+              "RefundPrice": null,
+              "IsHazmat": false,
+              "TaxOverrideValue": null,
+              "MaxFulfillmentStatusId": "9000",
+              "OrderLineCancelHistory": [
+                  {
+                      "UpdatedBy": "apiuser4pmp",
+                      "UpdatedTimestamp": "2025-08-25 06:51:14",
+                      "OrgId": "CFM-UAT",
+                      "CreatedBy": "apiuser4pmp",
+                      "CreatedTimestamp": "2025-08-25 06:51:14",
+                      "CancelReason": {
+                          "ReasonId": "1000.000"
+                      },
+                      "CancelQuantity": 5,
+                      "Process": "postReleaseCancellation",
+                      "CancelComments": "Customer requested late order cancellation"
+                  }
+              ],
+              "StoreSaleEntryMethod": null,
+              "IsReturnAllowedByAgePolicy": false,
+              "ShippingMethodId": "Standard Delivery",
+              "UpdatedBy": "apiuser4pmp",
+              "ItemMaxDiscountPercentage": null,
+              "OrderLineSalesAssociate": [],
+              "ReleaseGroupId": "3-CZDEEY42TK61FA",
+              "OrderLineSubTotal": 0,
+              "ItemStyle": "",
+              "ParentOrderId": null,
+              "ReturnableQuantity": 0,
+              "OrderLineHold": [],
+              "CreatedBy": "pubsubuser@pmp",
+              "SmallImageURI": "",
+              "IsCancelled": true,
+              "CancelledOrderLineSubTotal": 0,
+              "ItemBrand": "Unknown Brand",
+              "ReturnType": null,
+              "IsPerishable": false,
+              "GiftCardValue": null,
+              "IsPriceOverridden": false,
+              "TotalInformationalTaxes": 0,
+              "IsPreSale": false,
+              "HasComponents": false,
+              "ItemMaxDiscountAmount": null,
+              "ItemDepartmentName": "General",
+              "IsExchangeable": true,
+              "ItemColorDescription": "",
+              "OrderLineAttribute": [],
+              "IsReturn": false,
+              "IsTaxOverridden": false,
+              "OrderLineNote": [
+                  {
+                      "UpdatedBy": "pubsubuser@pmp",
+                      "UpdatedTimestamp": "2025-08-25 06:51:14",
+                      "OrgId": "CFM-UAT",
+                      "NoteId": "R_LINE_003",
+                      "CreatedBy": "pubsubuser@pmp",
+                      "CreatedTimestamp": "2025-08-25 06:51:14",
+                      "NoteType": {
+                          "NoteTypeId": "0006"
+                      },
+                      "DisplaySequence": null,
+                      "NoteText": "",
+                      "Process": "postReleaseCancellation",
+                      "IsVisible": true,
+                      "NoteCategory": {
+                          "NoteCategoryId": "CustomerCommunication"
+                      }
+                  }
+              ],
+              "OrderLineTagDetail": [],
+              "OrderLinePickupDetail": [],
+              "ProductClass": null,
+              "MinFulfillmentStatusId": "9000",
+              "PaymentGroupId": null,
+              "MinFulfillmentStatus": {
+                  "StatusId": "9000"
+              },
+              "UpdatedTimestamp": "2025-08-25 06:51:14",
+              "EffectiveRank": "Not Applicable",
+              "DeliveryMethod": {
+                  "DeliveryMethodId": "ShipToAddress"
+              },
+              "TaxOverrideType": null,
+              "LatestFulfilledDate": null,
+              "TaxableAmount": null,
+              "TotalDiscountOnItem": 0,
+              "CancelledTotalDiscounts": 0,
+              "ReturnLineTotalWithoutFees": 0,
+              "IsReturnableAtStore": true,
+              "FulfillmentGroupId": "GROUP_003",
+              "ReturnDetail": [],
+              "OrgId": "CFM-UAT",
+              "UnitPrice": 0,
+              "MaxAppeasementAmount": 0,
+              "ItemShortDescription": "",
+              "CarrierCode": null,
+              "ItemBarcode": null,
+              "QuantityDetail": [
+                  {
+                      "Status": {
+                          "StatusId": "9000"
+                      },
+                      "UpdatedTimestamp": "2025-08-25 05:03:02",
+                      "CreatedBy": "pubsubuser@pmp",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "QuantityDetailId": "QXXX2",
+                      "WebURL": null,
+                      "Quantity": 1,
+                      "Process": "postReleaseCancellation",
+                      "SubstitutionRatio": null,
+                      "ItemId": "TEST_ITEM_003",
+                      "Reason": null,
+                      "UpdatedBy": "apiuser4pmp",
+                      "OrgId": "CFM-UAT",
+                      "SubstitutionType": null,
+                      "UOM": "PCS",
+                      "StatusId": "9000",
+                      "ReasonType": null,
+                      "ChangeLog": {
+                          "ModTypes": {
+                              "QuantityDetail": [
+                                  "QuantityDetail::QuantityStatus::Increase::1500"
+                              ]
+                          },
+                          "ChangeSet": [
+                              {
+                                  "Properties": [
+                                      {
+                                          "New": "0.0",
+                                          "Old": "null",
+                                          "Property": "Quantity"
+                                      }
+                                  ],
+                                  "ModType": "QuantityDetail::QuantityStatus::Increase::1500"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "Status": {
+                          "StatusId": "9000"
+                      },
+                      "UpdatedTimestamp": "2025-08-25 05:03:02",
+                      "CreatedBy": "pubsubuser@pmp",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "QuantityDetailId": "QXXX3",
+                      "WebURL": null,
+                      "Quantity": 1,
+                      "Process": "postReleaseCancellation",
+                      "SubstitutionRatio": null,
+                      "ItemId": "TEST_ITEM_003",
+                      "Reason": null,
+                      "UpdatedBy": "apiuser4pmp",
+                      "OrgId": "CFM-UAT",
+                      "SubstitutionType": null,
+                      "UOM": "PCS",
+                      "StatusId": "9000",
+                      "ReasonType": null,
+                      "ChangeLog": {
+                          "ModTypes": {
+                              "QuantityDetail": [
+                                  "QuantityDetail::QuantityStatus::Increase::1500"
+                              ]
+                          },
+                          "ChangeSet": [
+                              {
+                                  "Properties": [
+                                      {
+                                          "New": "0.0",
+                                          "Old": "null",
+                                          "Property": "Quantity"
+                                      }
+                                  ],
+                                  "ModType": "QuantityDetail::QuantityStatus::Increase::1500"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "Status": {
+                          "StatusId": "9000"
+                      },
+                      "UpdatedTimestamp": "2025-08-25 05:03:06",
+                      "CreatedBy": "pubsubuser@pmp",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "QuantityDetailId": "QXXX4",
+                      "WebURL": null,
+                      "Quantity": 1,
+                      "Process": "postReleaseCancellation",
+                      "SubstitutionRatio": null,
+                      "ItemId": "TEST_ITEM_003",
+                      "Reason": null,
+                      "UpdatedBy": "apiuser4pmp",
+                      "OrgId": "CFM-UAT",
+                      "SubstitutionType": null,
+                      "UOM": "PCS",
+                      "StatusId": "9000",
+                      "ReasonType": null,
+                      "ChangeLog": {
+                          "ModTypes": {
+                              "QuantityDetail": [
+                                  "QuantityDetail::QuantityStatus::Increase::1500"
+                              ]
+                          },
+                          "ChangeSet": [
+                              {
+                                  "Properties": [
+                                      {
+                                          "New": "0.0",
+                                          "Old": "null",
+                                          "Property": "Quantity"
+                                      }
+                                  ],
+                                  "ModType": "QuantityDetail::QuantityStatus::Increase::1500"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "Status": {
+                          "StatusId": "9000"
+                      },
+                      "UpdatedTimestamp": "2025-08-25 05:03:06",
+                      "CreatedBy": "pubsubuser@pmp",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "QuantityDetailId": "QXXX5",
+                      "WebURL": null,
+                      "Quantity": 1,
+                      "Process": "postReleaseCancellation",
+                      "SubstitutionRatio": null,
+                      "ItemId": "TEST_ITEM_003",
+                      "Reason": null,
+                      "UpdatedBy": "apiuser4pmp",
+                      "OrgId": "CFM-UAT",
+                      "SubstitutionType": null,
+                      "UOM": "PCS",
+                      "StatusId": "9000",
+                      "ReasonType": null,
+                      "ChangeLog": {
+                          "ModTypes": {
+                              "QuantityDetail": [
+                                  "QuantityDetail::QuantityStatus::Increase::1500"
+                              ]
+                          },
+                          "ChangeSet": [
+                              {
+                                  "Properties": [
+                                      {
+                                          "New": "0.0",
+                                          "Old": "null",
+                                          "Property": "Quantity"
+                                      }
+                                  ],
+                                  "ModType": "QuantityDetail::QuantityStatus::Increase::1500"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "Status": {
+                          "StatusId": "9000"
+                      },
+                      "UpdatedTimestamp": "2025-08-25 05:02:57",
+                      "CreatedBy": "pubsubuser@pmp",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "QuantityDetailId": "QXXX1",
+                      "WebURL": null,
+                      "Quantity": 1,
+                      "Process": "postReleaseCancellation",
+                      "SubstitutionRatio": null,
+                      "ItemId": "TEST_ITEM_003",
+                      "Reason": null,
+                      "UpdatedBy": "apiuser4pmp",
+                      "OrgId": "CFM-UAT",
+                      "SubstitutionType": null,
+                      "UOM": "PCS",
+                      "StatusId": "9000",
+                      "ReasonType": null,
+                      "ChangeLog": {
+                          "ModTypes": {
+                              "QuantityDetail": [
+                                  "QuantityDetail::QuantityStatus::Increase::1500"
+                              ]
+                          },
+                          "ChangeSet": [
+                              {
+                                  "Properties": [
+                                      {
+                                          "New": "0.0",
+                                          "Old": "null",
+                                          "Property": "Quantity"
+                                      }
+                                  ],
+                                  "ModType": "QuantityDetail::QuantityStatus::Increase::1500"
+                              }
+                          ]
+                      }
+                  }
+              ],
+              "ChangeLog": {
+                  "ModTypes": {
+                      "OrderLine": [
+                          "OrderLine::Cancel",
+                          "OrderLine::Cancel::Customer"
+                      ],
+                      "QuantityDetail": [
+                          "QuantityDetail::QuantityStatus::Increase::1500"
+                      ]
+                  },
+                  "ChangeSet": [
+                      {
+                          "Properties": [
+                              {
+                                  "New": "true",
+                                  "Old": "false",
+                                  "Property": "IsCancelled"
+                              }
+                          ],
+                          "ModType": "OrderLine::Cancel::Customer"
+                      }
+                  ]
+              },
+              "PromisedShipDate": null,
+              "TotalDiscounts": 0,
+              "AllocationConfigId": null,
+              "ShipToAddress": {
+                  "AddressName": null,
+                  "AvsReason": null,
+                  "Address": {
+                      "Email": "undefined",
+                      "FirstName": "Grab Customer",
+                      "State": "-",
+                      "Phone": "0101010122",
+                      "Address2": "Grab Address2",
+                      "Address3": null,
+                      "Country": "TH",
+                      "PostalCode": "99999",
+                      "LastName": "-",
+                      "Address1": "Grab Address1",
+                      "City": "-",
+                      "County": "-"
+                  },
+                  "IsAddressVerified": true,
+                  "Extended": {
+                      "AddressRef": "|||4016|TH"
+                  },
+                  "AddressId": "6d89479d94844b20b56f12009c2ad7"
+              },
+              "ServiceLevelCode": null,
+              "ItemDepartmentNumber": 5,
+              "IsReturnable": true,
+              "IsTaxIncluded": true,
+              "OrderLinePriceOverrideHistory": [],
+              "IsOnHold": false,
+              "Process": "postReleaseCancellation",
+              "IsReceiptExpected": true,
+              "OrderLineComponents": [],
+              "ItemId": "TEST_ITEM_003",
+              "PhysicalOriginId": "CFM-UAT128",
+              "ReturnableLineTotal": 0,
+              "SellingLocationId": null,
+              "IsGift": false,
+              "FulfillmentStatus": "Canceled",
+              "ParentOrderLineId": null,
+              "TotalCharges": 0,
+              "ParentOrderLineType": null,
+              "AddressId": "6d89479d94844b20b56f12009c2ad7",
+              "ShipFromAddress": null,
+              "VolumetricWeight": null,
+              "Priority": null,
+              "OrderId": "TEST_ORDER_STATUS_003",
+              "IsPreOrder": false,
+              "PromisedDeliveryDate": "2025-08-25 06:51:14",
+              "ItemTaxCode": null,
+              "CancelReason": {
+                  "ReasonId": "1000.000"
+              },
+              "LatestDeliveryDate": null,
+              "StreetDate": null,
+              "OrderLinePromotionRequest": [],
+              "AlternateOrderLineId": null,
+              "OrderLinePromisingInfo": {
+                  "InventorySegmentId": null,
+                  "CreatedTimestamp": "2025-08-25 06:51:14",
+                  "ShipFromLocationId": "CFM-UAT128",
+                  "CountryOfOrigin": "TH",
+                  "Process": "postReleaseCancellation",
+                  "InventoryTypeId": null,
+                  "ConsolidatationLocationId": null,
+                  "UpdatedBy": "apiuser4pmp",
+                  "AsnId": null,
+                  "AsnDetailId": null,
+                  "UpdatedTimestamp": "2025-08-25 06:51:14",
+                  "CreatedBy": "pubsubuser@pmp",
+                  "StrategyType": null,
+                  "BatchNumber": null,
+                  "IsForceAllocate": true,
+                  "ProductStatusId": "ACTIVE",
+                  "OrgId": "CFM-UAT",
+                  "PoDetailId": null,
+                  "ItemAttribute4": null,
+                  "ItemAttribute3": null,
+                  "ItemAttribute2": null,
+                  "ItemAttribute1": null,
+                  "PoId": null,
+                  "ReqCapacityPerUnit": null,
+                  "ShipThroughLocationId": null,
+                  "ItemAttribute5": null
+              },
+              "DoNotShipBeforeDate": null,
+              "OrderLineTaxDetail": [],
+              "IsItemTaxOverridable": true,
+              "OrderLineChargeDetail": [],
+              "OrderLineTotal": 0,
+              "ItemSeason": null,
+              "ItemDescription": "",
+              "IsItemTaxExemptable": true,
+              "Allocation": [],
+              "OrderLineVASInstructions": [],
+              "PipelineId": "ShipToHome",
+              "ItemSize": "",
+              "IsNonMerchandise": false,
+              "LineType": null,
+              "ShipToLocationId": null,
+              "ShipFromAddressId": null,
+              "IsActivationRequired": false,
+              "Quantity": 5,
+              "IsItemNotOnFile": false,
+              "IsPackAndHold": false,
+              "IsGiftCard": false,
+              "CancelComments": "Customer requested late order cancellation",
+              "MaxFulfillmentStatus": {
+                  "StatusId": "9000"
+              },
+              "VolumetricWeightUOM": null,
+              "OrderLineExtension1": {
+                  "Extended": {
+                      "OfferId": null,
+                      "DeliveryRoute": null,
+                      "ProductNameVN": null,
+                      "NumberOfPack": 1,
+                      "PickUpStoreCountry": null,
+                      "MMSDepartment": 1,
+                      "GWPParentItem": null,
+                      "ProductUOMEN": null,
+                      "CustomerAddressLong": null,
+                      "CustomerAddressLat": null,
+                      "IsBundle": false,
+                      "LatestItemTotal": null,
+                      "PackUnitPrice": null,
+                      "LatestItemSubTotal": null,
+                      "IsWeightItem": false,
+                      "ProductNameIT": null,
+                      "PickUpStoreCode": null,
+                      "ProductNameEN": "Unknown Product",
+                      "PromotionId": "NO_PROMOTION",
+                      "PackItemDescriptionEN": null,
+                      "PickUpStoreLat": null,
+                      "MMSSKUType": null,
+                      "PickUpStoreCity": null,
+                      "PickUpStoreEmail": null,
+                      "PickUpSecretKey": null,
+                      "ReferenceOrderLineId": null,
+                      "PackSmallImageURI": null,
+                      "PackItemDescriptionTH": "สินค้าไม่ระบุชื่อ",
+                      "PackOriginalUnitPrice": null,
+                      "ServiceType": null,
+                      "PickUpStoreAddress2": null,
+                      "PickUpStoreAddress1": null,
+                      "PackitemDescription": null,
+                      "PickUpStoreDescription": null,
+                      "IsSubstitution": false,
+                      "AverageWeight": null,
+                      "AverageUnitPrice": null,
+                      "SlotBookingFrom": "09:00",
+                      "CanReturntoWarehouse": true,
+                      "PackOrderedQty": 5,
+                      "PickUpStorePhone": null,
+                      "SourceItemTotalDiscount": null,
+                      "ProductNameTH": "สินค้าไม่ระบุชื่อ",
+                      "SourceItemTotal": null,
+                      "PickUpStorePostal": null,
+                      "SourceItemSubTotal": null,
+                      "SlotBookingId": "SLOT_DEFAULT",
+                      "MMSSubDepartment": 1,
+                      "SecretKeyCode": null,
+                      "ProductUOMTH": null,
+                      "PickUpStoreDistrict": null,
+                      "PrimaryBarcode": "BARCODE_UNKNOWN",
+                      "IsGiftWrapping": false,
+                      "PickUpStoreName": null,
+                      "LatestUnitPrice": null,
+                      "JDASKUType": null,
+                      "PromotionType": "NONE",
+                      "SlotBookingTo": "18:00",
+                      "PickUpStoreLong": null,
+                      "ActualQuantity": null,
+                      "IsGWP": false,
+                      "BundleRefId": null,
+                      "PickUpStoreSubDistrict": null,
+                      "ProductNameDE": null,
+                      "LatestItemTotalDiscount": null
+                  }
+              },
+              "FulfillmentDetail": [],
+              "OrderLineExtension2": [],
+              "UOM": "PCS",
+              "OrderLineId": "LINE_003",
+              "TotalTaxes": 0,
+              "OrderLineAdditional": null,
+              "TransactionReferenceId": null,
+              "RequestedDeliveryDate": null,
+              "OriginalUnitPrice": 0,
+              "IsEvenExchange": false,
+              "LineProcessInfo": null
+          }
+      ],
+      "Invoice": [],
+      "ReturnTrackingDetail": [],
+      "OrderChargeDetail": [],
+      "OrderHold": [
+          {
+              "UpdatedTimestamp": "2025-08-25 06:51:14",
+              "HoldTypeId": "AwaitingPayment",
+              "CreatedBy": "pubsubuser@pmp",
+              "CreatedTimestamp": "2025-08-25 06:51:14",
+              "Process": "postReleaseCancellation",
+              "ResolveReasonId": "AcceptPayment",
+              "ExternalCreatedDate": null,
+              "ResolveReasonComments": null,
+              "UpdatedBy": "pubsubuser@pmp",
+              "OrgId": "CFM-UAT",
+              "ExternalCreatedBy": null,
+              "StatusId": "2000",
+              "ApplyReasonComments": null,
+              "ChangeLog": null
+          }
+      ],
+      "OrderTagDetail": [],
+      "OrderExtension2": [],
+      "OrderExtension3": [],
+      "OrderExtension4": [],
+      "OrderExtension5": [],
+      "Payment": [
+          {
+              "Actions": {},
+              "PK": "PAY_TEST_ORDER_STATUS_003_1756104674328",
+              "CreatedBy": "system",
+              "CreatedTimestamp": "2025-08-25 04:52:19",
+              "UpdatedBy": "system",
+              "UpdatedTimestamp": "2025-08-25 05:03:07",
+              "Messages": {},
+              "OrgId": "CFM-UAT",
+              "PurgeDate": null,
+              "OrderId": "TEST_ORDER_STATUS_003",
+              "PaymentGroupId": null,
+              "CustomerId": null,
+              "IsCancelled": true,
+              "AlternateOrderId": null,
+              "IsAnonymized": false,
+              "PaymentMethod": [
+                  {
+                      "Actions": {},
+                      "PK": "PM_TEST_ORDER_STATUS_003_1756104674328",
+                      "CreatedBy": "system",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "UpdatedBy": "system",
+                      "UpdatedTimestamp": "2025-08-25 05:03:07",
+                      "Messages": {},
+                      "OrgId": "CFM-UAT",
+                      "PaymentMethodId": "PM_ID_TEST_ORDER_STATUS_003",
+                      "CurrencyCode": "THB",
+                      "AlternateCurrencyCode": null,
+                      "ConversionRate": null,
+                      "AlternateCurrencyAmount": null,
+                      "AccountNumber": null,
+                      "AccountDisplayNumber": null,
+                      "NameOnCard": "Unknown",
+                      "SwipeData": null,
+                      "CardExpiryMonth": null,
+                      "CardExpiryYear": null,
+                      "GiftCardPin": null,
+                      "CustomerSignature": null,
+                      "CustomerPaySignature": null,
+                      "ChangeAmount": null,
+                      "Amount": 0,
+                      "CurrentAuthAmount": 0,
+                      "CurrentSettledAmount": 0,
+                      "CurrentRefundAmount": 0,
+                      "ChargeSequence": null,
+                      "IsSuspended": false,
+                      "EntryTypeId": null,
+                      "GatewayId": "GW_CFM",
+                      "RoutingNumber": null,
+                      "RoutingDisplayNumber": null,
+                      "CheckNumber": null,
+                      "DriversLicenseNumber": null,
+                      "DriversLicenseState": null,
+                      "DriversLicenseCountry": null,
+                      "BusinessName": null,
+                      "BusinessTaxId": null,
+                      "CheckQuantity": null,
+                      "OriginalAmount": 0,
+                      "IsModifiable": false,
+                      "CurrentFailedAmount": 0,
+                      "ParentOrderId": null,
+                      "ParentPaymentGroupId": null,
+                      "ParentPaymentMethodId": null,
+                      "IsVoided": true,
+                      "IsCopied": false,
+                      "GatewayAccountId": null,
+                      "LocationId": null,
+                      "TransactionReferenceId": "TXN_REF_TEST_ORDER_STATUS_003",
+                      "CapturedInEdgeMode": false,
+                      "MerchandiseAmount": 0,
+                      "CapturedSource": null,
+                      "ShopperReference": null,
+                      "SuggestedAmount": null,
+                      "PurgeDate": null,
+                      "BillingAddress": {
+                          "Actions": {},
+                          "PK": "BA_TEST_ORDER_STATUS_003_1756104674328",
+                          "CreatedBy": "system",
+                          "CreatedTimestamp": "2025-08-25 04:52:19",
+                          "UpdatedBy": "system",
+                          "UpdatedTimestamp": "2025-08-25 05:03:07",
+                          "Messages": {},
+                          "OrgId": "CFM-UAT",
+                          "Address": {
+                              "FirstName": "Unknown",
+                              "LastName": "Customer",
+                              "Address1": "Unknown Address",
+                              "Address2": "",
+                              "Address3": null,
+                              "City": "Bangkok",
+                              "State": "Bangkok",
+                              "PostalCode": "10100",
+                              "County": "",
+                              "Country": "TH",
+                              "Phone": null,
+                              "Email": null
+                          },
+                          "PurgeDate": null,
+                          "Extended": {
+                              "AddressRef": "ADDR_REF_TEST_ORDER_STATUS_003"
+                          }
+                      },
+                      "PaymentMethodAttribute": [],
+                      "PaymentMethodEncrAttribute": [],
+                      "PaymentTransaction": [
+                          {
+                              "Actions": {},
+                              "PK": "PT_TEST_ORDER_STATUS_003_1756104674328",
+                              "CreatedBy": "system",
+                              "CreatedTimestamp": "2025-08-25 04:52:19",
+                              "UpdatedBy": "system",
+                              "UpdatedTimestamp": "2025-08-25 05:03:07",
+                              "Messages": {},
+                              "OrgId": "CFM-UAT",
+                              "PaymentTransactionId": "PTX_TEST_ORDER_STATUS_003",
+                              "RequestedAmount": 0,
+                              "RequestId": "REQ_TEST_ORDER_STATUS_003",
+                              "RequestToken": "TOKEN_TEST_ORDER_STATUS_003",
+                              "RequestedDate": "2025-08-25 04:52:19",
+                              "FollowOnId": null,
+                              "FollowOnToken": null,
+                              "TransactionDate": "2025-08-25 05:03:07",
+                              "TransactionExpiryDate": null,
+                              "ProcessedAmount": 0,
+                              "FollowOnProcessedAmount": null,
+                              "RemainingAttempts": null,
+                              "FollowOnCount": null,
+                              "ReconciliationId": "RECON_TEST_ORDER_STATUS_003",
+                              "ExternalResponseId": null,
+                              "ReasonId": null,
+                              "IsValidForRefund": false,
+                              "ReAuthOnSettlementFailure": false,
+                              "IsActive": false,
+                              "RemainingBalance": null,
+                              "IsCopied": false,
+                              "ScheduledTimestamp": null,
+                              "OrderId": "TEST_ORDER_STATUS_003",
+                              "PaymentGroupId": null,
+                              "StoreAndForwardNumber": null,
+                              "IsActivation": false,
+                              "OnHold": false,
+                              "NetworkTransactionId": null,
+                              "UniqueTransactionId": "UTX_TEST_ORDER_STATUS_003",
+                              "IsChargeback": false,
+                              "NotificationTimestamp": null,
+                              "AlternateOrderId": null,
+                              "PurgeDate": null,
+                              "FollowOnParentTransaction": [],
+                              "PaymentTransAttribute": [],
+                              "PaymentTransEncrAttribute": [],
+                              "PaymentTransactionDetail": [],
+                              "PaymentTransactionEMVTags": {},
+                              "PaymentTransactionGroup": [],
+                              "TransactionType": {
+                                  "PaymentTransactionTypeId": "VOID"
+                              },
+                              "Status": {
+                                  "PaymentTransactionStatusId": "COMPLETED"
+                              },
+                              "AuthorizationType": {},
+                              "ProcessingMode": {},
+                              "PaymentResponseStatus": {
+                                  "PaymentResponseStatusId": "SUCCESS"
+                              },
+                              "TransmissionStatus": {
+                                  "PaymentTransmissionStatusId": "TRANSMITTED"
+                              },
+                              "InteractionMode": {},
+                              "NotificationStatus": {},
+                              "Extended": {}
+                          }
+                      ],
+                      "ParentOrderPaymentMethod": [],
+                      "PaymentType": {
+                          "PaymentTypeId": "CREDIT_CARD"
+                      },
+                      "CardType": {},
+                      "AccountType": {},
+                      "PaymentCategory": {},
+                      "Extended": {
+                          "BillingNameString": "Unknown",
+                          "BillingAddressString": "Unknown Address, Bangkok, Bangkok, 10100, TH",
+                          "InstallmentPlan": {},
+                          "BillingAddressString2": "",
+                          "InstallmentRate": {}
+                      }
+                  }
+              ],
+              "Status": {
+                  "StatusId": "CANCELLED"
+              },
+              "Extended": {}
+          }
+      ],
+      "OrderTrackingInfo": [],
+      "ContactPreference": [],
+      "ReturnLabel": [],
+      "RelatedOrders": [],
+      "TransactionReference": [],
+      "OrderTaxDetail": [],
+      "OrderNote": [
+          {
+              "NoteId": "17561046743280",
+              "UpdatedTimestamp": "2025-08-25 06:51:14",
+              "CreatedBy": "pubsubuser@pmp",
+              "CreatedTimestamp": "2025-08-25 06:51:14",
+              "DisplaySequence": null,
+              "NoteText": "GM-691",
+              "Process": "postReleaseCancellation",
+              "OrgId": "CFM-UAT",
+              "UpdatedBy": "pubsubuser@pmp",
+              "NoteType": {
+                  "NoteTypeId": "0004"
+              },
+              "ContextId": "1756104674328-context",
+              "PK": "17561046743280",
+              "PurgeDate": null,
+              "IsVisible": true,
+              "NoteCategory": {
+                  "NoteCategoryId": "CustomerCommunication"
+              },
+              "Unique_Identifier": "17561046743280__17561046743280"
+          }
+      ],
+      "OrderAttribute": [],
+      "Release": [
+          {
+              "ReleaseType": null,
+              "UpdatedTimestamp": "2025-08-25 05:03:07",
+              "ServiceLevelCode": "STANDARD",
+              "ShipToLocationId": null,
+              "EffectiveRank": "Not Applicable",
+              "CreatedBy": "system",
+              "CreatedTimestamp": "2025-08-25 04:52:19",
+              "ReleaseLine": [
+                  {
+                      "CancelledQuantity": 5,
+                      "UpdatedTimestamp": "2025-08-25 05:03:07",
+                      "EffectiveRank": "Not Applicable",
+                      "CreatedBy": "system",
+                      "CreatedTimestamp": "2025-08-25 04:52:19",
+                      "FulfilledQuantity": 0,
+                      "AllocationId": "ALLOC_TEST_ORDER_STATUS_003_0",
+                      "Quantity": 5,
+                      "Process": "postReleaseCancellation",
+                      "ItemId": "TEST_ITEM_003",
+                      "ReleaseLineId": "RL_TEST_ORDER_STATUS_003_0",
+                      "OrgId": "CFM-UAT",
+                      "UpdatedBy": "system",
+                      "UOM": "PCS",
+                      "OrderLineId": "LINE_003",
+                      "CancelledDate": "2025-08-25 05:03:07"
+                  }
+              ],
+              "DeliveryMethodId": "ShipToAddress",
+              "ShipFromLocationId": "CFM-UAT128",
+              "ShipViaId": "STANDARD_DELIVERY",
+              "Process": "postReleaseCancellation",
+              "ReleaseId": "REL_TEST_ORDER_STATUS_003_1756104674328",
+              "OrderId": "TEST_ORDER_STATUS_003",
+              "OrgId": "CFM-UAT",
+              "UpdatedBy": "system",
+              "ReleaseExtension1": [],
+              "DestinationAction": "CANCEL",
+              "CarrierCode": "STANDARD"
+          }
+      ],
+      "OrderMilestoneEvent": [
+          {
+              "MonitoringRuleId": "RULE_TEST_ORDER_STATUS_003",
+              "UpdatedTimestamp": "2025-08-25 05:03:07",
+              "OrgId": "CFM-UAT",
+              "UpdatedBy": "cancellation_service",
+              "CreatedBy": "system",
+              "CreatedTimestamp": "2025-08-25 04:52:19",
+              "EventTime": "2025-08-25 05:03:07",
+              "MilestoneDefinitionId": "CANCEL_MILESTONE_1756104674328",
+              "EventId": "EVENT_TEST_ORDER_STATUS_003_CANCEL",
+              "Process": "postReleaseCancellation"
+          }
+      ],
+      "CustomerIdentityDoc": [],
+      "OrderMilestone": [
+          {
+              "MonitoringRuleId": "RULE_TEST_ORDER_STATUS_003",
+              "UpdatedTimestamp": "2025-08-25 05:03:07",
+              "OrgId": "CFM-UAT",
+              "UpdatedBy": "cancellation_service",
+              "CreatedBy": "system",
+              "CreatedTimestamp": "2025-08-25 04:52:19",
+              "ExpectedTime": null,
+              "ActualTime": "2025-08-25 05:03:07",
+              "MilestoneDefinitionId": "MILESTONE_1756104674328",
+              "Process": "postReleaseCancellation",
+              "NextEventTime": null
+          }
+      ],
+      "SuspendedOrderId": null,
+      "BusinessDate": null,
+      "SellingLocationId": null,
+      "OrderToken": null,
+      "Priority": null,
+      "ParentReservationRequestId": null,
+      "ArchiveDate": null,
+      "OrderPromisingInfo": null,
+      "MinReturnStatusId": null,
+      "DoNotReleaseBefore": null,
+      "PackageCount": null,
+      "RunId": null,
+      "PublishStatus": null,
+      "ReturnLabelEmail": null,
+      "MaxReturnStatusId": null,
+      "ProcessInfo": null,
+      "NextEventTime": null,
+      "CancelComments": "",
+      "MinFulfillmentStatus": {
+          "StatusId": "9000"
+      },
+      "MaxFulfillmentStatus": {
+          "StatusId": "9000"
+      },
+      "OrderTotal": 0,
+      "TotalDiscounts": 0
+  },
+  "message": "Successfully transformed cancelled order TEST_ORDER_STATUS_003",
+  "orderId": "TEST_ORDER_STATUS_003",
+  "transformedAt": "2025-08-25 06:51:14",
+  "metadata": {
+      "cancelLineCount": 1,
+      "orderLineCount": 1,
+      "cancelledAmount": 0,
+      "processType": "postReleaseCancellation"
+  },
+  "requestId": "283RQDSPAZ7hiQuYVGED8L"
+}

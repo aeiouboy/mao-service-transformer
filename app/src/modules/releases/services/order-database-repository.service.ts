@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel, InjectConnection } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 
-import { QueryTypes, Sequelize, Op } from 'sequelize';
+import { QueryTypes, Sequelize } from 'sequelize';
 
 import { Allocation } from '../../orders/entities/allocation.entity';
 import { OrderLine } from '../../orders/entities/order-line.entity';
@@ -38,12 +38,13 @@ export class OrderDatabaseRepositoryService {
    */
   async findOrderById(orderId: string): Promise<Order | null> {
     this.logger.debug(`Finding order by ID: ${orderId}`);
+
     try {
       const order = await this.orderModel.findOne({
         where: { orderId },
         attributes: [
           'id',
-          'orderId', 
+          'orderId',
           'orderNumber',
           'orgId',
           'customerId',
@@ -66,13 +67,13 @@ export class OrderDatabaseRepositoryService {
           'orderLocale', // Exists in database schema
           // Financial fields that exist in database schema
           'orderSubTotal',
-          'orderTotal', 
+          'orderTotal',
           'totalCharges',
           'totalDiscounts',
           'totalTaxes',
           'createdAt',
-          'updatedAt'
-        ]
+          'updatedAt',
+        ],
       });
 
       return order;
@@ -90,7 +91,7 @@ export class OrderDatabaseRepositoryService {
    */
   async findOrderLines(orderId: string): Promise<OrderLine[]> {
     this.logger.debug(`Searching for order lines with orderId: ${orderId}`);
-    
+
     try {
       const orderLines = await this.orderLineModel.findAll({
         where: { orderId },
@@ -103,7 +104,11 @@ export class OrderDatabaseRepositoryService {
 
       return orderLines;
     } catch (error: any) {
-      this.logger.error(`Error finding order lines for order ${orderId}:`, error);
+      this.logger.error(
+        `Error finding order lines for order ${orderId}:`,
+        error,
+      );
+
       throw new Error(
         `Failed to find order lines for order ${orderId}: ${error.message || error}`,
       );
@@ -219,20 +224,24 @@ export class OrderDatabaseRepositoryService {
     try {
       // Try to find allocations with is_active filter first
       return await this.allocationModel.findAll({
-        where: { 
+        where: {
           orderLineId,
-          isActive: true  // Only get active records
+          isActive: true, // Only get active records
         },
         order: [['allocatedOn', 'ASC']],
       });
     } catch (columnError: any) {
       // If is_active column doesn't exist yet, fall back to raw query
-      if (columnError.message && (
-          columnError.message.includes('is_active') || 
+      if (
+        columnError.message &&
+        (columnError.message.includes('is_active') ||
           columnError.message.includes('column') ||
-          columnError.message.includes('does not exist')
-        )) {
-        console.warn(`is_active column not found in allocations table, using fallback query for orderLineId: ${orderLineId}`);
+          columnError.message.includes('does not exist'))
+      ) {
+        console.warn(
+          `is_active column not found in allocations table, using fallback query for orderLineId: ${orderLineId}`,
+        );
+
         try {
           // Use raw query to avoid Sequelize including is_active in SELECT
           const results = await this.sequelize.query(
@@ -248,14 +257,19 @@ export class OrderDatabaseRepositoryService {
               type: QueryTypes.SELECT,
             },
           );
+
           // Convert raw results to Allocation instances
           return results.map(result => this.allocationModel.build(result));
         } catch (fallbackError: any) {
           // If query still fails, return empty array
-          console.warn(`Fallback query also failed for orderLineId: ${orderLineId}, returning empty array`);
+          console.warn(
+            `Fallback query also failed for orderLineId: ${orderLineId}, returning empty array`,
+          );
+
           return [];
         }
       }
+
       throw new Error(
         `Failed to find allocations for order line ${orderLineId}: ${columnError.message || columnError}`,
       );
@@ -309,13 +323,14 @@ export class OrderDatabaseRepositoryService {
    */
   async getAllOrders(): Promise<Order[]> {
     this.logger.debug(`[GET_ALL] Starting getAllOrders`);
+
     try {
       const result = await this.orderModel.findAll({
         limit: 10,
         order: [['createdAt', 'DESC']],
         attributes: [
           'id',
-          'orderId', 
+          'orderId',
           'orderNumber',
           'customerId',
           'customerEmail',
@@ -323,13 +338,16 @@ export class OrderDatabaseRepositoryService {
           'customerLastName',
           'capturedDate',
           'orderStatus',
-          'createdAt'
-        ]
+          'createdAt',
+        ],
       });
+
       this.logger.debug(`[GET_ALL] Result length: ${result.length}`);
+
       return result;
     } catch (error: any) {
       this.logger.error(`[GET_ALL] Error:`, error);
+
       throw new Error(`Failed to fetch orders: ${error.message || error}`);
     }
   }

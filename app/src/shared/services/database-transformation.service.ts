@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+
 import {
+  FieldMappingConfig,
   FieldMappingUtil,
   ORDERS_FIELD_MAPPING,
   ORDER_LINES_FIELD_MAPPING,
   RELEASE_LINES_FIELD_MAPPING,
-  FieldMappingConfig,
 } from '../utils/field-mapping.util';
+
 import { DynamicIdGeneratorService } from './dynamic-id-generator.service';
 import { TimestampService } from './timestamp.service';
 
@@ -45,22 +47,23 @@ export class DatabaseTransformationService {
 
     try {
       // 1. Transform Orders table data
-      const ordersTableData = this.transformOrdersData(releaseData, inputData, warnings);
-
+      const ordersTableData = this.transformOrdersData(
+        releaseData,
+        inputData,
+        warnings,
+      );
       // 2. Transform Order Lines table data
       const orderLinesTableData = this.transformOrderLinesData(
         releaseData,
         inputData,
         warnings,
       );
-
       // 3. Transform Release Lines table data (CRITICAL - was missing required fields)
       const releaseLinesTableData = this.transformReleaseLinesData(
         releaseData,
         inputData,
         warnings,
       );
-
       // 4. Validate all transformations
       const validationResults = this.validateTransformations({
         ordersTableData,
@@ -78,6 +81,7 @@ export class DatabaseTransformationService {
       };
     } catch (error) {
       errors.push(`Transformation failed: ${error.message}`);
+
       throw new Error(`Database transformation failed: ${error.message}`);
     }
   }
@@ -107,7 +111,10 @@ export class DatabaseTransformationService {
 
       // Organization and channel
       OrgId: releaseData.OrganizationId || inputData.OrgId,
-      SellingChannel: releaseData.SellingChannelId || inputData.SellingChannel?.SellingChannelId || 'WEB',
+      SellingChannel:
+        releaseData.SellingChannelId ||
+        inputData.SellingChannel?.SellingChannelId ||
+        'WEB',
 
       // Financial totals
       OrderSubTotal: releaseData.OrderSubTotal,
@@ -152,7 +159,6 @@ export class DatabaseTransformationService {
       CreatedBy: 'system',
       UpdatedBy: 'system',
     };
-
     // Convert to database format using field mapping
     const databaseData = FieldMappingUtil.toDatabaseFormat(
       ordersData,
@@ -175,7 +181,7 @@ export class DatabaseTransformationService {
     warnings: string[],
   ): Record<string, any>[] {
     const orderLines = inputData.OrderLine || [];
-    
+
     return orderLines.map((line: any, index: number) => {
       const orderLineData = {
         // Primary identifiers
@@ -240,7 +246,6 @@ export class DatabaseTransformationService {
         CreatedBy: 'system',
         UpdatedBy: 'system',
       };
-
       // Convert to database format
       const databaseData = FieldMappingUtil.toDatabaseFormat(
         orderLineData,
@@ -275,7 +280,6 @@ export class DatabaseTransformationService {
       // Generate required IDs that were missing in original transformation
       const allocationId = this.idGenerator.generateAllocationId();
       const releaseLineId = `${releaseId}-${index + 1}`;
-
       const releaseLineData = {
         // REQUIRED fields (NOT NULL constraints) - THESE WERE MISSING!
         OrderId: releaseData.OrderId || inputData.OrderId,
@@ -299,9 +303,19 @@ export class DatabaseTransformationService {
         CreatedBy: 'system',
         UpdatedBy: 'system',
       };
-
       // Validate required fields before transformation
-      const requiredFields = ['OrderId', 'OrderLineId', 'ReleaseId', 'ReleaseLineId', 'AllocationId', 'OrgId', 'ProductId', 'Quantity', 'UOM'];
+      const requiredFields = [
+        'OrderId',
+        'OrderLineId',
+        'ReleaseId',
+        'ReleaseLineId',
+        'AllocationId',
+        'OrgId',
+        'ProductId',
+        'Quantity',
+        'UOM',
+      ];
+
       for (const field of requiredFields) {
         if (!releaseLineData[field]) {
           warnings.push(`Missing required field for release line: ${field}`);
@@ -357,6 +371,7 @@ export class DatabaseTransformationService {
 
     for (const [index, data] of dataArray.entries()) {
       const validation = FieldMappingUtil.validateRequiredFields(data, mapping);
+
       if (!validation.isValid) {
         validation.missingFields.forEach(field => {
           allMissingFields.push(`${field} (item ${index})`);
@@ -376,15 +391,20 @@ export class DatabaseTransformationService {
   public getDatabaseSchemas() {
     return {
       orders: {
-        requiredFields: FieldMappingUtil.getRequiredFields(ORDERS_FIELD_MAPPING),
+        requiredFields:
+          FieldMappingUtil.getRequiredFields(ORDERS_FIELD_MAPPING),
         allFields: Object.keys(ORDERS_FIELD_MAPPING),
       },
       orderLines: {
-        requiredFields: FieldMappingUtil.getRequiredFields(ORDER_LINES_FIELD_MAPPING),
+        requiredFields: FieldMappingUtil.getRequiredFields(
+          ORDER_LINES_FIELD_MAPPING,
+        ),
         allFields: Object.keys(ORDER_LINES_FIELD_MAPPING),
       },
       releaseLines: {
-        requiredFields: FieldMappingUtil.getRequiredFields(RELEASE_LINES_FIELD_MAPPING),
+        requiredFields: FieldMappingUtil.getRequiredFields(
+          RELEASE_LINES_FIELD_MAPPING,
+        ),
         allFields: Object.keys(RELEASE_LINES_FIELD_MAPPING),
       },
     };

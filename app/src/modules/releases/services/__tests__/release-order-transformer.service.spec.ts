@@ -1,19 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DynamicIdGeneratorService } from '../../../../shared/services/dynamic-id-generator.service';
+import { TimestampService } from '../../../../shared/services/timestamp.service';
 import { BusinessRulesService } from '../../../transformations/services/business-rules.service';
 import { CalculationService } from '../../../transformations/services/calculation.service';
-import { TimestampService } from '../../../../shared/services/timestamp.service';
+import { AddressMapper } from '../mappers/address.mapper';
+import { PaymentMapper } from '../mappers/payment.mapper';
+import { OrderDatabaseRepositoryService } from '../order-database-repository.service';
+import { ReleaseOutputDTO } from '../release-message.dto';
+import { ReleaseOrderTransformerService } from '../release-order-transformer.service';
+
 import { Allocation } from '.../../orders/entities/allocation.entity';
 import { OrderLine } from '.../../orders/entities/order-line.entity';
 import { Order } from '.../../orders/entities/order.entity';
 import { Payment } from '.../../payments/entities/payment.entity';
-import { AddressMapper } from '../mappers/address.mapper';
-import { PaymentMapper } from '../mappers/payment.mapper';
 import { ReleaseLineMapper } from '.../../transformations/mappers/release-line.mapper';
-import { OrderDatabaseRepositoryService } from '../order-database-repository.service';
-import { ReleaseOutputDTO } from '../release-message.dto';
-import { ReleaseOrderTransformerService } from '../release-order-transformer.service';
 
 describe('ReleaseOrderTransformerService', () => {
   let service: ReleaseOrderTransformerService;

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Payment } from '../.../../payments/entities/payment.entity';
 import { PaymentMapper } from '../../mappers/payment.mapper';
 import { PaymentMethodDTO } from '../../release-message.dto';
+import { Payment } from '../.../../payments/entities/payment.entity';
 
 describe('PaymentMapper', () => {
   let mapper: PaymentMapper;

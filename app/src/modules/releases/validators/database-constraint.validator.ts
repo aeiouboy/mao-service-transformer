@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { 
-  ORDERS_FIELD_MAPPING, 
-  ORDER_LINES_FIELD_MAPPING, 
+
+import {
+  FieldMappingConfig,
+  ORDERS_FIELD_MAPPING,
+  ORDER_LINES_FIELD_MAPPING,
   RELEASE_LINES_FIELD_MAPPING,
-  FieldMappingConfig 
 } from '../../../shared/utils/field-mapping.util';
 
 export interface ValidationResult {
@@ -42,7 +43,6 @@ export interface ValidationWarning {
  */
 @Injectable()
 export class DatabaseConstraintValidator {
-  
   /**
    * Validate orders table data
    */
@@ -52,10 +52,10 @@ export class DatabaseConstraintValidator {
 
     // Required field validation
     this.validateRequiredFields(data, ORDERS_FIELD_MAPPING, errors, 0);
-    
+
     // Data type validation
     this.validateDataTypes(data, ORDERS_FIELD_MAPPING, errors, warnings, 0);
-    
+
     // Business rule validation
     this.validateOrdersBusinessRules(data, errors, warnings);
 
@@ -65,46 +65,82 @@ export class DatabaseConstraintValidator {
   /**
    * Validate order lines table data
    */
-  public validateOrderLinesData(dataArray: Record<string, any>[]): ValidationResult {
+  public validateOrderLinesData(
+    dataArray: Record<string, any>[],
+  ): ValidationResult {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
     dataArray.forEach((data, index) => {
       // Required field validation
-      this.validateRequiredFields(data, ORDER_LINES_FIELD_MAPPING, errors, index);
-      
+      this.validateRequiredFields(
+        data,
+        ORDER_LINES_FIELD_MAPPING,
+        errors,
+        index,
+      );
+
       // Data type validation
-      this.validateDataTypes(data, ORDER_LINES_FIELD_MAPPING, errors, warnings, index);
-      
+      this.validateDataTypes(
+        data,
+        ORDER_LINES_FIELD_MAPPING,
+        errors,
+        warnings,
+        index,
+      );
+
       // Business rule validation
       this.validateOrderLinesBusinessRules(data, errors, warnings, index);
     });
 
-    return this.buildValidationResult('order_lines', dataArray, errors, warnings);
+    return this.buildValidationResult(
+      'order_lines',
+      dataArray,
+      errors,
+      warnings,
+    );
   }
 
   /**
    * Validate release lines table data - CRITICAL FOR DATABASE INSERTION
    */
-  public validateReleaseLinesData(dataArray: Record<string, any>[]): ValidationResult {
+  public validateReleaseLinesData(
+    dataArray: Record<string, any>[],
+  ): ValidationResult {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
     dataArray.forEach((data, index) => {
       // Required field validation (critical for NOT NULL constraints)
-      this.validateRequiredFields(data, RELEASE_LINES_FIELD_MAPPING, errors, index);
-      
+      this.validateRequiredFields(
+        data,
+        RELEASE_LINES_FIELD_MAPPING,
+        errors,
+        index,
+      );
+
       // Data type validation
-      this.validateDataTypes(data, RELEASE_LINES_FIELD_MAPPING, errors, warnings, index);
-      
+      this.validateDataTypes(
+        data,
+        RELEASE_LINES_FIELD_MAPPING,
+        errors,
+        warnings,
+        index,
+      );
+
       // Business rule validation
       this.validateReleaseLinesBusinessRules(data, errors, warnings, index);
-      
+
       // Critical constraint validation
       this.validateCriticalConstraints(data, errors, index);
     });
 
-    return this.buildValidationResult('release_lines', dataArray, errors, warnings);
+    return this.buildValidationResult(
+      'release_lines',
+      dataArray,
+      errors,
+      warnings,
+    );
   }
 
   /**
@@ -119,7 +155,7 @@ export class DatabaseConstraintValidator {
     for (const [key, config] of Object.entries(mapping)) {
       if (config.required) {
         const value = data[config.databaseField];
-        
+
         if (value === null || value === undefined || value === '') {
           errors.push({
             recordIndex,
@@ -146,7 +182,7 @@ export class DatabaseConstraintValidator {
   ): void {
     for (const [key, config] of Object.entries(mapping)) {
       const value = data[config.databaseField];
-      
+
       if (value !== null && value !== undefined) {
         // Type validation
         if (!this.isValidType(value, config.dataType)) {
@@ -159,9 +195,13 @@ export class DatabaseConstraintValidator {
             value,
           });
         }
-        
+
         // String length validation (assuming VARCHAR(255) for strings)
-        if (config.dataType === 'string' && typeof value === 'string' && value.length > 255) {
+        if (
+          config.dataType === 'string' &&
+          typeof value === 'string' &&
+          value.length > 255
+        ) {
           warnings.push({
             recordIndex,
             field: config.databaseField,
@@ -194,7 +234,9 @@ export class DatabaseConstraintValidator {
 
     // Financial totals validation
     if (data.order_total && data.order_sub_total && data.total_charges) {
-      const expectedTotal = (data.order_sub_total || 0) + (data.total_charges || 0);
+      const expectedTotal =
+        (data.order_sub_total || 0) + (data.total_charges || 0);
+
       if (Math.abs(data.order_total - expectedTotal) > 0.01) {
         warnings.push({
           field: 'order_total',
@@ -250,6 +292,7 @@ export class DatabaseConstraintValidator {
     // Line total calculation validation
     if (data.quantity && data.unit_price && data.order_line_total) {
       const expectedTotal = data.quantity * data.unit_price;
+
       if (Math.abs(data.order_line_total - expectedTotal) > 0.01) {
         warnings.push({
           recordIndex,
@@ -347,7 +390,13 @@ export class DatabaseConstraintValidator {
     }
 
     // Check key length constraints
-    const keyFields = ['order_id', 'order_line_id', 'release_id', 'allocation_id'];
+    const keyFields = [
+      'order_id',
+      'order_line_id',
+      'release_id',
+      'allocation_id',
+    ];
+
     keyFields.forEach(field => {
       if (data[field] && data[field].length > 255) {
         errors.push({
@@ -410,7 +459,9 @@ export class DatabaseConstraintValidator {
 
   private isValidDateString(value: any): boolean {
     if (typeof value !== 'string') return false;
+
     const date = new Date(value);
+
     return !isNaN(date.getTime());
   }
 
@@ -421,6 +472,7 @@ export class DatabaseConstraintValidator {
 
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     return emailRegex.test(email);
   }
 
@@ -435,26 +487,37 @@ export class DatabaseConstraintValidator {
     totalWarnings: number;
   } {
     const results: ValidationResult[] = [];
-    
+
     // Validate orders table
     if (transformationResult.ordersTableData) {
-      results.push(this.validateOrdersData(transformationResult.ordersTableData));
+      results.push(
+        this.validateOrdersData(transformationResult.ordersTableData),
+      );
     }
 
     // Validate order lines table
     if (transformationResult.orderLinesTableData) {
-      results.push(this.validateOrderLinesData(transformationResult.orderLinesTableData));
+      results.push(
+        this.validateOrderLinesData(transformationResult.orderLinesTableData),
+      );
     }
 
     // Validate release lines table
     if (transformationResult.releaseLinesTableData) {
-      results.push(this.validateReleaseLinesData(transformationResult.releaseLinesTableData));
+      results.push(
+        this.validateReleaseLinesData(
+          transformationResult.releaseLinesTableData,
+        ),
+      );
     }
 
     // Aggregate results
     const allErrors = results.flatMap(r => r.errors);
     const criticalErrors = allErrors.filter(e => e.severity === 'CRITICAL');
-    const totalWarnings = results.reduce((sum, r) => sum + r.warnings.length, 0);
+    const totalWarnings = results.reduce(
+      (sum, r) => sum + r.warnings.length,
+      0,
+    );
 
     return {
       isValid: criticalErrors.length === 0,

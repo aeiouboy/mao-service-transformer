@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { PMPOrderInputDTO } from '../../releases/dtos/release-create-order.dto';
 import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-generator.service';
 import { TimestampService } from '../../../shared/services/timestamp.service';
+import { PMPOrderInputDTO } from '../../releases/dtos/release-create-order.dto';
 
 import { PaymentMethodTransformationService } from './payment-method-transformation.service';
 

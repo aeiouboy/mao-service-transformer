@@ -133,7 +133,7 @@ export class OrderLine extends Model<OrderLine> {
 
   // Calculated fields - not stored in database
   // orderLineSubtotal = quantity * unitPrice (calculated in service)
-  // orderLineTotal = orderLineSubtotal + taxes + charges (calculated in service)  
+  // orderLineTotal = orderLineSubtotal + taxes + charges (calculated in service)
   // orderLineTaxTotal = sum of all taxes for this line (calculated in service)
 
   @Column({

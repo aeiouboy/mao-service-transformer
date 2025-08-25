@@ -11,8 +11,8 @@ import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { GRPC_EXCEPTION_ERROR_CODES } from 'src/shared/constants/grpc-exception-mapping';
 import { AppConfigService } from 'src/core/config/services';
+import { GRPC_EXCEPTION_ERROR_CODES } from 'src/shared/constants/grpc-exception-mapping';
 
 import { extractCapturedFields, sensitiveData } from '../helpers';
 

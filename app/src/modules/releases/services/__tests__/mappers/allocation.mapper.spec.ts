@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Allocation } from '../.../../orders/entities/allocation.entity';
 import { AllocationMapper } from '../../mappers/allocation.mapper';
 import { AllocationDTO } from '../../release-message.dto';
+import { Allocation } from '../.../../orders/entities/allocation.entity';
 
 describe('AllocationMapper', () => {
   let mapper: AllocationMapper;

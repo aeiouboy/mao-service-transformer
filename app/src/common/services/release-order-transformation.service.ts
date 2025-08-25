@@ -2,63 +2,63 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ReleaseOrderTransformationService {
-  
   /**
    * Transform PMP input to release format with exact 2,274 line compliance
    */
   transformToRelease(pmpInput: any): any {
     const baseStructure = this.buildBaseReleaseStructure(pmpInput);
+
     return baseStructure;
   }
 
   private buildBaseReleaseStructure(input: any): any {
     // Build full release structure matching the expected 2,274 line format
     return {
-      ServiceLevelCode: "STD",
-      Email: "undefined", 
-      MaxFulfillmentStatusId: "3000",
+      ServiceLevelCode: 'STD',
+      Email: 'undefined',
+      MaxFulfillmentStatusId: '3000',
       IsOnHold: false,
       IsConfirmed: true,
       OrderSubtotal: 128,
       ModeId: null,
       SellingLocationId: null,
-      CurrencyCode: "THB",
-      CustomerPhone: "0101010122",
-      CustomerFirstName: "Grab Customer", 
+      CurrencyCode: 'THB',
+      CustomerPhone: '0101010122',
+      CustomerFirstName: 'Grab Customer',
       ReleaseTotal: 128,
       ExtendedFields: {
-        CancelAllowed: true
+        CancelAllowed: true,
       },
       TotalCharges: 0,
       ExternalShipFromLocationId: null,
       TaxExemptId: null,
-      AddressId: "6d89479d94844b20b56f12009c2ad7",
+      AddressId: '6d89479d94844b20b56f12009c2ad7',
       Order: this.buildOrder(input),
-      DocTypeId: "CustomerOrder",
-      CreatedBy: "pubstestuser@twd",
+      DocTypeId: 'CustomerOrder',
+      CreatedBy: 'pubstestuser@twd',
       OrderTotalDiscounts: -0.08,
       Priority: null,
       IsCancelled: false,
       IsPublished: null,
       HasNotes: true,
-      ReleaseId: "123456789-C7L2LCDCTCC2AE_31",
+      ReleaseId: '123456789-C7L2LCDCTCC2AE_31',
       CustomerId: null,
-      City: "-",
-      OrderId: "123456789-C7L2LCDCTCC2AE_3",
+      City: '-',
+      OrderId: '123456789-C7L2LCDCTCC2AE_3',
       AVSReasonId: null,
-      CustomerType: "",
+      CustomerType: '',
       IsTaxExempt: false,
       AddressName: null,
       ChargeDetail: this.buildRootChargeDetail(),
-      State: "-",
-      DestinationAction: "Delivery",
+      State: '-',
+      DestinationAction: 'Delivery',
       Note: this.buildNotes(),
       IsAddressVerified: true,
-      Country: "TH",
+      Country: 'TH',
       PaymentMethod: [],
       OrderTotalTaxes: 0,
       HasAlerts: null,
-      LastName: "-",
+      LastName: '-',
       ReleaseExtendedFields: {},
       TaxDetail: [],
       IsReadyForTender: false,
@@ -68,46 +68,46 @@ export class ReleaseOrderTransformationService {
       PickupExpiryDate: null,
       CreateReleaseTimeStamp: this.formatTimestamp(new Date()),
       TaxExemptReasonId: null,
-      ShipFromLocationId: "STORE01",
+      ShipFromLocationId: 'STORE01',
       NoOfStoreSaleLines: 0,
-      PostalCode: "12345",
-      OrganizationId: "CFR-UAT",
+      PostalCode: '12345',
+      OrganizationId: 'CFR-UAT',
       InvoiceId: null,
       County: null,
       IsPostVoided: false,
       AlternateOrderId: null,
       CustomerEmail: null,
-      Phone: "0101010122", 
-      OrderTypeId: "1",
-      PaymentStatusId: "1", 
+      Phone: '0101010122',
+      OrderTypeId: '1',
+      PaymentStatusId: '1',
       CustomerCommPref: null,
-      SellingChannelId: "1",
-      MinFulfillmentStatusId: "1000",
-      ReleaseType: "Sale",
+      SellingChannelId: '1',
+      MinFulfillmentStatusId: '1000',
+      ReleaseType: 'Sale',
       CreateOrderTimeStamp: this.formatTimestamp(new Date()),
       ExternalOrganizationId: null,
       EffectiveRank: this.generateEffectiveRank(),
-      ShipToLocationId: "SHIP01",
-      DeliveryMethod: "STD",
+      ShipToLocationId: 'SHIP01',
+      DeliveryMethod: 'STD',
       NoOfDeliveryLines: 3,
-      FirstName: "Grab Customer",
+      FirstName: 'Grab Customer',
       ReleaseLine: this.buildReleaseLines(input),
       Address2: null,
-      ShipViaId: "STD",
+      ShipViaId: 'STD',
       Address3: null,
-      Address1: "123 Test Street",
+      Address1: '123 Test Street',
       ProcessInfo: {},
       CancelReasonId: null,
       PostVoIdReasonId: null,
-      OrderLocale: "th_TH",
+      OrderLocale: 'th_TH',
       OrderTotalCharges: 0,
       TotalTaxes: 0,
-      CustomerLastName: "-",
+      CustomerLastName: '-',
       CapturedDate: null,
-      CarrierCode: "STD",
-      AddressType: "ShipTo",
+      CarrierCode: 'STD',
+      AddressType: 'ShipTo',
       OrderTotal: 128,
-      TotalDiscounts: -0.08
+      TotalDiscounts: -0.08,
     };
   }
 
@@ -115,7 +115,7 @@ export class ReleaseOrderTransformationService {
     return {
       Payment: this.buildPayments(),
       OrderChargeDetail: this.buildOrderChargeDetails(),
-      OrderExtension1: this.buildOrderExtension()
+      OrderExtension1: this.buildOrderExtension(),
     };
   }
 
@@ -123,22 +123,22 @@ export class ReleaseOrderTransformationService {
     return [
       {
         Actions: {},
-        PK: "7558516678512824366",
-        CreatedBy: "pubstestuser@twd",
+        PK: '7558516678512824366',
+        CreatedBy: 'pubstestuser@twd',
         CreatedTimestamp: this.formatTimestamp(new Date()),
-        UpdatedBy: "pubstestuser@twd", 
+        UpdatedBy: 'pubstestuser@twd',
         UpdatedTimestamp: this.formatTimestamp(new Date()),
         Messages: null,
-        OrgId: "CFR-UAT",
+        OrgId: 'CFR-UAT',
         PurgeDate: null,
-        OrderId: "123456789-C7L2LCDCTCC2AE_3",
+        OrderId: '123456789-C7L2LCDCTCC2AE_3',
         PaymentGroupId: null,
         CustomerId: null,
         IsCancelled: false,
         AlternateOrderId: null,
         IsAnonymized: false,
-        PaymentMethod: this.buildPaymentMethods()
-      }
+        PaymentMethod: this.buildPaymentMethods(),
+      },
     ];
   }
 
@@ -146,21 +146,21 @@ export class ReleaseOrderTransformationService {
     return [
       {
         Actions: {},
-        PK: "7558516679372851602",
-        CreatedBy: "pubstestuser@twd",
+        PK: '7558516679372851602',
+        CreatedBy: 'pubstestuser@twd',
         CreatedTimestamp: this.formatTimestamp(new Date()),
-        UpdatedBy: "pubstestuser@twd",
+        UpdatedBy: 'pubstestuser@twd',
         UpdatedTimestamp: this.formatTimestamp(new Date()),
         Messages: null,
-        OrgId: "CFR-UAT",
+        OrgId: 'CFR-UAT',
         PurgeDate: null,
-        PaymentId: "7558516678512824366",
-        PaymentTypeId: "CreditCard",
+        PaymentId: '7558516678512824366',
+        PaymentTypeId: 'CreditCard',
         MaxChargeLimit: null,
-        PaymentMethodId: "CreditCard",
-        UnlimitedChargeFlag: "N",
-        PaymentTransaction: this.buildPaymentTransactions()
-      }
+        PaymentMethodId: 'CreditCard',
+        UnlimitedChargeFlag: 'N',
+        PaymentTransaction: this.buildPaymentTransactions(),
+      },
     ];
   }
 
@@ -168,18 +168,18 @@ export class ReleaseOrderTransformationService {
     return [
       {
         Actions: {},
-        PK: "7558516679372851603", 
-        CreatedBy: "pubstestuser@twd",
+        PK: '7558516679372851603',
+        CreatedBy: 'pubstestuser@twd',
         CreatedTimestamp: this.formatTimestamp(new Date()),
-        UpdatedBy: "pubstestuser@twd",
+        UpdatedBy: 'pubstestuser@twd',
         UpdatedTimestamp: this.formatTimestamp(new Date()),
         Messages: null,
-        OrgId: "CFR-UAT",
-        PaymentMethodId: "7558516679372851602",
+        OrgId: 'CFR-UAT',
+        PaymentMethodId: '7558516679372851602',
         TransactionAmount: 128,
-        PaymentTransactionId: "TXN123456",
-        RequestAmount: 128
-      }
+        PaymentTransactionId: 'TXN123456',
+        RequestAmount: 128,
+      },
     ];
   }
 
@@ -189,15 +189,15 @@ export class ReleaseOrderTransformationService {
         Extended: {
           AbsorbBy: null,
           MKPPromotionId: null,
-          ChargeDesc: "Shipping",
+          ChargeDesc: 'Shipping',
           PromotionId: null,
           CRCTaxAmount: null,
           JdaDiscCode: null,
           TaxRate: null,
           PlatformAbsorb: null,
-          PromotionType: null
-        }
-      }
+          PromotionType: null,
+        },
+      },
     ];
   }
 
@@ -205,8 +205,8 @@ export class ReleaseOrderTransformationService {
     return {
       Extended: {
         IsPSConfirmed: true,
-        CancelAllowed: true
-      }
+        CancelAllowed: true,
+      },
     };
   }
 
@@ -215,66 +215,66 @@ export class ReleaseOrderTransformationService {
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Shipping",
+        TaxCode: 'Shipping',
         ChargeTotal: 10,
         HeaderChargeDetailId: null,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Free",
+        ChargeDisplayName: 'Free',
         Extended: null,
-        ChargeDetailId: "123456789-C7L2LCDCTCC2AE_3",
+        ChargeDetailId: '123456789-C7L2LCDCTCC2AE_3',
         RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
+        ChargeTypeId: 'Shipping',
+        RelatedChargeDetailId: null,
       },
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Discount", 
+        TaxCode: 'Discount',
         ChargeTotal: -10,
         HeaderChargeDetailId: null,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Discount Promotion",
+        ChargeDisplayName: 'Discount Promotion',
         Extended: null,
-        ChargeDetailId: "123456789-C7L2LCDCTCC2AE_3-Discount",
+        ChargeDetailId: '123456789-C7L2LCDCTCC2AE_3-Discount',
         RelatedChargeType: null,
-        ChargeTypeId: "Discount",
-        RelatedChargeDetailId: null
+        ChargeTypeId: 'Discount',
+        RelatedChargeDetailId: null,
       },
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Shipping",
+        TaxCode: 'Shipping',
         ChargeTotal: 0,
         HeaderChargeDetailId: null,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Shipping Fee Discount",
+        ChargeDisplayName: 'Shipping Fee Discount',
         Extended: null,
-        ChargeDetailId: "123456789-C7L2LCDCTCC2AE_3-ShippingFeeDiscount",
+        ChargeDetailId: '123456789-C7L2LCDCTCC2AE_3-ShippingFeeDiscount',
         RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
-      }
+        ChargeTypeId: 'Shipping',
+        RelatedChargeDetailId: null,
+      },
     ];
   }
 
   private buildNotes(): any[] {
     return [
       {
-        NoteId: "5490645279946493028611",
-        Description: "0004 - Festival Remark",
+        NoteId: '5490645279946493028611',
+        Description: '0004 - Festival Remark',
         NoteType: {
-          NoteTypeId: "0004"
+          NoteTypeId: '0004',
         },
         DisplaySequence: null,
-        NoteText: "GF-8718",
-        NoteTypeId: "0004",
+        NoteText: 'GF-8718',
+        NoteTypeId: '0004',
         IsVisible: true,
-        NoteCategoryId: "CustomerCommunication",
+        NoteCategoryId: 'CustomerCommunication',
         NoteCategory: {
-          NoteCategoryId: "CustomerCommunication"
+          NoteCategoryId: 'CustomerCommunication',
         },
-        NoteCode: null
-      }
+        NoteCode: null,
+      },
     ];
   }
 
@@ -282,13 +282,13 @@ export class ReleaseOrderTransformationService {
     return [
       this.buildReleaseLine(0),
       this.buildReleaseLine(1),
-      this.buildReleaseLine(2)
+      this.buildReleaseLine(2),
     ];
   }
 
   private buildReleaseLine(index: number): any {
     const itemData = this.getItemDataForIndex(index);
-    
+
     return {
       CancelledQuantity: 0,
       ServiceLevelCode: null,
@@ -300,17 +300,17 @@ export class ReleaseOrderTransformationService {
       IsHazmat: false,
       RefundPrice: null,
       TaxOverrideValue: null,
-      MaxFulfillmentStatusId: "3000",
+      MaxFulfillmentStatusId: '3000',
       IsOnHold: false,
       ItemWebURL: null,
       ItemId: itemData.itemId,
-      ShippingMethodId: "Standard Delivery",
+      ShippingMethodId: 'Standard Delivery',
       SellingLocationId: null,
       IsGift: false,
       ParentOrderLineId: null,
       TotalCharges: 0,
       ParentOrderId: null,
-      ItemStyle: "",
+      ItemStyle: '',
       TaxExemptId: null,
       Priority: null,
       SmallImageURI: null,
@@ -349,13 +349,13 @@ export class ReleaseOrderTransformationService {
       ReleaseLineTotal: itemData.quantity * 128,
       CanShipToAddress: true,
       OrderLine: {
-        OrderLineChargeDetail: this.buildOrderLineChargeDetail(index)
+        OrderLineChargeDetail: this.buildOrderLineChargeDetail(index),
       },
       OrderLineVASInstructions: [],
       IsPriceOverridden: false,
       AllocationInfo: {},
-      ProductClass: "Regular",
-      MinFulfillmentStatusId: "1000",
+      ProductClass: 'Regular',
+      MinFulfillmentStatusId: '1000',
       ItemSize: null,
       AsnId: null,
       PaymentGroupId: null,
@@ -385,16 +385,32 @@ export class ReleaseOrderTransformationService {
       RequestedDeliveryDate: null,
       CarrierCode: null,
       OriginalUnitPrice: 128,
-      TotalDiscounts: -0.08
+      TotalDiscounts: -0.08,
     };
   }
 
   private getItemDataForIndex(index: number): any {
     const items = [
-      { itemId: "4901133618567", itemBrand: "CIAO/ เชาว์", quantity: 1, uom: "SPCS" },
-      { itemId: "8850124003850", itemBrand: "Pure Life", quantity: 1, uom: "SPCS" },
-      { itemId: "0000093362986", itemBrand: "Caesar", quantity: 12, uom: "SBTL" }
+      {
+        itemId: '4901133618567',
+        itemBrand: 'CIAO/ เชาว์',
+        quantity: 1,
+        uom: 'SPCS',
+      },
+      {
+        itemId: '8850124003850',
+        itemBrand: 'Pure Life',
+        quantity: 1,
+        uom: 'SPCS',
+      },
+      {
+        itemId: '0000093362986',
+        itemBrand: 'Caesar',
+        quantity: 12,
+        uom: 'SBTL',
+      },
     ];
+
     return items[index] || items[0];
   }
 
@@ -408,99 +424,99 @@ export class ReleaseOrderTransformationService {
         {
           IsProrated: true,
           IsInformational: true,
-          TaxCode: "Discount",
+          TaxCode: 'Discount',
           ChargeTotal: -0.08,
           ChargeSubTypeId: null,
-          ChargeDisplayName: "pack UnitPrice Adjustment",
+          ChargeDisplayName: 'pack UnitPrice Adjustment',
           Extended: null,
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-1-1",
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-1-1',
           RelatedChargeType: null,
-          ChargeTypeId: "Discount",
-          RelatedChargeDetailId: null
+          ChargeTypeId: 'Discount',
+          RelatedChargeDetailId: null,
         },
         {
           IsProrated: true,
           IsInformational: true,
-          TaxCode: "Shipping",
+          TaxCode: 'Shipping',
           ChargeTotal: 10,
           ChargeSubTypeId: null,
-          ChargeDisplayName: "Free",
+          ChargeDisplayName: 'Free',
           Extended: null,
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-1-2",
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-1-2',
           RelatedChargeType: null,
-          ChargeTypeId: "Shipping",
-          RelatedChargeDetailId: null
+          ChargeTypeId: 'Shipping',
+          RelatedChargeDetailId: null,
         },
         {
           IsProrated: true,
           IsInformational: true,
-          TaxCode: "Shipping",
+          TaxCode: 'Shipping',
           ChargeTotal: 0,
           ChargeSubTypeId: null,
-          ChargeDisplayName: "Shipping Fee Discount",
+          ChargeDisplayName: 'Shipping Fee Discount',
           Extended: null,
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-1-3",
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-1-3',
           RelatedChargeType: null,
-          ChargeTypeId: "Shipping",
-          RelatedChargeDetailId: null
+          ChargeTypeId: 'Shipping',
+          RelatedChargeDetailId: null,
         },
         {
           IsProrated: true,
           IsInformational: true,
-          TaxCode: "Discount",
+          TaxCode: 'Discount',
           ChargeTotal: -10,
           ChargeSubTypeId: null,
-          ChargeDisplayName: "Discount Promotion",
+          ChargeDisplayName: 'Discount Promotion',
           Extended: null,
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-1-4",
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-1-4',
           RelatedChargeType: null,
-          ChargeTypeId: "Discount",
-          RelatedChargeDetailId: null
-        }
+          ChargeTypeId: 'Discount',
+          RelatedChargeDetailId: null,
+        },
       ];
     }
-    
+
     // Other ReleaseLine items have 3 ChargeDetail entries
     return [
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Shipping",
+        TaxCode: 'Shipping',
         ChargeTotal: 10,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Free",
+        ChargeDisplayName: 'Free',
         Extended: null,
         ChargeDetailId: `MAOPC123456789-C7L2LCDCTCC2AE_3002-${index}-1`,
         RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
+        ChargeTypeId: 'Shipping',
+        RelatedChargeDetailId: null,
       },
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Shipping",
+        TaxCode: 'Shipping',
         ChargeTotal: 0,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Shipping Fee Discount",
+        ChargeDisplayName: 'Shipping Fee Discount',
         Extended: null,
         ChargeDetailId: `MAOPC123456789-C7L2LCDCTCC2AE_3002-${index}-2`,
         RelatedChargeType: null,
-        ChargeTypeId: "Shipping",
-        RelatedChargeDetailId: null
+        ChargeTypeId: 'Shipping',
+        RelatedChargeDetailId: null,
       },
       {
         IsProrated: true,
         IsInformational: true,
-        TaxCode: "Discount",
+        TaxCode: 'Discount',
         ChargeTotal: -10,
         ChargeSubTypeId: null,
-        ChargeDisplayName: "Discount Promotion",
+        ChargeDisplayName: 'Discount Promotion',
         Extended: null,
         ChargeDetailId: `MAOPC123456789-C7L2LCDCTCC2AE_3002-${index}-3`,
         RelatedChargeType: null,
-        ChargeTypeId: "Discount",
-        RelatedChargeDetailId: null
-      }
+        ChargeTypeId: 'Discount',
+        RelatedChargeDetailId: null,
+      },
     ];
   }
 
@@ -515,21 +531,21 @@ export class ReleaseOrderTransformationService {
           CreatedTimestamp: this.formatTimestamp(new Date()),
           IsTaxIncluded: true,
           Extended: {
-            AbsorbBy: "Seller",
+            AbsorbBy: 'Seller',
             MKPPromotionId: null,
-            ChargeDesc: "pack UnitPrice Adjustment",
-            PromotionId: "12345",
+            ChargeDesc: 'pack UnitPrice Adjustment',
+            PromotionId: '12345',
             CRCTaxAmount: null,
             JdaDiscCode: null,
             TaxRate: null,
             PlatformAbsorb: null,
-            PromotionType: "Product Discount"
+            PromotionType: 'Product Discount',
           },
-          ChargeDisplayName: "pack UnitPrice Adjustment",
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-2-2",
+          ChargeDisplayName: 'pack UnitPrice Adjustment',
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-2-2',
           IsInformational: false,
-          DiscountOn: { DiscountOnId: "ItemPrice" },
-          ChargeType: { ChargeTypeId: "Discount" }
+          DiscountOn: { DiscountOnId: 'ItemPrice' },
+          ChargeType: { ChargeTypeId: 'Discount' },
         },
         {
           CreatedTimestamp: this.formatTimestamp(new Date()),
@@ -537,18 +553,18 @@ export class ReleaseOrderTransformationService {
           Extended: {
             AbsorbBy: null,
             MKPPromotionId: null,
-            ChargeDesc: "Free",
+            ChargeDesc: 'Free',
             PromotionId: null,
             CRCTaxAmount: null,
             JdaDiscCode: null,
             TaxRate: null,
             PlatformAbsorb: null,
-            PromotionType: null
+            PromotionType: null,
           },
-          ChargeDisplayName: "Free",
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-2-3",
+          ChargeDisplayName: 'Free',
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-2-3',
           IsInformational: false,
-          ChargeType: { ChargeTypeId: "Shipping" }
+          ChargeType: { ChargeTypeId: 'Shipping' },
         },
         {
           CreatedTimestamp: this.formatTimestamp(new Date()),
@@ -556,41 +572,41 @@ export class ReleaseOrderTransformationService {
           Extended: {
             AbsorbBy: null,
             MKPPromotionId: null,
-            ChargeDesc: "Shipping Fee Discount",
+            ChargeDesc: 'Shipping Fee Discount',
             PromotionId: null,
             CRCTaxAmount: null,
             JdaDiscCode: null,
             TaxRate: null,
             PlatformAbsorb: null,
-            PromotionType: null
+            PromotionType: null,
           },
-          ChargeDisplayName: "Shipping Fee Discount",
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-2-4",
+          ChargeDisplayName: 'Shipping Fee Discount',
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-2-4',
           IsInformational: false,
-          ChargeType: { ChargeTypeId: "Shipping" }
+          ChargeType: { ChargeTypeId: 'Shipping' },
         },
         {
           CreatedTimestamp: this.formatTimestamp(new Date()),
           IsTaxIncluded: true,
           Extended: {
-            AbsorbBy: "Seller",
+            AbsorbBy: 'Seller',
             MKPPromotionId: null,
-            ChargeDesc: "Discount Promotion",
-            PromotionId: "67890",
+            ChargeDesc: 'Discount Promotion',
+            PromotionId: '67890',
             CRCTaxAmount: null,
             JdaDiscCode: null,
             TaxRate: null,
             PlatformAbsorb: null,
-            PromotionType: "Product Discount"
+            PromotionType: 'Product Discount',
           },
-          ChargeDisplayName: "Discount Promotion",
-          ChargeDetailId: "MAOPC123456789-C7L2LCDCTCC2AE_3002-2-5",
+          ChargeDisplayName: 'Discount Promotion',
+          ChargeDetailId: 'MAOPC123456789-C7L2LCDCTCC2AE_3002-2-5',
           IsInformational: false,
-          ChargeType: { ChargeTypeId: "Discount" }
-        }
+          ChargeType: { ChargeTypeId: 'Discount' },
+        },
       ];
     }
-    
+
     // Other ReleaseLine items have 3 OrderLineChargeDetail entries
     // Add DiscountOn field to the first entry
     const baseEntries = [
@@ -598,20 +614,20 @@ export class ReleaseOrderTransformationService {
         CreatedTimestamp: this.formatTimestamp(new Date()),
         IsTaxIncluded: true,
         Extended: {
-          AbsorbBy: "Seller",
+          AbsorbBy: 'Seller',
           MKPPromotionId: null,
-          ChargeDesc: "pack UnitPrice Adjustment",
-          PromotionId: "12345",
+          ChargeDesc: 'pack UnitPrice Adjustment',
+          PromotionId: '12345',
           CRCTaxAmount: null,
           JdaDiscCode: null,
           TaxRate: null,
           PlatformAbsorb: null,
-          PromotionType: "Product Discount"
+          PromotionType: 'Product Discount',
         },
-        ChargeDisplayName: "pack UnitPrice Adjustment",
+        ChargeDisplayName: 'pack UnitPrice Adjustment',
         ChargeDetailId: `MAOPC123456789-C7L2LCDCTCC2AE_3002-${index + 2}-2`,
         IsInformational: false,
-        ChargeType: { ChargeTypeId: "Discount" }
+        ChargeType: { ChargeTypeId: 'Discount' },
       },
       {
         CreatedTimestamp: this.formatTimestamp(new Date()),
@@ -619,18 +635,18 @@ export class ReleaseOrderTransformationService {
         Extended: {
           AbsorbBy: null,
           MKPPromotionId: null,
-          ChargeDesc: "Free",
+          ChargeDesc: 'Free',
           PromotionId: null,
           CRCTaxAmount: null,
           JdaDiscCode: null,
           TaxRate: null,
           PlatformAbsorb: null,
-          PromotionType: null
+          PromotionType: null,
         },
-        ChargeDisplayName: "Free",
+        ChargeDisplayName: 'Free',
         ChargeDetailId: `MAOPC123456789-C7L2LCDCTCC2AE_3002-${index + 2}-3`,
         IsInformational: false,
-        ChargeType: { ChargeTypeId: "Shipping" }
+        ChargeType: { ChargeTypeId: 'Shipping' },
       },
       {
         CreatedTimestamp: this.formatTimestamp(new Date()),
@@ -638,26 +654,26 @@ export class ReleaseOrderTransformationService {
         Extended: {
           AbsorbBy: null,
           MKPPromotionId: null,
-          ChargeDesc: "Shipping Fee Discount",
+          ChargeDesc: 'Shipping Fee Discount',
           PromotionId: null,
           CRCTaxAmount: null,
           JdaDiscCode: null,
           TaxRate: null,
           PlatformAbsorb: null,
-          PromotionType: null
+          PromotionType: null,
         },
-        ChargeDisplayName: "Shipping Fee Discount",
+        ChargeDisplayName: 'Shipping Fee Discount',
         ChargeDetailId: `MAOPC123456789-C7L2LCDCTCC2AE_3002-${index + 2}-4`,
         IsInformational: false,
-        ChargeType: { ChargeTypeId: "Shipping" }
-      }
+        ChargeType: { ChargeTypeId: 'Shipping' },
+      },
     ];
-    
+
     // Add DiscountOn field to the first entry (index 0) for all ReleaseLine items
     if (baseEntries[0]) {
-      (baseEntries[0] as any).DiscountOn = { DiscountOnId: "ItemPrice" };
+      (baseEntries[0] as any).DiscountOn = { DiscountOnId: 'ItemPrice' };
     }
-    
+
     return baseEntries;
   }
 
@@ -668,9 +684,9 @@ export class ReleaseOrderTransformationService {
     const thaiNames: Record<string, string> = {
       '4901133618567': 'Ciao Tuna Katsuo And Chicken Fillet Topping Dried',
       '8850124003850': 'Pure Life Drinking Water',
-      '0000093362986': 'Caesar Beef and Liver'
+      '0000093362986': 'Caesar Beef and Liver',
     };
-    
+
     return thaiNames[itemId] || 'Unknown Product';
   }
 
@@ -693,39 +709,51 @@ export class ReleaseOrderTransformationService {
    */
   stringifyWithCustomFormat(obj: any): string {
     const lines: string[] = [];
-    
+
     function addLine(content: string, level: number) {
       let indent = '';
+
       if (level === 1) {
         indent = '    '; // 4 spaces
       } else if (level === 2) {
-        indent = '       '; // 7 spaces  
+        indent = '       '; // 7 spaces
       } else if (level === 3) {
         indent = '          '; // 10 spaces
       } else if (level > 3) {
         indent = '          ' + '   '.repeat(level - 3); // 10 + 3*(level-3)
       }
+
       lines.push(indent + content);
     }
-    
+
     function stringify(value: any, level: number) {
       if (value === null) {
         return 'null';
-      } else if (typeof value === 'string') {
+      }
+
+      if (typeof value === 'string') {
         return `"${value}"`;
-      } else if (typeof value === 'number' || typeof value === 'boolean') {
+      }
+
+      if (typeof value === 'number' || typeof value === 'boolean') {
         return String(value);
-      } else if (Array.isArray(value)) {
+      }
+
+      if (Array.isArray(value)) {
         if (value.length === 0) {
           return '[]';
         }
-        
+
         addLine('[', level);
         value.forEach((item, index) => {
           const isLast = index === value.length - 1;
           const itemStr = stringify(item, level + 1);
-          
-          if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+
+          if (
+            typeof item === 'object' &&
+            item !== null &&
+            !Array.isArray(item)
+          ) {
             addLine('{', level + 1);
             stringifyObject(item, level + 2);
             addLine(isLast ? '}' : '},', level + 1);
@@ -739,16 +767,17 @@ export class ReleaseOrderTransformationService {
         stringifyObject(value, level + 1);
         addLine('}', level);
       }
-      
+
       return '';
     }
-    
+
     function stringifyObject(obj: any, level: number) {
       const keys = Object.keys(obj);
+
       keys.forEach((key, index) => {
         const isLast = index === keys.length - 1;
         const value = obj[key];
-        
+
         if (value === null) {
           addLine(`"${key}":null${isLast ? '' : ','}`, level);
         } else if (typeof value === 'string') {
@@ -762,12 +791,18 @@ export class ReleaseOrderTransformationService {
             addLine(`"${key}":[`, level);
             value.forEach((item, itemIndex) => {
               const isLastItem = itemIndex === value.length - 1;
-              if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+
+              if (
+                typeof item === 'object' &&
+                item !== null &&
+                !Array.isArray(item)
+              ) {
                 addLine('{', level + 1);
                 stringifyObject(item, level + 2);
                 addLine(isLastItem ? '}' : '},', level + 1);
               } else {
                 const itemStr = stringify(item, level + 1);
+
                 addLine(isLastItem ? itemStr : itemStr + ',', level + 1);
               }
             });
@@ -780,8 +815,9 @@ export class ReleaseOrderTransformationService {
         }
       });
     }
-    
+
     stringify(obj, 0);
+
     return lines.join('\n');
   }
 }

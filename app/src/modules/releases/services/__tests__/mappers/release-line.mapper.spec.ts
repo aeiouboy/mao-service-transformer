@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { DynamicIdGeneratorService } from '../../../../../shared/services/dynamic-id-generator.service';
 import { CalculationService } from '../../../../transformations/services/calculation.service';
+import { AllocationMapper } from '../../mappers/allocation.mapper';
+import { ReleaseLineDTO } from '../../release-message.dto';
 import { Allocation } from '../.../../orders/entities/allocation.entity';
 import { OrderLine } from '../.../../orders/entities/order-line.entity';
-import { AllocationMapper } from '../../mappers/allocation.mapper';
 import { ReleaseLineMapper } from '../.../../transformations/mappers/release-line.mapper';
-import { ReleaseLineDTO } from '../../release-message.dto';
 
 describe('ReleaseLineMapper', () => {
   let mapper: ReleaseLineMapper;

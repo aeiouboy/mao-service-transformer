@@ -1,0 +1,70 @@
+{
+  "orderChangeLog": {
+    "ModTypes": {
+      "Order": [
+        "Order::Cancel"
+      ],
+      "OrderLine": [
+        "OrderLine::Cancel",
+        "OrderLine::Cancel::Customer"
+      ],
+      "QuantityDetail": [
+        "QuantityDetail::QuantityStatus::Increase::1500"
+      ]
+    },
+    "ChangeSet": [
+      {
+        "Properties": [
+          {
+            "New": "true",
+            "Old": "false",
+            "Property": "IsCancelled"
+          }
+        ],
+        "ModType": "Order::Cancel"
+      }
+    ]
+  },
+  "lineChangeLog": {
+    "ModTypes": {
+      "OrderLine": [
+        "OrderLine::Cancel",
+        "OrderLine::Cancel::Customer"
+      ],
+      "QuantityDetail": [
+        "QuantityDetail::QuantityStatus::Increase::1500"
+      ]
+    },
+    "ChangeSet": [
+      {
+        "Properties": [
+          {
+            "New": "true",
+            "Old": "false",
+            "Property": "IsCancelled"
+          }
+        ],
+        "ModType": "OrderLine::Cancel::Customer"
+      }
+    ]
+  },
+  "qtyChangeLog": {
+    "ModTypes": {
+      "QuantityDetail": [
+        "QuantityDetail::QuantityStatus::Increase::1500"
+      ]
+    },
+    "ChangeSet": [
+      {
+        "Properties": [
+          {
+            "New": "0.0",
+            "Old": "null",
+            "Property": "Quantity"
+          }
+        ],
+        "ModType": "QuantityDetail::QuantityStatus::Increase::1500"
+      }
+    ]
+  }
+}

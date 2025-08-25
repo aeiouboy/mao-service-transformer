@@ -1,0 +1,13 @@
+{
+  "totalFields": 193,
+  "targetFields": 702,
+  "coveragePercentage": 27.5,
+  "majorImprovements": [
+    "OrderExtension1.Extended (62 fields)",
+    "OrderLinePromisingInfo (26 fields)",
+    "ChangeLog systems (3 levels)",
+    "Enhanced Payment structure",
+    "Complete Release structure",
+    "OrderMilestone and OrderMilestoneEvent arrays"
+  ]
+}

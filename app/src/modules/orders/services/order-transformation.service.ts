@@ -2,18 +2,17 @@ import { createHash } from 'crypto';
 
 import { Injectable } from '@nestjs/common';
 
-import {
-  PMPOrderInputDTO,
-  ReleaseOutputDTO,
-} from '../../releases/dtos/release-create-order.dto';
 import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-generator.service';
-import { BusinessRulesService } from '../../transformations/services/business-rules.service';
 import { TimestampService } from '../../../shared/services/timestamp.service';
-
 import {
   PaymentTransformationService,
   TransformationContext,
 } from '../../payments/services/payment-transformation.service';
+import {
+  PMPOrderInputDTO,
+  ReleaseOutputDTO,
+} from '../../releases/dtos/release-create-order.dto';
+import { BusinessRulesService } from '../../transformations/services/business-rules.service';
 
 /**
  * Service responsible for order header transformation logic.

@@ -32,7 +32,7 @@ export const ORDERS_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: false,
   },
-  
+
   // Customer information
   customer_id: {
     databaseField: 'customer_id',
@@ -69,7 +69,7 @@ export const ORDERS_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: false,
   },
-  
+
   // Financial fields
   order_sub_total: {
     databaseField: 'order_sub_total',
@@ -106,7 +106,7 @@ export const ORDERS_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'number',
     required: false,
   },
-  
+
   // Organization and channel
   org_id: {
     databaseField: 'org_id',
@@ -129,7 +129,7 @@ export const ORDERS_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: false,
   },
-  
+
   // Status fields
   is_on_hold: {
     databaseField: 'is_on_hold',
@@ -185,7 +185,7 @@ export const ORDER_LINES_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: true,
   },
-  
+
   // Item information - SEMANTIC MAPPING
   item_id: {
     databaseField: 'item_id',
@@ -201,7 +201,7 @@ export const ORDER_LINES_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: false,
   },
-  
+
   // Quantity and pricing
   quantity: {
     databaseField: 'quantity',
@@ -231,7 +231,7 @@ export const ORDER_LINES_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: false,
   },
-  
+
   // Fulfillment fields - MISSING IN CURRENT TRANSFORMATION
   fulfillment_group_id: {
     databaseField: 'fulfillment_group_id',
@@ -328,7 +328,7 @@ export const RELEASE_LINES_FIELD_MAPPING: Record<string, FieldMappingConfig> = {
     dataType: 'string',
     required: true, // NOT NULL constraint - MISSING IN CURRENT TRANSFORMATION
   },
-  
+
   // Optional fields - but should be included for completeness
   fulfilled_quantity: {
     databaseField: 'fulfilled_quantity',
@@ -376,30 +376,30 @@ export class FieldMappingUtil {
     mapping: Record<string, FieldMappingConfig>,
   ): Record<string, any> {
     const result: Record<string, any> = {};
-    
+
     for (const [mappingKey, config] of Object.entries(mapping)) {
       const applicationValue = data[config.applicationField];
-      
+
       if (applicationValue !== undefined) {
         // Apply transformer if available
-        const transformedValue = config.transformer 
+        const transformedValue = config.transformer
           ? config.transformer(applicationValue)
           : applicationValue;
-        
+
         result[config.databaseField] = transformedValue;
       } else if (config.required && config.defaultValue !== undefined) {
         // Use default value for required fields
         result[config.databaseField] = config.defaultValue;
       } else if (config.required) {
         throw new Error(
-          `Required field ${config.applicationField} is missing for database field ${config.databaseField}`
+          `Required field ${config.applicationField} is missing for database field ${config.databaseField}`,
         );
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Convert database object to application format
    */
@@ -408,18 +408,18 @@ export class FieldMappingUtil {
     mapping: Record<string, FieldMappingConfig>,
   ): Record<string, any> {
     const result: Record<string, any> = {};
-    
+
     for (const [mappingKey, config] of Object.entries(mapping)) {
       const databaseValue = data[config.databaseField];
-      
+
       if (databaseValue !== undefined) {
         result[config.applicationField] = databaseValue;
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Convert application object to DTO format
    */
@@ -428,18 +428,18 @@ export class FieldMappingUtil {
     mapping: Record<string, FieldMappingConfig>,
   ): Record<string, any> {
     const result: Record<string, any> = {};
-    
+
     for (const [mappingKey, config] of Object.entries(mapping)) {
       const applicationValue = data[config.applicationField];
-      
+
       if (applicationValue !== undefined) {
         result[config.dtoField] = applicationValue;
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Validate required fields for database insertion
    */
@@ -448,27 +448,29 @@ export class FieldMappingUtil {
     mapping: Record<string, FieldMappingConfig>,
   ): { isValid: boolean; missingFields: string[] } {
     const missingFields: string[] = [];
-    
+
     for (const [mappingKey, config] of Object.entries(mapping)) {
       if (config.required) {
         const applicationValue = data[config.applicationField];
-        
+
         if (applicationValue === undefined || applicationValue === null) {
           missingFields.push(config.applicationField);
         }
       }
     }
-    
+
     return {
       isValid: missingFields.length === 0,
       missingFields,
     };
   }
-  
+
   /**
    * Get all required fields for a mapping
    */
-  static getRequiredFields(mapping: Record<string, FieldMappingConfig>): string[] {
+  static getRequiredFields(
+    mapping: Record<string, FieldMappingConfig>,
+  ): string[] {
     return Object.values(mapping)
       .filter(config => config.required)
       .map(config => config.applicationField);

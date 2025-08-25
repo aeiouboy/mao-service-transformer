@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-generator.service';
-import { CalculationService } from '../services/calculation.service';
 import { Allocation } from '../../orders/entities/allocation.entity';
 import { OrderLine } from '../../orders/entities/order-line.entity';
 import { DatabaseReleaseLineDTO } from '../../releases/dtos/database-compatible-release.dto';
+import { CalculationService } from '../services/calculation.service';
 
 // Type alias for backward compatibility
 type ReleaseLineDTO = DatabaseReleaseLineDTO;

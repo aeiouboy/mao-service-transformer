@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
 
-import {
-  PMPOrderInputDTO,
-  ReleaseOutputDTO,
-} from '../../releases/dtos/release-create-order.dto';
-import { AllocationTransformationService } from '../../transformations/services/allocation-transformation.service';
-import { OrderLineTransformationService } from './order-line-transformation.service';
-import { OrderTransformationService } from './order-transformation.service';
+import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-generator.service';
+import { TimestampService } from '../../../shared/services/timestamp.service';
 import { PaymentMethodTransformationService } from '../../payments/services/payment-method-transformation.service';
 import { PaymentTransactionTransformationService } from '../../payments/services/payment-transaction-transformation.service';
 import {
   PaymentTransformationService,
   TransformationContext,
 } from '../../payments/services/payment-transformation.service';
-// Release services removed to avoid circular dependency
-import { DynamicIdGeneratorService } from '../../../shared/services/dynamic-id-generator.service';
+import {
+  PMPOrderInputDTO,
+  ReleaseOutputDTO,
+} from '../../releases/dtos/release-create-order.dto';
+import { AllocationTransformationService } from '../../transformations/services/allocation-transformation.service';
 import { CalculationService } from '../../transformations/services/calculation.service';
-import { TimestampService } from '../../../shared/services/timestamp.service';
+
+import { OrderLineTransformationService } from './order-line-transformation.service';
+import { OrderTransformationService } from './order-transformation.service';
+// Release services removed to avoid circular dependency
 
 // Domain Services
 
@@ -277,7 +278,9 @@ export class OrderTransformationOrchestratorService {
         ReleaseStatus: 'Open',
         Priority: 'Normal',
         CreatedDate: this.timestampService.getTimestamp('release_created_date'),
-        ModifiedDate: this.timestampService.getTimestamp('release_modified_date'),
+        ModifiedDate: this.timestampService.getTimestamp(
+          'release_modified_date',
+        ),
         OrderId: context.orderId,
         OrgId: context.orgId,
       };

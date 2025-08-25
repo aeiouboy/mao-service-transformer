@@ -9,8 +9,9 @@ import {
 } from 'class-validator';
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 
-import { OrderLine } from './order-line.entity';
 import { Payment } from '../../payments/entities/payment.entity';
+
+import { OrderLine } from './order-line.entity';
 
 @Table({
   tableName: 'orders',

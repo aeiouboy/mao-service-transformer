@@ -11,7 +11,10 @@ import {
 
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-import { DatabaseCompatibleReleaseOutputDTO, ReleaseOutputDTO } from '../dtos/database-compatible-release.dto';
+import {
+  DatabaseCompatibleReleaseOutputDTO,
+  ReleaseOutputDTO,
+} from '../dtos/database-compatible-release.dto';
 import { PMPOrderInputDTO } from '../dtos/release-create-order.dto';
 import { OrderDatabaseRepositoryService } from '../services/order-database-repository.service';
 import { OrderReleaseTemplateTransformerService } from '../services/order-release-transformer.service';
@@ -52,7 +55,7 @@ export class ReleaseOrderController {
   async getOrdersList() {
     try {
       const orders = await this.repository.getAllOrders();
-      
+
       return {
         successful: true,
         data: orders,
@@ -61,7 +64,7 @@ export class ReleaseOrderController {
       };
     } catch (error: any) {
       this.logger.error('Failed to fetch orders list:', error);
-      
+
       return {
         errorCode: 'DB_ERROR',
         successful: false,
@@ -70,7 +73,6 @@ export class ReleaseOrderController {
       };
     }
   }
-
 
   /**
    * Transform order to release format with optional save
@@ -82,7 +84,9 @@ export class ReleaseOrderController {
   async transformOrderToRelease(
     @Body() request: ReleaseTransformRequestDTO,
   ): Promise<ReleaseTransformResponseDTO> {
-    this.logger.log(`Received transform request for order: ${request.orderId} (save: ${request.saveOrder || false})`);
+    this.logger.log(
+      `Received transform request for order: ${request.orderId} (save: ${request.saveOrder || false})`,
+    );
 
     try {
       // Validate request
@@ -90,7 +94,7 @@ export class ReleaseOrderController {
         throw new HttpException('Order ID is required', HttpStatus.BAD_REQUEST);
       }
 
-      // Transform order 
+      // Transform order
       const releaseData = await this.templateTransformer.transformToRelease(
         request.orderId.trim(),
       );
@@ -99,8 +103,12 @@ export class ReleaseOrderController {
 
       // Save to file if requested
       if (request.saveOrder) {
-        this.logger.log(`Saving release data to file for order: ${request.orderId}`);
-        filePath = await this.templateTransformer.saveToFile(request.orderId.trim());
+        this.logger.log(
+          `Saving release data to file for order: ${request.orderId}`,
+        );
+        filePath = await this.templateTransformer.saveToFile(
+          request.orderId.trim(),
+        );
         this.logger.log(`Saved release data to file: ${filePath}`);
       } else {
         this.logger.log(`Save not requested for order: ${request.orderId}`);
@@ -248,13 +256,15 @@ export class ReleaseOrderController {
   async transformPayloadToRelease(
     @Body() orderData: PMPOrderInputDTO,
   ): Promise<ReleaseTransformResponseDTO> {
-    this.logger.log(`Received direct payload transform request for order: ${orderData.OrderId}`);
+    this.logger.log(
+      `Received direct payload transform request for order: ${orderData.OrderId}`,
+    );
 
     try {
       // For direct payload transformation, we'll throw an error since this should use database data
       throw new HttpException(
         'Direct payload transformation not supported. Use database-based transformation instead.',
-        HttpStatus.NOT_IMPLEMENTED
+        HttpStatus.NOT_IMPLEMENTED,
       );
     } catch (error: any) {
       this.logger.error(
@@ -317,21 +327,28 @@ export class ReleaseOrderController {
     if (!request.orderId?.trim()) {
       throw new HttpException('Order ID is required', HttpStatus.BAD_REQUEST);
     }
-    
+
     // Additional validation at controller level
     if (request.orderId.length > 100) {
-      throw new HttpException('OrderId cannot exceed 100 characters', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'OrderId cannot exceed 100 characters',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // Check for potentially malicious patterns
     if (!/^[a-zA-Z0-9\-_]+$/.test(request.orderId)) {
-      throw new HttpException('OrderId can only contain alphanumeric characters, hyphens, and underscores', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'OrderId can only contain alphanumeric characters, hyphens, and underscores',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    
+
     try {
       const filePath = await this.templateTransformer.saveToFile(
         request.orderId.trim(),
       );
+
       return {
         success: true,
         filePath,
@@ -339,29 +356,32 @@ export class ReleaseOrderController {
       };
     } catch (error: any) {
       this.logger.error('Template release save failed', error);
-      
+
       // Enhanced error handling
-      if (error.message?.includes('Order with ID') && error.message?.includes('not found')) {
+      if (
+        error.message?.includes('Order with ID') &&
+        error.message?.includes('not found')
+      ) {
         throw new HttpException(
           `Order not found: ${request.orderId}`,
           HttpStatus.NOT_FOUND,
         );
       }
-      
+
       if (error.message?.includes('Invalid orderId format')) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
       }
-      
-      if (error.message?.includes('Database') || error.message?.includes('connection')) {
+
+      if (
+        error.message?.includes('Database') ||
+        error.message?.includes('connection')
+      ) {
         throw new HttpException(
           'Database connection error',
           HttpStatus.SERVICE_UNAVAILABLE,
         );
       }
-      
+
       throw new HttpException(
         error.message || 'Internal transformation error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -374,7 +394,9 @@ export class ReleaseOrderController {
    * @returns Unique request identifier
    */
   private generateRequestId(): string {
-    return Math.random().toString(36).substring(2, 15) +
-           Math.random().toString(36).substring(2, 15);
+    return (
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    );
   }
 }
